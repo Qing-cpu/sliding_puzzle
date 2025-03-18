@@ -95,21 +95,24 @@ class SlidingPuzzleModel {
 
   static bool isSolvable(List<List<int>> dList) {
     int inversions = 0;
+    final len = dList.length;
+    final count = len * len;
     final buf = [];
-    for (int i = 0; i < dList.length; i++) {
-      for (int j = 0; j < dList.first.length; j++) {
+    for (int i = 0; i < len; i++) {
+      for (int j = 0; j < len; j++) {
         final x = dList[i][j];
         // 空格跳过判断
-        if (x == dList.length * dList.first.length - 1) {
+        if (x == count - 1) {
           continue;
         }
-        if (buf.contains(x + 1)) {
+        if (buf.any((k) => k > x)) {
           inversions++;
         }
         buf.add(x);
       }
     }
-    return inversions % 2 == 0;
+    // (count.isOdd? inversions : inversions+1).isEven;
+    return count.isOdd ? inversions.isEven : inversions.isOdd;
   }
 
   /// 洗牌
@@ -124,10 +127,9 @@ class SlidingPuzzleModel {
       squaresTwoDList[y1][x1] = squaresTwoDList[y2][x2];
       squaresTwoDList[y2][x2] = grid;
     }
-    if (isSolvable(
-          squaresTwoDList.map((l) => l.map((m) => m.id).toList()).toList(),
-        ) ==
-        false) {
+    if (!isSolvable(
+      squaresTwoDList.map((l) => l.map((m) => m.id).toList()).toList(),
+    )) {
       shuffle();
     }
   }

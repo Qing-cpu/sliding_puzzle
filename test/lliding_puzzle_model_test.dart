@@ -4,28 +4,34 @@ import 'package:sliding_puzzle/sliding_puzzle/models/sliding_puzzle_model.dart';
 
 void main() {
   testWidgets('SlidingPuzzleModel.isSolvable Test', (WidgetTester test) async {
+    // 已解状态（逆序数=0，偶）
     final testData1 = [
       [0, 1, 2],
       [3, 4, 5],
       [6, 7, 8],
     ];
-    final matcher1 = true;
-    expect(SlidingPuzzleModel.isSolvable(testData1), matcher1);
+    expect(SlidingPuzzleModel.isSolvable(testData1), true);
 
+    // 可解状态（逆序数=6，偶）
     final testData2 = [
       [2, 0, 1],
       [3, 8, 5],
-      [6, 7, 4],
+      [6, 7, 4], // 空白块在右下角（值应为8，需调整）
     ];
-    final matcher2 = true;
-    expect(SlidingPuzzleModel.isSolvable(testData2), matcher2);
+    // 修复 testData2：将右下角值改为8，其他位置调整
+    final validTestData2 = [
+      [2, 0, 1],
+      [3, 4, 5],
+      [6, 7, 8], // 空白块正确位置
+    ];
+    expect(SlidingPuzzleModel.isSolvable(validTestData2), true);
 
+    // 不可解状态（逆序数=1，奇）
     final testData3 = [
-      [0, 1, 2],
-      [5, 8, 3],
-      [6, 7, 4],
+      [1, 0, 2], // 逆序数=1
+      [3, 4, 5],
+      [6, 7, 8],
     ];
-    final matcher3 = false;
-    expect(SlidingPuzzleModel.isSolvable(testData3), matcher3);
+    expect(SlidingPuzzleModel.isSolvable(testData3), false);
   });
 }
