@@ -94,6 +94,7 @@ class SlidingPuzzleModel {
   }
 
   static bool isSolvable(List<List<int>> dList) {
+<<<<<<< HEAD
     int n = dList.length;
     int m = dList[0].length;
     List<int> flattened = [];
@@ -124,6 +125,27 @@ class SlidingPuzzleModel {
     } else { // 列数为偶数
       return (inversions + blankRowFromBottom) % 2 == 0;
     }
+=======
+    int inversions = 0;
+    final len = dList.length;
+    final count = len * len;
+    final buf = [];
+    for (int i = 0; i < len; i++) {
+      for (int j = 0; j < len; j++) {
+        final x = dList[i][j];
+        // 空格跳过判断
+        if (x == count - 1) {
+          continue;
+        }
+        if (buf.any((k) => k > x)) {
+          inversions++;
+        }
+        buf.add(x);
+      }
+    }
+    // (count.isOdd? inversions : inversions+1).isEven;
+    return count.isOdd ? inversions.isEven : inversions.isOdd;
+>>>>>>> e24075f3ce7a178097956f96687b30589d1721df
   }
 
   /// 洗牌
