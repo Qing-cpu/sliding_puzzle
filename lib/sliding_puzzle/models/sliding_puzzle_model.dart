@@ -1,7 +1,5 @@
 import 'dart:math';
-
 import 'package:sliding_puzzle/data/levels/level_info.dart';
-
 import 'square_model.dart';
 
 class SlidingPuzzleModel {
@@ -95,6 +93,25 @@ class SlidingPuzzleModel {
     }
   }
 
+  static bool isSolvable(List<List<int>> dList) {
+    int inversions = 0;
+    final buf = [];
+    for (int i = 0; i < dList.length; i++) {
+      for (int j = 0; j < dList.first.length; j++) {
+        final x = dList[i][j];
+        // 空格跳过判断
+        if (x == dList.length * dList.first.length - 1) {
+          continue;
+        }
+        if (buf.contains(x + 1)) {
+          inversions++;
+        }
+        buf.add(x);
+      }
+    }
+    return inversions % 2 == 0;
+  }
+
   /// 洗牌
   shuffle() {
     final r = Random(DateTime.now().millisecondsSinceEpoch);
@@ -107,23 +124,10 @@ class SlidingPuzzleModel {
       squaresTwoDList[y1][x1] = squaresTwoDList[y2][x2];
       squaresTwoDList[y2][x2] = grid;
     }
-
-    bool isSolvable() {
-      int inversions = 0;
-      final buf = [];
-      for (int i = 0; i < levelInfo.size; i++) {
-        for (int j = 0; j < levelInfo.size; j++) {
-          final x = squaresTwoDList[i][j].id + 1;
-          if (buf.contains(x)) {
-            inversions++;
-          }
-          buf.add(squaresTwoDList[i][j]);
-        }
-      }
-      return inversions % 2 == 0;
-    }
-
-    if (isSolvable() == false) {
+    if (isSolvable(
+          squaresTwoDList.map((l) => l.map((m) => m.id).toList()).toList(),
+        ) ==
+        false) {
       shuffle();
     }
   }
