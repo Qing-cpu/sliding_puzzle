@@ -17,20 +17,27 @@ class GamePage extends StatefulWidget {
 class _GamePageState extends State<GamePage> {
   late final _levelInfo = widget.levelInfo;
   bool isBegin = false;
+  bool isCompleted = false;
   final _slidingPuzzleWidth = 288.0;
   late LevelData? _data = widget.levelData;
 
   _onBegin() {
     setState(() {
       isBegin = true;
+      isCompleted = false;
       // dMil = _levelInfo.starCountTimes.first.inMilliseconds;
-      dMil = Duration(minutes: 30).inMilliseconds;
+      dMil = _levelInfo.starCountTimes.first.inMilliseconds;
     });
   }
 
   _onCompletedCallback(LevelData data) {
     _data = data.newOrOld(_data);
-    Navigator.pop(context, _data);
+    setState(() {
+      isCompleted = true;
+      dMil = data.timeMil;
+      print(Duration(milliseconds: dMil));
+    });
+    // Navigator.pop(context, _data);
   }
 
   int dMil = 0;
@@ -92,7 +99,11 @@ class _GamePageState extends State<GamePage> {
               ],
             ),
             const SizedBox(height: 16),
-            TimeProgress(dMil: dMil, times: []),
+            TimeProgress(
+              dMil: dMil,
+              times: _levelInfo.starCountTimes,
+              isCompleted: isCompleted,
+            ),
             const SizedBox(height: 16),
             Container(
               padding: EdgeInsets.all(12), // 内边距
@@ -122,10 +133,17 @@ class _GamePageState extends State<GamePage> {
 }
 
 class TimeProgress extends StatelessWidget {
-  const TimeProgress({super.key, required this.times, required this.dMil});
+  const TimeProgress({
+    super.key,
+    required this.times,
+    required this.dMil,
+    required this.isCompleted,
+  });
 
   final List<Duration> times;
   final int dMil;
+  final bool isCompleted;
+
   final height = 8.0;
   final width = 192.0;
 
@@ -135,17 +153,28 @@ class TimeProgress extends StatelessWidget {
       children: [
         Container(width: width, height: height, color: Colors.red),
         Positioned(
-          child: TweenAnimationBuilder(
-            tween: Tween<double>(begin: 1.0, end: dMil.toDouble()),
-            duration: Duration(milliseconds: dMil),
-            builder: (BuildContext context, double value, Widget? child) {
-              return Container(
-                color: Colors.black,
-                height: height,
-                width: dMil == 0 ? 0 : value / dMil * width,
-              );
-            },
-          ),
+          child:
+              isCompleted
+                  ? Container(
+                    color: Colors.black,
+                    height: height,
+                    width: dMil / times.first.inMilliseconds * width,
+                  )
+                  : TweenAnimationBuilder(
+                    tween: Tween<double>(begin: 1.0, end: dMil.toDouble()),
+                    duration: times.first,
+                    builder: (
+                      BuildContext context,
+                      double value,
+                      Widget? child,
+                    ) {
+                      return Container(
+                        color: Colors.black,
+                        height: height,
+                        width: dMil == 0 ? 0 : value / dMil * width,
+                      );
+                    },
+                  ),
         ),
       ],
     );

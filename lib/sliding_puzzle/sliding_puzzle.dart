@@ -66,7 +66,7 @@ class _SlidingPuzzleState extends State<SlidingPuzzle> {
     slidingPuzzleModel.upSquareCanMoveState();
     if (slidingPuzzleModel.isCompleted()) {
       final DateTime endTime = DateTime.now();
-      final timeMil = endTime.millisecond - startTime!.millisecond;
+      final timeMil = endTime.difference(startTime!).inMilliseconds;
       final levelId = '1-1';
       final starCount = 2;
 
