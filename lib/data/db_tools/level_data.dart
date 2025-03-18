@@ -21,6 +21,11 @@ class LevelData {
       _$LevelDataFromJson(json);
 
   Map<String, dynamic> toJson() => _$LevelDataToJson(this);
+
+  LevelData newOrOld(LevelData? newLeveData) {
+    if (newLeveData == null) {
+      return this;
+    }
+    return timeMil > newLeveData.timeMil ? newLeveData : this;
+  }
 }
-
-

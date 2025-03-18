@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:sliding_puzzle/data/db_tools/level_data.dart';
 import 'package:sliding_puzzle/data/levels/level_info.dart';
 
 import '../sliding_puzzle/sliding_puzzle.dart';
 
 class GamePage extends StatefulWidget {
-  const GamePage({super.key, required this.levelInfo});
+  const GamePage({super.key, required this.levelInfo, required this.levelData});
 
   final LevelInfo levelInfo;
+  final LevelData? levelData;
 
   @override
   State<GamePage> createState() => _GamePageState();
@@ -16,12 +18,22 @@ class _GamePageState extends State<GamePage> {
   late final _levelInfo = widget.levelInfo;
   bool isBegin = false;
   final _slidingPuzzleWidth = 288.0;
+  late LevelData? _data = widget.levelData;
 
   _onBegin() {
     setState(() {
       isBegin = true;
+      // dMil = _levelInfo.starCountTimes.first.inMilliseconds;
+      dMil = Duration(minutes: 30).inMilliseconds;
     });
   }
+
+  _onCompletedCallback(LevelData data) {
+    _data = data.newOrOld(_data);
+    Navigator.pop(context, _data);
+  }
+
+  int dMil = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +44,7 @@ class _GamePageState extends State<GamePage> {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            SizedBox(height: 16,),
+            SizedBox(height: 16),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -49,7 +61,7 @@ class _GamePageState extends State<GamePage> {
                         BoxShadow(
                           color: Color(0x45000000),
                           blurRadius: 10,
-                          spreadRadius:2,
+                          spreadRadius: 2,
                           offset: Offset(5, 5), // 偏移量 (x, y)
                         ),
                         BoxShadow(
@@ -80,21 +92,13 @@ class _GamePageState extends State<GamePage> {
               ],
             ),
             const SizedBox(height: 16),
+            TimeProgress(dMil: dMil, times: []),
+            const SizedBox(height: 16),
             Container(
               padding: EdgeInsets.all(12), // 内边距
               decoration: BoxDecoration(
                 color: Color(0xFFF8F8F8),
                 borderRadius: BorderRadius.circular(16), // 圆角
-                // border: Border.all(
-                //   color: Color(0xFF8E8888), // 深棕色边框
-                //   width: 1, // 边框宽度
-                // ),
-                // border: Border(
-                //   top: BorderSide(width: 4.0, color: Colors.lightBlueAccent), // 左上高亮
-                //   left: BorderSide(width: 4.0, color: Colors.lightBlueAccent), // 左上高亮
-                //   bottom: BorderSide(width: 4.0, color: Colors.grey), // 右下阴影
-                //   right: BorderSide(width: 4.0, color: Colors.grey), // 右下阴影
-                // ),
                 boxShadow: [
                   BoxShadow(
                     color: Colors.grey, // 深棕色阴影
@@ -107,11 +111,43 @@ class _GamePageState extends State<GamePage> {
                 levelInfo: _levelInfo,
                 width: _slidingPuzzleWidth,
                 onBegin: _onBegin,
+                onCompletedCallback: _onCompletedCallback,
               ),
             ),
           ],
         ),
       ),
+    );
+  }
+}
+
+class TimeProgress extends StatelessWidget {
+  const TimeProgress({super.key, required this.times, required this.dMil});
+
+  final List<Duration> times;
+  final int dMil;
+  final height = 8.0;
+  final width = 192.0;
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        Container(width: width, height: height, color: Colors.red),
+        Positioned(
+          child: TweenAnimationBuilder(
+            tween: Tween<double>(begin: 1.0, end: dMil.toDouble()),
+            duration: Duration(milliseconds: dMil),
+            builder: (BuildContext context, double value, Widget? child) {
+              return Container(
+                color: Colors.black,
+                height: height,
+                width: dMil == 0 ? 0 : value / dMil * width,
+              );
+            },
+          ),
+        ),
+      ],
     );
   }
 }

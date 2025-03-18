@@ -97,12 +97,27 @@ class _SlidingSquareState extends State<SlidingSquare>
       return Opacity(
         opacity: 0,
         key: _globalKey,
-        child: Image.asset(widget.squareModel.squareImageAsset),
+        child:
+        Text('${widget.squareModel.id}',style: TextStyle(
+          fontSize: 30,
+        ),),
+        // Image.asset(widget.squareModel.squareImageAsset),
       );
     } else {
       return Opacity(
         opacity: widget.squareModel.isNullSquare ? 0 : 1,
-        child: Image.asset(widget.squareModel.squareImageAsset),
+        child:
+        Container(
+          color: Colors.white,
+          child: Center(
+            child: Text('${widget.squareModel.id}',
+              style: TextStyle(
+              fontSize: 30,
+                fontWeight: FontWeight.bold,
+            ),),
+          ),
+        ),
+        // Image.asset(widget.squareModel.squareImageAsset),
       );
     }
   }

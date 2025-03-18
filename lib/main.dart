@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:sliding_puzzle/pages/start_page.dart';
 
+import 'data/db_tools/db_tools.dart';
+
 void main() {
+  DBTools.init();
   runApp(const MyApp());
 }
 

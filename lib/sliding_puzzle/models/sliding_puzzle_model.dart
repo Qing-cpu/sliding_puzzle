@@ -94,22 +94,36 @@ class SlidingPuzzleModel {
   }
 
   static bool isSolvable(List<List<int>> dList) {
-    int inversions = 0;
-    final buf = [];
-    for (int i = 0; i < dList.length; i++) {
-      for (int j = 0; j < dList.first.length; j++) {
-        final x = dList[i][j];
-        // 空格跳过判断
-        if (x == dList.length * dList.first.length - 1) {
-          continue;
+    int n = dList.length;
+    int m = dList[0].length;
+    List<int> flattened = [];
+    int blankRowFromBottom = 0;
+
+    for (int i = 0; i < n; i++) {
+      for (int j = 0; j < m; j++) {
+        int val = dList[i][j];
+        if (val == n * m - 1) {
+          blankRowFromBottom = n - i; // 从下往上的行数
+        } else {
+          flattened.add(val);
         }
-        if (buf.contains(x + 1)) {
-          inversions++;
-        }
-        buf.add(x);
       }
     }
-    return inversions % 2 == 0;
+
+    int inversions = 0;
+    for (int i = 0; i < flattened.length; i++) {
+      for (int j = i + 1; j < flattened.length; j++) {
+        if (flattened[i] > flattened[j]) {
+          inversions++;
+        }
+      }
+    }
+
+    if (m % 2 == 1) { // 列数为奇数
+      return inversions % 2 == 0;
+    } else { // 列数为偶数
+      return (inversions + blankRowFromBottom) % 2 == 0;
+    }
   }
 
   /// 洗牌
@@ -124,10 +138,9 @@ class SlidingPuzzleModel {
       squaresTwoDList[y1][x1] = squaresTwoDList[y2][x2];
       squaresTwoDList[y2][x2] = grid;
     }
-    if (isSolvable(
-          squaresTwoDList.map((l) => l.map((m) => m.id).toList()).toList(),
-        ) ==
-        false) {
+    if (!isSolvable(
+      squaresTwoDList.map((l) => l.map((m) => m.id).toList()).toList(),
+    )) {
       shuffle();
     }
   }

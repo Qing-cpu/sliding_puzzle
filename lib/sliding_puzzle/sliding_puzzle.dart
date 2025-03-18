@@ -1,5 +1,5 @@
-
 import 'package:flutter/material.dart';
+import 'package:sliding_puzzle/data/db_tools/level_data.dart';
 import 'package:sliding_puzzle/data/levels/level_info.dart';
 import 'package:sliding_puzzle/sliding_puzzle/models/sliding_puzzle_model.dart';
 import 'package:sliding_puzzle/sliding_puzzle/sliding_square.dart';
@@ -19,7 +19,7 @@ class SlidingPuzzle extends StatefulWidget {
 
   final double width;
 
-  final void Function()? onCompletedCallback;
+  final void Function(LevelData)? onCompletedCallback;
 
   final void Function()? onBegin;
 
@@ -31,6 +31,7 @@ class _SlidingPuzzleState extends State<SlidingPuzzle> {
   late final SlidingPuzzleModel slidingPuzzleModel;
   late final size = widget.levelInfo.size;
   late final double _squareWidth = widget.width / size;
+  DateTime? startTime;
 
   bool isBegin = false;
 
@@ -64,7 +65,14 @@ class _SlidingPuzzleState extends State<SlidingPuzzle> {
         nullGrid;
     slidingPuzzleModel.upSquareCanMoveState();
     if (slidingPuzzleModel.isCompleted()) {
-      widget.onCompletedCallback?.call();
+      final DateTime endTime = DateTime.now();
+      final timeMil = endTime.millisecond - startTime!.millisecond;
+      final levelId = '1-1';
+      final starCount = 2;
+
+      widget.onCompletedCallback?.call(
+        LevelData(levelId, starCount, timeMil, false),
+      );
     }
     setState(() {});
   }
@@ -96,14 +104,14 @@ class _SlidingPuzzleState extends State<SlidingPuzzle> {
                   ],
                 )
                 : GestureDetector(
-              onTap: (){
-                setState(() {
-                  isBegin = true;
-                });
-                widget.onBegin?.call();
-              },
-                  child: Image.asset(
-                      slidingPuzzleModel.levelInfo.imageAssets),
+                  onTap: () {
+                    setState(() {
+                      isBegin = true;
+                      startTime = DateTime.now();
+                    });
+                    widget.onBegin?.call();
+                  },
+                  child: Image.asset(slidingPuzzleModel.levelInfo.imageAssets),
                 ),
       ),
     );
