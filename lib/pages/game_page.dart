@@ -18,6 +18,8 @@ class _GamePageState extends State<GamePage> {
   late final _levelInfo = widget.levelInfo;
   bool isBegin = false;
   bool isCompleted = false;
+  int reSetFlag = 1;
+  int dMil = 0;
   final _slidingPuzzleWidth = 288.0;
   late LevelData? _data = widget.levelData;
 
@@ -30,80 +32,109 @@ class _GamePageState extends State<GamePage> {
     });
   }
 
+  void showGameCompletedDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('完成！'),
+          content: Text('  用时: ${Duration(milliseconds: dMil).inSeconds}s'),
+          actions: [
+            TextButton(onPressed: _back, child: Text('Exit')),
+
+            TextButton(onPressed: _playAgain, child: Text('Play Again')),
+          ],
+        );
+      },
+    );
+  }
+
+  void _back() {
+    Navigator.pop(context);
+    Navigator.pop(context, _data);
+  }
+
+  void _next() {
+
+  }
+
+  void _playAgain() {
+    Navigator.of(context).pop();
+    reSetFlag++;
+    _onBegin();
+  }
+
   _onCompletedCallback(LevelData data) {
     _data = data.newOrOld(_data);
     setState(() {
       isCompleted = true;
       dMil = data.timeMil;
     });
-    // Navigator.pop(context, _data);
+    showGameCompletedDialog();
   }
 
-  int dMil = 0;
+  final box8H = SizedBox(height: 8);
+  final box16H = SizedBox(height: 16);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: () {
+      //     showGameCompletedDialog();
+      //   },
+      // ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            SizedBox(height: 16),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Hero(
-                  tag: _levelInfo.imageAssets,
-                  child: Container(
-                    padding: EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: Colors.amber.shade50,
-                      border: Border.all(color: Colors.black54, width: 2),
-                      borderRadius: BorderRadius.circular(2),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Color(0x45000000),
-                          blurRadius: 10,
-                          spreadRadius: 2,
-                          offset: Offset(5, 5), // 偏移量 (x, y)
-                        ),
-                        BoxShadow(
-                          color: Color(0x45000000),
-                          blurRadius: 5,
-                          spreadRadius: 1,
-                          offset: Offset(3, 3), // 偏移量 (x, y)
-                        ),
-                      ],
+            Expanded(child: SizedBox()),
+            box16H,
+            Hero(
+              tag: _levelInfo.imageAssets,
+              child: Container(
+                width: 160,
+                height: 160,
+                decoration: BoxDecoration(
+                  color: Colors.amber.shade50,
+                  border: Border.all(color: Colors.black54, width: 2),
+                  borderRadius: BorderRadius.circular(2),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Color(0x45000000),
+                      blurRadius: 10,
+                      spreadRadius: 2,
+                      offset: Offset(5, 5), // 偏移量 (x, y)
                     ),
-
-                    child: Container(
-                      alignment: Alignment.center,
-                      width: 90,
-                      height: 90,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        border: Border.all(color: Colors.grey, width: 1),
-                      ),
-                      child: Image.asset(
-                        width: 100,
-                        height: 100,
-                        _levelInfo.imageAssets,
-                      ),
+                    BoxShadow(
+                      color: Color(0x45000000),
+                      blurRadius: 5,
+                      spreadRadius: 1,
+                      offset: Offset(3, 3), // 偏移量 (x, y)
                     ),
-                  ),
+                  ],
                 ),
-              ],
+
+                child: Container(
+                  margin: EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    border: Border.all(color: Colors.grey, width: 1),
+                  ),
+                  child: Image.asset(_levelInfo.imageAssets),
+                ),
+              ),
             ),
-            const SizedBox(height: 16),
+            Expanded(child: SizedBox()),
             TimeProgress(
+              key: Key('$reSetFlag'),
               dMil: dMil,
+              width: 288,
               times: _levelInfo.starCountTimes,
               isCompleted: isCompleted,
             ),
-            const SizedBox(height: 16),
+            box8H,
             Container(
               padding: EdgeInsets.all(12), // 内边距
               decoration: BoxDecoration(
@@ -118,12 +149,14 @@ class _GamePageState extends State<GamePage> {
                 ],
               ),
               child: SlidingPuzzle(
+                reSetFlag: reSetFlag,
                 levelInfo: _levelInfo,
                 width: _slidingPuzzleWidth,
                 onBegin: _onBegin,
                 onCompletedCallback: _onCompletedCallback,
               ),
             ),
+            Expanded(child: SizedBox()),
           ],
         ),
       ),
@@ -136,15 +169,16 @@ class TimeProgress extends StatelessWidget {
     super.key,
     required this.times,
     required this.dMil,
+    required this.width,
     required this.isCompleted,
   });
 
   final List<Duration> times;
   final int dMil;
+  final double width;
   final bool isCompleted;
 
   final height = 4.0;
-  final width = 280.0;
 
   BoxDecoration get decoration => BoxDecoration(
     color: Color(0xAB72FF77),
@@ -185,6 +219,7 @@ class TimeProgress extends StatelessWidget {
                     width: dMil / times.first.inMilliseconds * width,
                   )
                   : TweenAnimationBuilder(
+                    key: key,
                     tween: Tween<double>(begin: 1.0, end: dMil.toDouble()),
                     duration: times.first,
                     builder: (

@@ -12,12 +12,15 @@ class SlidingPuzzle extends StatefulWidget {
     this.onCompletedCallback,
     this.onBegin,
     required this.levelInfo,
+    required this.reSetFlag,
     required this.width,
   });
 
   final LevelInfo levelInfo;
 
   final double width;
+
+  final int reSetFlag;
 
   final void Function(LevelData)? onCompletedCallback;
 
@@ -42,6 +45,15 @@ class _SlidingPuzzleState extends State<SlidingPuzzle> {
     slidingPuzzleModel = SlidingPuzzleModel(widget.levelInfo);
     slidingPuzzleModel.shuffle();
     slidingPuzzleModel.upSquareCanMoveState();
+  }
+
+  @override
+  void didUpdateWidget(SlidingPuzzle oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.reSetFlag != widget.reSetFlag) {
+      slidingPuzzleModel.shuffle();
+      slidingPuzzleModel.upSquareCanMoveState();
+    }
   }
 
   @override
