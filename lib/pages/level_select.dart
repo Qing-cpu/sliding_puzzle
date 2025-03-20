@@ -27,7 +27,7 @@ class _LevelSelectState extends State<LevelSelect> {
   LevelData? get leveData => DBTools.getLevelDataByLeveId(levels[index].id);
 
   void upLeveData(LevelData newLevelData) {
-    DBTools.setLevelDataByLeveData(newLevelData.newOrOld(leveData));
+    DBTools.setLevelDataByLeveData(newLevelData.smaller(leveData));
   }
 
   void _play(BuildContext context, int levelInfoIndex) async {

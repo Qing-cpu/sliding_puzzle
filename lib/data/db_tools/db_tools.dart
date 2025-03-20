@@ -84,8 +84,7 @@ class DBTools {
       _levelDataList.add(data);
       upData();
       return;
-    }
-    if (_levelDataList[dataIndex].isChanged(data)) {
+    }else if (_levelDataList[dataIndex].isChanged(data)) {
       _levelDataList.removeAt(dataIndex);
       _levelDataList.add(data);
       upData();

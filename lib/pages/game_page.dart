@@ -82,8 +82,8 @@ class _GamePageState extends State<GamePage> {
       isCompleted = true;
       dMil = newData.timeMil;
     });
-    DBTools.setLevelDataByLeveData(newData.newOrOld(_data));
 
+    DBTools.setLevelDataByLeveData(newData.smaller(_data));
     showGameCompletedDialog();
   }
 

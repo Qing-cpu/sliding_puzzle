@@ -20,16 +20,16 @@ class LevelData {
 
   Map<String, dynamic> toJson() => _$LevelDataToJson(this);
 
-  LevelData newOrOld(LevelData? newLeveData) {
+  LevelData smaller(LevelData? newLeveData) {
     if (newLeveData == null) {
       return this;
     }
-    return timeMil > newLeveData.timeMil ? newLeveData : this;
+    return newLeveData.timeMil < timeMil ? newLeveData : this;
   }
 
   bool isChanged(LevelData data) =>
-      levelId == data.levelId &&
-      starCount == data.starCount &&
-      timeMil == data.timeMil &&
-      isPerfect == data.isPerfect;
+      !(levelId == data.levelId &&
+          starCount == data.starCount &&
+          timeMil == data.timeMil &&
+          isPerfect == data.isPerfect);
 }
