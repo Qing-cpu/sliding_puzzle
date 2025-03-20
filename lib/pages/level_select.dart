@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:sliding_puzzle/data/db_tools/db_tools.dart';
 import 'package:sliding_puzzle/data/db_tools/level_data.dart';
-import 'package:sliding_puzzle/data/levels/level_info.dart';
 import 'package:sliding_puzzle/data/levels/levels.dart';
 import 'package:sliding_puzzle/pages/level_list_page.dart';
 
@@ -22,14 +21,13 @@ class _LevelSelectState extends State<LevelSelect> {
   final levels = Levels.levelInfos;
   final PageController _pageController = PageController(viewportFraction: 0.8);
   final _heightBox8 = const SizedBox(height: 8);
-  final DBTools dbTools = DBTools.getInstance();
 
   bool _isAnim = false;
 
-  LevelData? get leveData => dbTools.getLevelDataByLeveId(levels[index].id);
+  LevelData? get leveData => DBTools.getLevelDataByLeveId(levels[index].id);
 
   void upLeveData(LevelData newLevelData) {
-    dbTools.setLevelDataByLeveData(newLevelData.newOrOld(leveData));
+    DBTools.setLevelDataByLeveData(newLevelData.newOrOld(leveData));
   }
 
   void _play(BuildContext context, int levelInfoIndex) async {
@@ -53,9 +51,7 @@ class _LevelSelectState extends State<LevelSelect> {
 
   void _openLevelListPage() async {
     final levelInfosIndex = await Navigator.of(context).push(
-      CupertinoPageRoute(
-        builder: (BuildContext context) => LevelListPage(dbTools: dbTools),
-      ),
+      CupertinoPageRoute(builder: (BuildContext context) => LevelListPage()),
     );
     if (levelInfosIndex != null) {
       setState(() {

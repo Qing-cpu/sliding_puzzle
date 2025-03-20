@@ -4,6 +4,7 @@ import 'package:sliding_puzzle/pages/start_page.dart';
 import 'data/db_tools/db_tools.dart';
 
 void main() {
+  final WidgetsBinding binding = WidgetsFlutterBinding.ensureInitialized();
   DBTools.init();
   runApp(const MyApp());
 }

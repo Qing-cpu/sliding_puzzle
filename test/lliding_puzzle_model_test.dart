@@ -1,5 +1,4 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:sliding_puzzle/data/levels/levels.dart';
 import 'package:sliding_puzzle/sliding_puzzle/models/sliding_puzzle_model.dart';
 
 void main() {
@@ -11,13 +10,6 @@ void main() {
       [6, 7, 8],
     ];
     expect(SlidingPuzzleModel.isSolvable(testData1), true);
-
-    // 可解状态（逆序数=6，偶）
-    final testData2 = [
-      [2, 0, 1],
-      [3, 8, 5],
-      [6, 7, 4], // 空白块在右下角（值应为8，需调整）
-    ];
     // 修复 testData2：将右下角值改为8，其他位置调整
     final validTestData2 = [
       [2, 0, 1],

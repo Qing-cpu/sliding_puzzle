@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sliding_puzzle/data/db_tools/level_data.dart';
 import 'package:sliding_puzzle/data/levels/level_info.dart';
+import 'package:sliding_puzzle/data/levels/levels.dart';
 import 'package:sliding_puzzle/sliding_puzzle/models/sliding_puzzle_model.dart';
 import 'package:sliding_puzzle/sliding_puzzle/sliding_square.dart';
 
@@ -11,12 +12,12 @@ class SlidingPuzzle extends StatefulWidget {
     super.key,
     this.onCompletedCallback,
     this.onBegin,
-    required this.levelInfo,
+    required this.levelInfoIndex,
     required this.reSetFlag,
     required this.width,
   });
 
-  final LevelInfo levelInfo;
+  final int levelInfoIndex;
 
   final double width;
 
@@ -32,7 +33,8 @@ class SlidingPuzzle extends StatefulWidget {
 
 class _SlidingPuzzleState extends State<SlidingPuzzle> {
   late final SlidingPuzzleModel slidingPuzzleModel;
-  late final size = widget.levelInfo.size;
+  late LevelInfo levelInfo = Levels.levelInfos[widget.levelInfoIndex];
+  late final size = levelInfo.size;
   late final double _squareWidth = widget.width / size;
   DateTime? startTime;
 
@@ -42,7 +44,7 @@ class _SlidingPuzzleState extends State<SlidingPuzzle> {
   void initState() {
     super.initState();
     SquareModel.nullGridWidgetOffset = null;
-    slidingPuzzleModel = SlidingPuzzleModel(widget.levelInfo);
+    slidingPuzzleModel = SlidingPuzzleModel(levelInfo);
     slidingPuzzleModel.shuffle();
     slidingPuzzleModel.upSquareCanMoveState();
   }
@@ -65,7 +67,6 @@ class _SlidingPuzzleState extends State<SlidingPuzzle> {
   _onTapCallBack(int id) {
     final nullSquareIndex = slidingPuzzleModel.getNullSquareIndex();
     final tapSquareIndex = slidingPuzzleModel.getTapSquareIndex(id);
-    // assert(nullSquareIndex != null && tapSquareIndex != null);
 
     final nullGrid =
         slidingPuzzleModel.squaresTwoDList[nullSquareIndex!.$1][nullSquareIndex
@@ -78,12 +79,14 @@ class _SlidingPuzzleState extends State<SlidingPuzzle> {
     slidingPuzzleModel.upSquareCanMoveState();
     if (slidingPuzzleModel.isCompleted()) {
       final DateTime endTime = DateTime.now();
-      final timeMil = endTime.difference(startTime!).inMilliseconds;
-      final levelId = '1-1';
-      final starCount = 2;
-
+      final dMil = endTime.difference(startTime!).inMilliseconds;
       widget.onCompletedCallback?.call(
-        LevelData(levelId, starCount, timeMil, false),
+        LevelData(
+          levelInfo.id,
+          levelInfo.calculateStarRating(dMil),
+          dMil,
+          false,
+        ),
       );
     }
     setState(() {});

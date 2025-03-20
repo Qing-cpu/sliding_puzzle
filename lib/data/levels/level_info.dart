@@ -25,6 +25,16 @@ class LevelInfo {
     return res;
   }
 
+  int calculateStarRating(int dMil){
+    int res = 0;
+    for(final d in starCountTimes){
+      if(d.inMilliseconds > dMil){
+        res++;
+      }
+    }
+    return res;
+  }
+
   @override
   String toString() {
     return 'LevelInfo:    (imageAssets: $imageAssets,id: $id,name: $name,size: $size,starsCount: $starsCount)';

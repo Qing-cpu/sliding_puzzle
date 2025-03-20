@@ -7,9 +7,8 @@ import 'package:sliding_puzzle/data/levels/levels.dart';
 import 'cus_widget/stars_count.dart';
 
 class LevelListPage extends StatelessWidget {
-  const LevelListPage({super.key, required this.dbTools});
+  const LevelListPage({super.key, });
 
-  final DBTools dbTools;
 
   void _onTap(BuildContext context, int index) {
     Navigator.of(context).pop(index);
@@ -25,7 +24,7 @@ class LevelListPage extends StatelessWidget {
           return GestureDetector(
             onTap: () => _onTap(context, index),
             child: _ItemWidget(
-              data: dbTools.getLevelDataByLeveId(Levels.levelInfos[index].id),
+              data: DBTools.getLevelDataByLeveId(Levels.levelInfos[index].id),
               levelInfo: Levels.levelInfos[index],
             ),
           );
@@ -36,7 +35,7 @@ class LevelListPage extends StatelessWidget {
 }
 
 class _ItemWidget extends StatelessWidget {
-  const _ItemWidget({super.key, required this.levelInfo, this.data});
+  const _ItemWidget({required this.levelInfo, this.data});
 
   final LevelInfo levelInfo;
   final LevelData? data;

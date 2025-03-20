@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:sliding_puzzle/data/db_tools/db_tools.dart';
 import 'package:sliding_puzzle/data/db_tools/level_data.dart';
-import 'package:sliding_puzzle/data/levels/level_info.dart';
 import 'package:sliding_puzzle/data/levels/levels.dart';
 import 'package:sliding_puzzle/pages/cus_widget/photo_frame.dart';
 
@@ -26,9 +25,9 @@ class _GamePageState extends State<GamePage> {
   int reSetFlag = 1;
   int dMil = 0;
   final _slidingPuzzleWidth = 288.0;
-  final DBTools dbTools = DBTools.getInstance();
+  final DBTools dbTools = DBTools();
 
-  LevelData? get _data => dbTools.getLevelDataByLeveId(_levelInfo.id);
+  LevelData? get _data => DBTools.getLevelDataByLeveId(_levelInfo.id);
 
   _onBegin() {
     setState(() {
@@ -83,7 +82,7 @@ class _GamePageState extends State<GamePage> {
       isCompleted = true;
       dMil = newData.timeMil;
     });
-    dbTools.setLevelDataByLeveData(newData.newOrOld(_data));
+    DBTools.setLevelDataByLeveData(newData.newOrOld(_data));
 
     showGameCompletedDialog();
   }
@@ -134,7 +133,7 @@ class _GamePageState extends State<GamePage> {
               ),
               child: SlidingPuzzle(
                 reSetFlag: reSetFlag,
-                levelInfo: _levelInfo,
+                levelInfoIndex: widget.levelInfoIndex,
                 width: _slidingPuzzleWidth,
                 onBegin: _onBegin,
                 onCompletedCallback: _onCompletedCallback,
