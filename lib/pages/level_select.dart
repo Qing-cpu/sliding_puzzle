@@ -1,9 +1,12 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:sliding_puzzle/data/db_tools/db_tools.dart';
 import 'package:sliding_puzzle/data/db_tools/level_data.dart';
 import 'package:sliding_puzzle/data/levels/level_info.dart';
 import 'package:sliding_puzzle/data/levels/levels.dart';
+import 'package:sliding_puzzle/pages/level_list_page.dart';
 
+import 'cus_widget/stars_count.dart';
 import 'game_page.dart';
 
 class LevelSelect extends StatefulWidget {
@@ -21,19 +24,21 @@ class _LevelSelectState extends State<LevelSelect> {
   final _heightBox8 = const SizedBox(height: 8);
   final DBTools dbTools = DBTools.getInstance();
 
+  bool _isAnim = false;
+
   LevelData? get leveData => dbTools.getLevelDataByLeveId(levels[index].id);
 
   void upLeveData(LevelData newLevelData) {
     dbTools.setLevelDataByLeveData(newLevelData.newOrOld(leveData));
   }
 
-  void _play(BuildContext context, LevelInfo levelInfo) async {
+  void _play(BuildContext context, int levelInfoIndex) async {
     final LevelData? data = await Navigator.push(
       context,
       PageRouteBuilder(
         pageBuilder:
             (context, animation, secondaryAnimation) =>
-                GamePage(levelInfo: levelInfo, levelData: leveData),
+                GamePage(levelInfoIndex: levelInfoIndex),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           return FadeTransition(opacity: animation, child: child);
         },
@@ -46,18 +51,53 @@ class _LevelSelectState extends State<LevelSelect> {
     }
   }
 
+  void _openLevelListPage() async {
+    final levelInfosIndex = await Navigator.of(context).push(
+      CupertinoPageRoute(
+        builder: (BuildContext context) => LevelListPage(dbTools: dbTools),
+      ),
+    );
+    if (levelInfosIndex != null) {
+      setState(() {
+        _isAnim = true;
+      });
+      _pageController
+          .animateToPage(
+            levelInfosIndex,
+            duration: Duration(milliseconds: 800),
+            curve: Curves.easeInOutQuart,
+          )
+          .then((_) {
+            setState(() {
+              _isAnim = false;
+            });
+          });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        onPressed: _openLevelListPage,
+        child: Icon(Icons.list),
+      ),
       appBar: AppBar(title: Text('选图')),
       body: Column(
         children: [
           _heightBox8,
           SizedBox(
             height: 36,
-            child: Text(
-              Levels.levelInfos[index].name,
-              style: TextStyle(fontSize: 24),
+            child: AnimatedSwitcher(
+              duration: const Duration(milliseconds: 50),
+
+              child:
+                  _isAnim
+                      ? null
+                      : Text(
+                        Levels.levelInfos[index].name,
+                        style: TextStyle(fontSize: 24),
+                      ),
             ),
           ),
           _heightBox8,
@@ -71,7 +111,7 @@ class _LevelSelectState extends State<LevelSelect> {
               },
               itemBuilder: (BuildContext context, int i) {
                 return Hero(
-                  tag: levels[i].imageAssets,
+                  tag: levels[i].id,
                   child: Image.asset(
                     height: 288,
                     width: 288,
@@ -91,93 +131,13 @@ class _LevelSelectState extends State<LevelSelect> {
           _heightBox8,
           ElevatedButton(
             onPressed: () {
-              _play(context, levels[index]);
+              _play(context, index);
             },
             child: Icon(Icons.play_arrow_rounded, size: 57),
           ),
           // Text('大小: ${_levelInfo.size} X ${_levelInfo.size}'),
           // Expanded(child: Container()),
         ],
-      ),
-    );
-  }
-}
-
-class StarsCount extends StatelessWidget {
-  const StarsCount(this.count, {super.key});
-
-  final int? count;
-
-  int get _count => count ?? 0;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      alignment: Alignment.center,
-      height: 100,
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.center,
-        spacing: 17,
-        children: List.generate(
-          3,
-          (i) => AnimatedSwitcher(
-            duration: Duration(milliseconds: 72),
-            child: Container(
-              key: Key('${i < _count}'),
-              padding: const EdgeInsets.all(4),
-              margin: EdgeInsets.only(bottom: i == 1 ? 12 : 0),
-              decoration: BoxDecoration(
-                color:
-                    i < _count ? Colors.redAccent.shade200 : Color(0xFFFFE4E1),
-                borderRadius: BorderRadius.circular(57),
-                boxShadow: [
-                  if (i < _count)
-                    BoxShadow(
-                      color: Colors.grey, // 阴影颜色及透明度
-                      spreadRadius: 1.0, // 扩散范围
-                      blurRadius: 3.0, // 模糊程度
-                      offset: Offset(2, 4), // 阴影偏移 (x, y)
-                    ),
-                  if (i < _count)
-                    BoxShadow(
-                      color: Colors.pinkAccent.shade100, // 阴影颜色及透明度
-                      spreadRadius: 1.0, // 扩散范围
-                      blurRadius: 2.0, // 模糊程度
-                      offset: Offset(-1, -1), // 阴影偏移 (x, y)
-                    ),
-                ],
-              ),
-              child: Icon(
-                color: i < _count ? Colors.yellow.shade400 : Color(0xFFE4CBC8),
-                size: 46,
-                Icons.star_sharp,
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class LevelSizePoint extends StatelessWidget {
-  final double size;
-  final int count;
-
-  const LevelSizePoint({super.key, this.size = 5, required this.count});
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      spacing: 12,
-      children: List<Widget>.generate(
-        count,
-        (_) => CircleAvatar(
-          radius: size, // 半径
-          backgroundColor: Color(0xFF8F8F8F),
-        ),
       ),
     );
   }

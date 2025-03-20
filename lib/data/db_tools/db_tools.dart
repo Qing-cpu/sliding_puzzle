@@ -57,12 +57,20 @@ class DBTools {
   }
 
   void setLevelDataByLeveData(LevelData data) {
-    setLevelDataByLevelId(
-      data.levelId,
-      starCount: data.starCount,
-      timeMil: data.starCount,
-      isPerfect: data.isPerfect,
+    final int dataIndex = _levelDataList.indexWhere(
+      (d) => d.levelId == data.levelId,
     );
+    if (dataIndex == -1) {
+      _levelDataList.add(data);
+      upData();
+      return;
+    }
+    if (_levelDataList[dataIndex].isChanged(data)) {
+      _levelDataList.removeAt(dataIndex);
+      _levelDataList.add(data);
+      upData();
+      return;
+    }
   }
 
   LevelData? getLevelDataByLeveId(String id) {

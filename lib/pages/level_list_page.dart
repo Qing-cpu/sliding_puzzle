@@ -1,0 +1,85 @@
+import 'package:flutter/material.dart';
+import 'package:sliding_puzzle/data/db_tools/db_tools.dart';
+import 'package:sliding_puzzle/data/db_tools/level_data.dart';
+import 'package:sliding_puzzle/data/levels/level_info.dart';
+import 'package:sliding_puzzle/data/levels/levels.dart';
+
+import 'cus_widget/stars_count.dart';
+
+class LevelListPage extends StatelessWidget {
+  const LevelListPage({super.key, required this.dbTools});
+
+  final DBTools dbTools;
+
+  void _onTap(BuildContext context, int index) {
+    Navigator.of(context).pop(index);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(),
+      body: ListView.builder(
+        itemCount: Levels.levelInfos.length,
+        itemBuilder: (BuildContext context, int index) {
+          return GestureDetector(
+            onTap: () => _onTap(context, index),
+            child: _ItemWidget(
+              data: dbTools.getLevelDataByLeveId(Levels.levelInfos[index].id),
+              levelInfo: Levels.levelInfos[index],
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
+
+class _ItemWidget extends StatelessWidget {
+  const _ItemWidget({super.key, required this.levelInfo, this.data});
+
+  final LevelInfo levelInfo;
+  final LevelData? data;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.only(top: 8, left: 4, right: 4),
+      decoration: BoxDecoration(
+        // color: Color(0xFFFEFEFE),
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(8), // 圆角
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey, // 深棕色阴影
+            blurRadius: 4, // 阴影模糊半径
+            offset: Offset(1, 2), // 阴影偏移
+          ),
+        ],
+      ),
+      width: double.infinity,
+      height: 120,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          SizedBox(
+            width: 100,
+            height: 100,
+            child: Container(
+              padding: EdgeInsets.all(2),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                border: Border.all(color: Colors.grey, width: .5),
+                borderRadius: BorderRadius.all(Radius.circular(3)),
+              ),
+              child: Image.asset(levelInfo.imageAssets),
+            ),
+          ),
+          StarsCount(data?.starCount, maxCount: levelInfo.starsCount, size: 32),
+          Text('${levelInfo.size}'),
+        ],
+      ),
+    );
+  }
+}

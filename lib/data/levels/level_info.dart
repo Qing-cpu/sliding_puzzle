@@ -24,4 +24,9 @@ class LevelInfo {
     }
     return res;
   }
+
+  @override
+  String toString() {
+    return 'LevelInfo:    (imageAssets: $imageAssets,id: $id,name: $name,size: $size,starsCount: $starsCount)';
+  }
 }

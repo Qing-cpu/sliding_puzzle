@@ -15,8 +15,6 @@ class LevelData {
   @JsonKey(required: true)
   bool isPerfect;
 
-  // LevelData(this.levelId, this.starCount, this.timeMil, this.isPerfect);
-
   factory LevelData.fromJson(Map<String, dynamic> json) =>
       _$LevelDataFromJson(json);
 
@@ -28,4 +26,10 @@ class LevelData {
     }
     return timeMil > newLeveData.timeMil ? newLeveData : this;
   }
+
+  bool isChanged(LevelData data) =>
+      levelId == data.levelId &&
+      starCount == data.starCount &&
+      timeMil == data.timeMil &&
+      isPerfect == data.isPerfect;
 }

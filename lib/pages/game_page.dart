@@ -1,27 +1,34 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:sliding_puzzle/data/db_tools/db_tools.dart';
 import 'package:sliding_puzzle/data/db_tools/level_data.dart';
 import 'package:sliding_puzzle/data/levels/level_info.dart';
+import 'package:sliding_puzzle/data/levels/levels.dart';
+import 'package:sliding_puzzle/pages/cus_widget/photo_frame.dart';
 
 import '../sliding_puzzle/sliding_puzzle.dart';
 
 class GamePage extends StatefulWidget {
-  const GamePage({super.key, required this.levelInfo, required this.levelData});
+  const GamePage({super.key, required this.levelInfoIndex});
 
-  final LevelInfo levelInfo;
-  final LevelData? levelData;
+  final int levelInfoIndex;
+
+  // final LevelData? levelData;
 
   @override
   State<GamePage> createState() => _GamePageState();
 }
 
 class _GamePageState extends State<GamePage> {
-  late final _levelInfo = widget.levelInfo;
+  late final _levelInfo = Levels.levelInfos[widget.levelInfoIndex];
   bool isBegin = false;
   bool isCompleted = false;
   int reSetFlag = 1;
   int dMil = 0;
   final _slidingPuzzleWidth = 288.0;
-  late LevelData? _data = widget.levelData;
+  final DBTools dbTools = DBTools.getInstance();
+
+  LevelData? get _data => dbTools.getLevelDataByLeveId(_levelInfo.id);
 
   _onBegin() {
     setState(() {
@@ -40,9 +47,8 @@ class _GamePageState extends State<GamePage> {
           title: Text('完成！'),
           content: Text('  用时: ${Duration(milliseconds: dMil).inSeconds}s'),
           actions: [
-            TextButton(onPressed: _back, child: Text('Exit')),
-
             TextButton(onPressed: _playAgain, child: Text('Play Again')),
+            TextButton(onPressed: _next, child: Text('Next!')),
           ],
         );
       },
@@ -51,11 +57,19 @@ class _GamePageState extends State<GamePage> {
 
   void _back() {
     Navigator.pop(context);
-    Navigator.pop(context, _data);
+    // Navigator.pop(context, _data);
   }
 
   void _next() {
-
+    Navigator.pop(context);
+    Navigator.pushReplacement(
+       context,
+      CupertinoPageRoute(
+        builder:
+            (BuildContext context) =>
+                GamePage(levelInfoIndex: widget.levelInfoIndex + 1),
+      ),
+    );
   }
 
   void _playAgain() {
@@ -64,12 +78,13 @@ class _GamePageState extends State<GamePage> {
     _onBegin();
   }
 
-  _onCompletedCallback(LevelData data) {
-    _data = data.newOrOld(_data);
+  _onCompletedCallback(LevelData newData) {
     setState(() {
       isCompleted = true;
-      dMil = data.timeMil;
+      dMil = newData.timeMil;
     });
+    dbTools.setLevelDataByLeveData(newData.newOrOld(_data));
+
     showGameCompletedDialog();
   }
 
@@ -79,11 +94,11 @@ class _GamePageState extends State<GamePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // floatingActionButton: FloatingActionButton(
-      //   onPressed: () {
-      //     showGameCompletedDialog();
-      //   },
-      // ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          _back();
+        },
+      ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -92,39 +107,8 @@ class _GamePageState extends State<GamePage> {
             Expanded(child: SizedBox()),
             box16H,
             Hero(
-              tag: _levelInfo.imageAssets,
-              child: Container(
-                width: 160,
-                height: 160,
-                decoration: BoxDecoration(
-                  color: Colors.amber.shade50,
-                  border: Border.all(color: Colors.black54, width: 2),
-                  borderRadius: BorderRadius.circular(2),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Color(0x45000000),
-                      blurRadius: 10,
-                      spreadRadius: 2,
-                      offset: Offset(5, 5), // 偏移量 (x, y)
-                    ),
-                    BoxShadow(
-                      color: Color(0x45000000),
-                      blurRadius: 5,
-                      spreadRadius: 1,
-                      offset: Offset(3, 3), // 偏移量 (x, y)
-                    ),
-                  ],
-                ),
-
-                child: Container(
-                  margin: EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    border: Border.all(color: Colors.grey, width: 1),
-                  ),
-                  child: Image.asset(_levelInfo.imageAssets),
-                ),
-              ),
+              tag: _levelInfo.id,
+              child: PhotoFrame(image: Image.asset(_levelInfo.imageAssets)),
             ),
             Expanded(child: SizedBox()),
             TimeProgress(

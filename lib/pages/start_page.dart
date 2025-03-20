@@ -19,7 +19,6 @@ class StartPage extends StatelessWidget {
         child: Column(
           children: [
             SizedBox(height: 32),
-            // logo ， 标题 ， title
             Container(
               width: 288,
               height: 300,
