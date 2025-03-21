@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:sliding_puzzle/data/db_tools/level_data.dart';
 import 'package:sliding_puzzle/data/levels/level_info.dart';
@@ -118,16 +120,82 @@ class _SlidingPuzzleState extends State<SlidingPuzzle> {
                       ),
                   ],
                 )
-                : GestureDetector(
-                  onTap: () {
+                : CountdownTimer3Sec(
+                  endCallBack: () {
                     setState(() {
                       isBegin = true;
                       startTime = DateTime.now();
                     });
                     widget.onBegin?.call();
                   },
-                  child: Image.asset(slidingPuzzleModel.levelInfo.imageAssets),
+                  image: Image.asset(slidingPuzzleModel.levelInfo.imageAssets),
                 ),
+      ),
+    );
+  }
+}
+
+class CountdownTimer3Sec extends StatefulWidget {
+  const CountdownTimer3Sec({
+    super.key,
+    required this.endCallBack,
+    required this.image,
+  });
+
+  final VoidCallback endCallBack;
+  final Image image;
+
+  @override
+  State<CountdownTimer3Sec> createState() => _CountdownTimer3SecState();
+}
+
+class _CountdownTimer3SecState extends State<CountdownTimer3Sec> {
+  int s = 3;
+
+  Timer? _timer;
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
+      if (s == 1) {
+        timer.cancel();
+        widget.endCallBack();
+      }
+      setState(() => s--);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.black12,
+        image: DecorationImage(image: widget.image.image),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Container(
+        color: Colors.black26,
+        alignment: Alignment.center,
+        width: double.infinity,
+        height: double.infinity,
+        child: Text(
+          '$s',
+          style: TextStyle(
+            color: Color(0xfffffffa),
+            fontSize: 100,
+            fontWeight: FontWeight.bold,
+            shadows: [
+              Shadow(color: Colors.black, blurRadius: 3, offset: Offset.zero),
+            ],
+          ),
+        ),
       ),
     );
   }

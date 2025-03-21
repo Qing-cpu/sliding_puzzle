@@ -98,10 +98,7 @@ class _SlidingSquareState extends State<SlidingSquare>
         opacity: 0,
         key: _globalKey,
         child:
-        Text('${widget.squareModel.id}',style: TextStyle(
-          fontSize: 30,
-        ),),
-        // Image.asset(widget.squareModel.squareImageAsset),
+        Image.asset(widget.squareModel.squareImageAsset),
       );
     } else {
       return Opacity(
@@ -109,13 +106,7 @@ class _SlidingSquareState extends State<SlidingSquare>
         child:
         Container(
           color: Colors.white,
-          child: Center(
-            child: Text('${widget.squareModel.id}',
-              style: TextStyle(
-              fontSize: 30,
-                fontWeight: FontWeight.bold,
-            ),),
-          ),
+          child: Image.asset(widget.squareModel.squareImageAsset)
         ),
         // Image.asset(widget.squareModel.squareImageAsset),
       );

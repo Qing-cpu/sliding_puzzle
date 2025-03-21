@@ -4,19 +4,19 @@ import 'package:sliding_puzzle/data/db_tools/level_data.dart';
 void main() {
   testWidgets(r'Test [LevelData.smaller] 比较dMil 返回DMil小的', (_) async {
     final LevelData data1 = LevelData(
-      '1-1',
+      1,
       3,
       Duration(seconds: 18).inMilliseconds,
       false,
     );
     final LevelData data2 = LevelData(
-      '1-1',
+      2,
       2,
       Duration(seconds: 61).inMilliseconds,
       false,
     );
     final LevelData data3 = LevelData(
-      '1-1',
+      2,
       1,
       Duration(seconds: 121).inMilliseconds,
       false,
@@ -27,9 +27,9 @@ void main() {
   });
 
   testWidgets('LevelData isChanged test', (_) async {
-    final LevelData levelData1 = LevelData('1-1', 3, 15000, false);
-    final LevelData levelData2 = LevelData('1-1', 3, 15000, false);
-    final LevelData levelData3 = LevelData('1-1', 2, 61000, false);
+    final LevelData levelData1 = LevelData(1, 3, 15000, false);
+    final LevelData levelData2 = LevelData(1, 3, 15000, false);
+    final LevelData levelData3 = LevelData(1, 2, 61000, false);
     expect(levelData1.isChanged(levelData2), false);
     expect(levelData3.isChanged(levelData2), true);
   });

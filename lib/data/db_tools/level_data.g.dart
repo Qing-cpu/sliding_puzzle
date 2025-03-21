@@ -12,7 +12,7 @@ LevelData _$LevelDataFromJson(Map<String, dynamic> json) {
     requiredKeys: const ['levelId', 'starCount', 'timeMil', 'isPerfect'],
   );
   return LevelData(
-    json['levelId'] as String,
+    (json['levelId'] as num).toInt(),
     (json['starCount'] as num).toInt(),
     (json['timeMil'] as num).toInt(),
     json['isPerfect'] as bool,

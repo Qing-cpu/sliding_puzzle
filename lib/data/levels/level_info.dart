@@ -1,15 +1,36 @@
 class LevelInfo {
-  const LevelInfo({
-    required this.id,
+  const LevelInfo._({
     required this.imageAssets,
     required this.name,
     required this.size,
     required this.starCountTimes,
+    required this.id,
     this.starsCount = 3,
   });
 
+  factory LevelInfo({
+    required String imageAssets,
+    required String name,
+    required int size,
+    required List<Duration> starCountTimes,
+    int starsCount = 3,
+  }) {
+    return LevelInfo._(
+      imageAssets: imageAssets,
+      name: name,
+      size: size,
+      starCountTimes: starCountTimes,
+      id: _newId,
+      starsCount: starsCount,
+    );
+  }
+
+  static int _count = 0;
+
+  static int get _newId => _count++;
+
   final String imageAssets;
-  final String id;
+  final int id;
   final String name;
   final int size;
   final int starsCount;
@@ -25,10 +46,10 @@ class LevelInfo {
     return res;
   }
 
-  int calculateStarRating(int dMil){
+  int calculateStarRating(int dMil) {
     int res = 0;
-    for(final d in starCountTimes){
-      if(d.inMilliseconds > dMil){
+    for (final d in starCountTimes) {
+      if (d.inMilliseconds > dMil) {
         res++;
       }
     }

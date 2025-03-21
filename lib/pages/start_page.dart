@@ -47,7 +47,7 @@ class StartPage extends StatelessWidget {
               ),
             ),
             SizedBox(height: 53),
-            Container(
+            SizedBox(
               // color: Colors.red,
               // height: ,
               width: 251,

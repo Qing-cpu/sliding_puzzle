@@ -38,6 +38,12 @@ dev_dependencies:
 
 flutter:
   assets:
+    - assets/images/star.png
+    - assets/images/star_d.png
+    - assets/images/star_s.png
+    - assets/images/start_button_image.png
+    - assets/images/start_button_image_g.png
+    - assets/images/start_button_image_s.png
     - assets/images/title.png
     - assets/images/level/1-1.png
     - assets/images/level/1-1/0.png

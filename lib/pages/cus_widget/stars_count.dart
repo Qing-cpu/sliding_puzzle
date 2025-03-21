@@ -23,38 +23,18 @@ class StarsCount extends StatelessWidget {
         children: List.generate(
           3,
               (i) => AnimatedSwitcher(
-            duration: Duration(milliseconds: 72),
-            child: Container(
-              key: Key('${i < _count}'),
-              padding: const EdgeInsets.all(4),
-              margin: EdgeInsets.only(bottom: i == 1 ? 12 : 0),
-              decoration: BoxDecoration(
-                color:
-                i < _count ? Colors.redAccent.shade200 : Color(0xFFFFE4E1),
-                borderRadius: BorderRadius.circular(57),
-                boxShadow: [
-                  if (i < _count)
-                    BoxShadow(
-                      color: Colors.grey, // 阴影颜色及透明度
-                      spreadRadius: 1.0, // 扩散范围
-                      blurRadius: 3.0, // 模糊程度
-                      offset: Offset(2, 4), // 阴影偏移 (x, y)
-                    ),
-                  if (i < _count)
-                    BoxShadow(
-                      color: Colors.pinkAccent.shade100, // 阴影颜色及透明度
-                      spreadRadius: 1.0, // 扩散范围
-                      blurRadius: 2.0, // 模糊程度
-                      offset: Offset(-1, -1), // 阴影偏移 (x, y)
-                    ),
-                ],
-              ),
-              child: Icon(
-                color: i < _count ? Colors.yellow.shade400 : Color(0xFFE4CBC8),
-                size: size,
-                Icons.star_sharp,
-              ),
-            ),
+            duration: Duration(milliseconds: 300),
+            child:
+            Image.asset(
+              height: size,
+                width: size,
+                key: Key('${i < _count}'),
+                i < _count ? 'assets/images/star_s.png' : 'assets/images/star_d.png'),
+            // Icon(
+            //   color: i < _count ? Colors.yellow.shade400 : Color(0xFFE4CBC8),
+            //   size: size,
+            //   Icons.star_sharp,
+            // ),
           ),
         ),
       ),

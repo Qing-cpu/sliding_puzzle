@@ -7,8 +7,39 @@ import 'package:sliding_puzzle/data/db_tools/level_data.dart';
 class DBTools {
   static dynamic _sharedPreferences;
   static const String _levelDataListKey = '_levelDataListKey';
+  static late final List<LevelData> _levelDataList;
+  static int _maxLevelId = 0;
 
-  static init() async {
+  static int get allStarCount => _levelDataList.fold(
+    0,
+    (previousValue, element) => previousValue + element.starCount,
+  );
+
+  static int get maxLevelId {
+    if (_maxLevelId == 0) {
+      _maxLevelId = _levelDataList.fold(
+        0,
+        (p, d) => d.levelId > p ? d.levelId : p,
+      );
+    }
+    return _maxLevelId;
+  }
+
+  static set maxLevelId(int value) {
+    if (value > maxLevelId) {
+      _maxLevelId = value;
+    }
+  }
+
+  static void upMaxLevelId(LevelData data) {
+    maxLevelId = data.levelId;
+  }
+
+  static init(List<LevelData>? list) async {
+    if (list != null) {
+      _levelDataList = list;
+      return;
+    }
     if (Platform.isAndroid) {
       _sharedPreferences = SharedPreferencesAsync();
       _sharedPreferences!
@@ -39,8 +70,6 @@ class DBTools {
         [];
   }
 
-  static late final List<LevelData> _levelDataList;
-
   static get sharedPreferences {
     if (Platform.isAndroid) {
       return (_sharedPreferences as SharedPreferencesAsync);
@@ -55,28 +84,8 @@ class DBTools {
     sharedPreferences!.setStringList(_levelDataListKey, jsonStringList);
   }
 
-  static void setLevelDataByLevelId(
-    String levelId, {
-    int? starCount,
-    int? timeMil,
-    bool isPerfect = false,
-  }) {
-    final int dataIndex = _levelDataList.indexWhere(
-      (d) => d.levelId == levelId,
-    );
-    if (dataIndex != -1) {
-      final data = _levelDataList[dataIndex];
-      data.isPerfect = isPerfect;
-      data.timeMil = timeMil ?? data.timeMil;
-      data.starCount = starCount ?? data.starCount;
-    } else {
-      final data = LevelData(levelId, starCount!, timeMil!, isPerfect);
-      _levelDataList.add(data);
-    }
-    upData();
-  }
-
   static void setLevelDataByLeveData(LevelData data) {
+    upMaxLevelId(data);
     final int dataIndex = _levelDataList.indexWhere(
       (d) => d.levelId == data.levelId,
     );
@@ -84,7 +93,7 @@ class DBTools {
       _levelDataList.add(data);
       upData();
       return;
-    }else if (_levelDataList[dataIndex].isChanged(data)) {
+    } else if (_levelDataList[dataIndex].isChanged(data)) {
       _levelDataList.removeAt(dataIndex);
       _levelDataList.add(data);
       upData();
@@ -92,7 +101,7 @@ class DBTools {
     }
   }
 
-  static LevelData? getLevelDataByLeveId(String id) {
+  static LevelData? getLevelDataByLeveId(int id) {
     final i = _levelDataList.indexWhere((e) => e.levelId == id);
     return i == -1 ? null : _levelDataList[i];
   }

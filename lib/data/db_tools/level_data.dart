@@ -7,7 +7,7 @@ class LevelData {
   LevelData(this.levelId, this.starCount, this.timeMil, this.isPerfect);
 
   @JsonKey(required: true)
-  final String levelId;
+  final int levelId;
   @JsonKey(required: true)
   int starCount;
   @JsonKey(required: true)

@@ -4,6 +4,7 @@ import 'package:sliding_puzzle/data/db_tools/level_data.dart';
 import 'package:sliding_puzzle/data/levels/level_info.dart';
 import 'package:sliding_puzzle/data/levels/levels.dart';
 
+import 'cus_widget/star_count.dart';
 import 'cus_widget/stars_count.dart';
 
 class LevelListPage extends StatelessWidget {
@@ -17,7 +18,11 @@ class LevelListPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        actions: [
+          StarCount()
+        ],
+      ),
       body: ListView.builder(
         itemCount: Levels.levelInfos.length,
         itemBuilder: (BuildContext context, int index) {
@@ -72,7 +77,9 @@ class _ItemWidget extends StatelessWidget {
                 border: Border.all(color: Colors.grey, width: .5),
                 borderRadius: BorderRadius.all(Radius.circular(3)),
               ),
-              child: Image.asset(levelInfo.imageAssets),
+              child: levelInfo.id <= DBTools.maxLevelId+1? Image.asset(levelInfo.imageAssets)
+              : Icon(Icons.image_rounded,size: 100,color: Colors.grey,)
+              ,
             ),
           ),
           StarsCount(data?.starCount, maxCount: levelInfo.starsCount, size: 32),

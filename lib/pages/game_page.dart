@@ -1,4 +1,5 @@
-import 'package:flutter/cupertino.dart';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:sliding_puzzle/data/db_tools/db_tools.dart';
 import 'package:sliding_puzzle/data/db_tools/level_data.dart';
@@ -8,11 +9,14 @@ import 'package:sliding_puzzle/pages/cus_widget/photo_frame.dart';
 import '../sliding_puzzle/sliding_puzzle.dart';
 
 class GamePage extends StatefulWidget {
-  const GamePage({super.key, required this.levelInfoIndex});
+  const GamePage({
+    super.key,
+    required this.levelInfoIndex,
+    required this.pageController,
+  });
 
   final int levelInfoIndex;
-
-  // final LevelData? levelData;
+  final PageController pageController;
 
   @override
   State<GamePage> createState() => _GamePageState();
@@ -29,50 +33,85 @@ class _GamePageState extends State<GamePage> {
 
   LevelData? get _data => DBTools.getLevelDataByLeveId(_levelInfo.id);
 
+  @override
+  void initState() {
+    super.initState();
+    Future(() {
+      widget.pageController.jumpToPage(widget.levelInfoIndex);
+    });
+  }
+
   _onBegin() {
     setState(() {
       isBegin = true;
       isCompleted = false;
-      // dMil = _levelInfo.starCountTimes.first.inMilliseconds;
       dMil = _levelInfo.starCountTimes.first.inMilliseconds;
     });
   }
 
   void showGameCompletedDialog() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('完成！'),
-          content: Text('  用时: ${Duration(milliseconds: dMil).inSeconds}s'),
-          actions: [
-            TextButton(onPressed: _playAgain, child: Text('Play Again')),
-            TextButton(onPressed: _next, child: Text('Next!')),
-          ],
-        );
-      },
+    final overlay = Overlay.of(context);
+    OverlayEntry? overlayEntry;
+    remove() {
+      overlayEntry?.remove();
+    }
+
+    overlayEntry = OverlayEntry(
+      builder:
+          (BuildContext context) =>
+              Scaffold(
+                backgroundColor: Colors.black38,
+                body: Center(
+                  child: Container(
+                    decoration: BoxDecoration(
+                    color: Colors.white,
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text('恭喜你，完成本关！'),
+                        TextButton(
+                          onPressed:() {
+                            _playAgain();
+                            remove();
+                          },
+                          child: Text('再玩一次'),
+                        ),
+                        TextButton(
+                          onPressed:() {
+                            _next();
+                            remove();
+                          },
+                          child: Text('Next'),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
     );
+    overlay.insert(overlayEntry);
   }
 
   void _back() {
     Navigator.pop(context);
-    // Navigator.pop(context, _data);
   }
 
   void _next() {
-    Navigator.pop(context);
     Navigator.pushReplacement(
-       context,
-      CupertinoPageRoute(
+      context,
+      MaterialPageRoute(
         builder:
-            (BuildContext context) =>
-                GamePage(levelInfoIndex: widget.levelInfoIndex + 1),
+            (BuildContext context) => GamePage(
+              levelInfoIndex: widget.levelInfoIndex + 1,
+              pageController: widget.pageController,
+            ),
       ),
     );
   }
 
   void _playAgain() {
-    Navigator.of(context).pop();
     reSetFlag++;
     _onBegin();
   }
@@ -93,11 +132,29 @@ class _GamePageState extends State<GamePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          _back();
-        },
+      appBar: AppBar(
+        actions: [
+          PopupMenuButton(
+            itemBuilder: (BuildContext context) {
+              return [
+                PopupMenuItem(child: Text('next'), onTap: _next),
+                PopupMenuItem(child: Text('返回'), onTap: _back),
+                PopupMenuItem(
+                  child: Text('showD'),
+                  onTap: showGameCompletedDialog,
+                ),
+              ];
+            },
+          ),
+        ],
       ),
+      floatingActionButton:
+          Platform.isAndroid
+              ? null
+              : FloatingActionButton(
+                onPressed: _back,
+                child: Icon(Icons.exit_to_app),
+              ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
