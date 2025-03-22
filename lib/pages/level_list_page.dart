@@ -8,10 +8,13 @@ import 'cus_widget/star_count.dart';
 import 'cus_widget/stars_count.dart';
 
 class LevelListPage extends StatelessWidget {
-  const LevelListPage({super.key, });
+  const LevelListPage({super.key, required this.pageController, });
+
+  final PageController pageController;
 
 
   void _onTap(BuildContext context, int index) {
+    Future(()=> pageController.jumpToPage(index));
     Navigator.of(context).pop(index);
   }
 

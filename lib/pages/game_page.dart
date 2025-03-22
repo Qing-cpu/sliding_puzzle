@@ -5,15 +5,15 @@ import 'package:sliding_puzzle/data/db_tools/db_tools.dart';
 import 'package:sliding_puzzle/data/db_tools/level_data.dart';
 import 'package:sliding_puzzle/data/levels/levels.dart';
 import 'package:sliding_puzzle/pages/cus_widget/photo_frame.dart';
+import 'package:sliding_puzzle/pages/cus_widget/stars_count.dart';
+import 'package:sliding_puzzle/pages/time_out_failure_page.dart';
 
 import '../sliding_puzzle/sliding_puzzle.dart';
+import 'final_completion_page.dart';
+import 'level_complete_page.dart';
 
 class GamePage extends StatefulWidget {
-  const GamePage({
-    super.key,
-    required this.levelInfoIndex,
-    required this.pageController,
-  });
+  const GamePage({super.key, required this.levelInfoIndex, required this.pageController});
 
   final int levelInfoIndex;
   final PageController pageController;
@@ -33,6 +33,8 @@ class _GamePageState extends State<GamePage> {
 
   LevelData? get _data => DBTools.getLevelDataByLeveId(_levelInfo.id);
 
+  OverlayEntry? overlayEntry;
+
   @override
   void initState() {
     super.initState();
@@ -49,69 +51,42 @@ class _GamePageState extends State<GamePage> {
     });
   }
 
-  void showGameCompletedDialog() {
+  void showGameCompletedDialog(LevelData? newData,LevelData? oldData) {
     final overlay = Overlay.of(context);
-    OverlayEntry? overlayEntry;
-    remove() {
-      overlayEntry?.remove();
+    if (newData != null) {
+      overlayEntry = OverlayEntry(
+        builder: (BuildContext context) => LevelCompletePage(oldData: oldData, newData: newData, playAgain: _playAgain, next: _next),
+      );
+    } else {
+      overlayEntry = OverlayEntry(builder: (BuildContext context) => TimeOutFailurePage(retry: _playAgain, exit: _back));
     }
-
-    overlayEntry = OverlayEntry(
-      builder:
-          (BuildContext context) =>
-              Scaffold(
-                backgroundColor: Colors.black38,
-                body: Center(
-                  child: Container(
-                    decoration: BoxDecoration(
-                    color: Colors.white,
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text('恭喜你，完成本关！'),
-                        TextButton(
-                          onPressed:() {
-                            _playAgain();
-                            remove();
-                          },
-                          child: Text('再玩一次'),
-                        ),
-                        TextButton(
-                          onPressed:() {
-                            _next();
-                            remove();
-                          },
-                          child: Text('Next'),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-    );
-    overlay.insert(overlayEntry);
+    overlay.insert(overlayEntry!);
   }
 
   void _back() {
+    overlayEntry?.remove();
+    overlayEntry = null;
     Navigator.pop(context);
   }
 
   void _next() {
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-        builder:
-            (BuildContext context) => GamePage(
-              levelInfoIndex: widget.levelInfoIndex + 1,
-              pageController: widget.pageController,
-            ),
-      ),
-    );
+    overlayEntry?.remove();
+    overlayEntry = null;
+    if (widget.levelInfoIndex + 1 < Levels.levelInfos.length) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (BuildContext context) => GamePage(levelInfoIndex: widget.levelInfoIndex + 1, pageController: widget.pageController),
+        ),
+      );
+    } else {
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => FinalCompletionPage()));
+    }
   }
 
   void _playAgain() {
+    overlayEntry?.remove();
+    overlayEntry = null;
     reSetFlag++;
     _onBegin();
   }
@@ -121,9 +96,16 @@ class _GamePageState extends State<GamePage> {
       isCompleted = true;
       dMil = newData.timeMil;
     });
-
+    showGameCompletedDialog(newData,_data);
     DBTools.setLevelDataByLeveData(newData.smaller(_data));
-    showGameCompletedDialog();
+  }
+
+  _onTimeOutFailure() {
+    setState(() {
+      isCompleted = true;
+      dMil = 0;
+    });
+    showGameCompletedDialog(null, _data);
   }
 
   final box8H = SizedBox(height: 8);
@@ -141,20 +123,16 @@ class _GamePageState extends State<GamePage> {
                 PopupMenuItem(child: Text('返回'), onTap: _back),
                 PopupMenuItem(
                   child: Text('showD'),
-                  onTap: showGameCompletedDialog,
+                  onTap: () {
+                    showGameCompletedDialog(LevelData(1, 2, 3, false), _data);
+                  },
                 ),
               ];
             },
           ),
         ],
       ),
-      floatingActionButton:
-          Platform.isAndroid
-              ? null
-              : FloatingActionButton(
-                onPressed: _back,
-                child: Icon(Icons.exit_to_app),
-              ),
+      floatingActionButton: Platform.isAndroid ? null : FloatingActionButton(onPressed: _back, child: Icon(Icons.exit_to_app)),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -162,10 +140,7 @@ class _GamePageState extends State<GamePage> {
           children: [
             Expanded(child: SizedBox()),
             box16H,
-            Hero(
-              tag: _levelInfo.id,
-              child: PhotoFrame(image: Image.asset(_levelInfo.imageAssets)),
-            ),
+            Hero(tag: _levelInfo.id, child: PhotoFrame(image: Image.asset(_levelInfo.imageAssets))),
             Expanded(child: SizedBox()),
             TimeProgress(
               key: Key('$reSetFlag'),
@@ -173,6 +148,7 @@ class _GamePageState extends State<GamePage> {
               width: 288,
               times: _levelInfo.starCountTimes,
               isCompleted: isCompleted,
+              onTimeOutFailure: _onTimeOutFailure,
             ),
             box8H,
             Container(
@@ -211,6 +187,7 @@ class TimeProgress extends StatelessWidget {
     required this.dMil,
     required this.width,
     required this.isCompleted,
+    required this.onTimeOutFailure,
   });
 
   final List<Duration> times;
@@ -218,13 +195,11 @@ class TimeProgress extends StatelessWidget {
   final double width;
   final bool isCompleted;
 
+  final VoidCallback onTimeOutFailure;
+
   final height = 4.0;
 
-  BoxDecoration get decoration => BoxDecoration(
-    color: Color(0xAB72FF77),
-    borderRadius: BorderRadius.circular(3),
-    boxShadow: [],
-  );
+  BoxDecoration get decoration => BoxDecoration(color: Color(0xAB72FF77), borderRadius: BorderRadius.circular(3), boxShadow: []);
 
   BoxDecoration get bDecoration => BoxDecoration(
     color: Colors.black12,
@@ -243,12 +218,7 @@ class TimeProgress extends StatelessWidget {
     return Stack(
       fit: StackFit.passthrough,
       children: [
-        Container(
-          margin: const EdgeInsets.all(8),
-          width: width,
-          height: height,
-          decoration: bDecoration,
-        ),
+        Container(margin: const EdgeInsets.all(8), width: width, height: height, decoration: bDecoration),
         Positioned(
           child:
               isCompleted
@@ -262,11 +232,8 @@ class TimeProgress extends StatelessWidget {
                     key: key,
                     tween: Tween<double>(begin: 1.0, end: dMil.toDouble()),
                     duration: times.first,
-                    builder: (
-                      BuildContext context,
-                      double value,
-                      Widget? child,
-                    ) {
+                    onEnd: onTimeOutFailure,
+                    builder: (BuildContext context, double value, Widget? child) {
                       return Container(
                         margin: const EdgeInsets.all(8),
                         height: height,
@@ -299,10 +266,7 @@ class _Point extends StatelessWidget {
     return Container(
       width: size / 4,
       height: size,
-      decoration: BoxDecoration(
-        color: color,
-        borderRadius: BorderRadius.all(Radius.circular(size)),
-      ),
+      decoration: BoxDecoration(color: color, borderRadius: BorderRadius.all(Radius.circular(size))),
     );
   }
 }

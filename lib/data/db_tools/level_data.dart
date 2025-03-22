@@ -27,6 +27,8 @@ class LevelData {
     return newLeveData.timeMil < timeMil ? newLeveData : this;
   }
 
+
+
   bool isChanged(LevelData data) =>
       !(levelId == data.levelId &&
           starCount == data.starCount &&

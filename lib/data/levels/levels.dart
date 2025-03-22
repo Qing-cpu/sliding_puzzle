@@ -1,6 +1,7 @@
 import 'package:sliding_puzzle/data/levels/level_info.dart';
 
 const x = [Duration(minutes: 3), Duration(minutes: 2), Duration(minutes: 1)];
+const s = [Duration(seconds: 5), Duration(seconds: 4), Duration(seconds: 3)];
 
 class Levels {
 
@@ -13,9 +14,9 @@ class Levels {
     ),
     LevelInfo(
       imageAssets: 'assets/images/level/1-2.png',
-      name: '农场·杂画',
+      name: '农场·杂画s',
       size: 3,
-      starCountTimes: x,
+      starCountTimes: s,
     ),
     LevelInfo(
       imageAssets: 'assets/images/level/1-3.png',

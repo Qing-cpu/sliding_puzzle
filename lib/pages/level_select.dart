@@ -17,23 +17,40 @@ class LevelSelect extends StatefulWidget {
 }
 
 class _LevelSelectState extends State<LevelSelect> {
-  int index = 0;
-
-  final levels = Levels.levelInfos;
-  final PageController _pageController = PageController(viewportFraction: 0.8);
   final _heightBox8 = const SizedBox(height: 8);
+  int _index = 0;
+  final levels = Levels.levelInfos;
+  late final PageController _pageController;
 
-  bool _isAnim = false;
+  LevelData? get leveData => DBTools.getLevelDataByLeveId(levels[_index].id);
 
-  LevelData? get leveData => DBTools.getLevelDataByLeveId(levels[index].id);
+  _listener() {
+    final page = _pageController.page?.toInt() ?? 0;
+    if (page != _index) {
+      setState(() => _index = page);
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    final maxId = DBTools.maxLevelId;
+    _index = Levels.levelInfos.indexWhere((i) => i.id == maxId);
+    _pageController = PageController(viewportFraction: 0.8, initialPage: _index);
+    _pageController.addListener(_listener);
+  }
+
+  @override
+  void dispose() {
+    _pageController.removeListener(_listener);
+    super.dispose();
+  }
 
   void _play(BuildContext context, int levelInfoIndex) async {
     Navigator.push(
       context,
       PageRouteBuilder(
-        pageBuilder:
-            (context, animation, secondaryAnimation) =>
-                GamePage(levelInfoIndex: levelInfoIndex,pageController: _pageController),
+        pageBuilder: (context, animation, secondaryAnimation) => GamePage(levelInfoIndex: levelInfoIndex, pageController: _pageController),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           return FadeTransition(opacity: animation, child: child);
         },
@@ -42,54 +59,41 @@ class _LevelSelectState extends State<LevelSelect> {
     );
   }
 
-  void _openLevelListPage() async {
-    final levelInfosIndex = await Navigator.of(context).push(
-      MaterialPageRoute(builder: (BuildContext context) => LevelListPage()),
-    );
-    if (levelInfosIndex != null) {
-      setState(() {
-        _isAnim = true;
-      });
-      _pageController
-          .animateToPage(
-            levelInfosIndex,
-            duration: Duration(milliseconds: 800),
-            curve: Curves.easeInOutQuart,
-          )
-          .then((_) {
-            setState(() {
-              _isAnim = false;
-            });
-          });
-    }
-  }
+  void _openLevelListPage() =>
+      Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => LevelListPage(pageController: _pageController)));
 
-  _onPressedLeftIcon() => _pageController.animateToPage(
-    _pageController.page!.toInt() - 1,
-    duration: Duration(milliseconds: 200),
-    curve: Curves.easeInOut,
-  );
+  _onPressedLeftIcon() =>
+      _pageController.animateToPage(_pageController.page!.toInt() - 1, duration: Duration(milliseconds: 200), curve: Curves.easeInOut);
 
-  _onPressedRightIcon() => _pageController.animateToPage(
-    _pageController.page!.toInt() + 1,
-    duration: Duration(milliseconds: 200),
-    curve: Curves.easeInOut,
-  );
-
-
-  @override
-  void didUpdateWidget(LevelSelect oldWidget) {
-    super.didUpdateWidget(oldWidget);
-  }
+  _onPressedRightIcon() =>
+      _pageController.animateToPage(_pageController.page!.toInt() + 1, duration: Duration(milliseconds: 200), curve: Curves.easeInOut);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        onPressed: _openLevelListPage,
-        child: Icon(Icons.list),
-      ),
-      appBar: AppBar(actions: [StarCount()]),
+      appBar: AppBar(actions: [
+
+
+        IconButton(
+          icon: Icon(Icons.list,
+          size: 31,
+            color: Colors.white,
+            shadows: [
+              Shadow(
+                color: Colors.black87,
+                blurRadius: 2,
+                offset: Offset(1, 1),
+              )
+            ],
+          ), onPressed: _openLevelListPage,
+        ),
+        GestureDetector(
+            onTap: _openLevelListPage,
+            child: StarCount()),
+        SizedBox(
+          width: 8,
+        ),
+      ]),
       body: Column(
         children: [
           _heightBox8,
@@ -105,30 +109,13 @@ class _LevelSelectState extends State<LevelSelect> {
                       onPressed: _onPressedLeftIcon,
                       icon: Icon(
                         Icons.chevron_left,
-                        shadows: [
-                          Shadow(
-                            color: Colors.black87,
-                            blurRadius: 2,
-                            offset: Offset(1, 1),
-                          ),
-                        ],
+                        shadows: [Shadow(color: Colors.black87, blurRadius: 2, offset: Offset(1, 1))],
                         color: Colors.black54,
                       ),
                     ),
                   ),
                 ),
-                Expanded(
-                  child: AnimatedSwitcher(
-                    duration: const Duration(milliseconds: 50),
-                    child:
-                        _isAnim
-                            ? null
-                            : Text(
-                              Levels.levelInfos[index].name,
-                              style: TextStyle(fontSize: 24),
-                            ),
-                  ),
-                ),
+                Expanded(child: Center(child: Text(Levels.levelInfos[_index].name, style: TextStyle(fontSize: 24)))),
                 Expanded(
                   child: Container(
                     alignment: Alignment.centerLeft,
@@ -136,13 +123,7 @@ class _LevelSelectState extends State<LevelSelect> {
                       onPressed: _onPressedRightIcon,
                       icon: Icon(
                         color: Colors.black54,
-                        shadows: [
-                          Shadow(
-                            color: Colors.black87,
-                            blurRadius: 2,
-                            offset: Offset(1, 1),
-                          ),
-                        ],
+                        shadows: [Shadow(color: Colors.black87, blurRadius: 2, offset: Offset(1, 1))],
                         Icons.chevron_right,
                       ),
                     ),
@@ -157,9 +138,6 @@ class _LevelSelectState extends State<LevelSelect> {
             child: PageView.builder(
               controller: _pageController,
               itemCount: levels.length,
-              onPageChanged: (i) {
-                setState(() => index = i);
-              },
               itemBuilder: (BuildContext context, int i) {
                 return Padding(
                   padding: const EdgeInsets.all(4.0),
@@ -170,16 +148,9 @@ class _LevelSelectState extends State<LevelSelect> {
                             height: 288,
                             width: 288,
                             // onTap: () => _play(context, i),
-                            child: Hero(
-                              tag: levels[i].id,
-                              child: Image.asset(levels[i].imageAssets),
-                            ),
+                            child: Hero(tag: levels[i].id, child: Image.asset(levels[i].imageAssets)),
                           )
-                          : Icon(
-                            Icons.image_rounded,
-                            size: 288,
-                            color: Colors.grey,
-                          ),
+                          : Icon(Icons.image_rounded, size: 288, color: Colors.grey),
                 );
               },
             ),
@@ -187,7 +158,7 @@ class _LevelSelectState extends State<LevelSelect> {
 
           // 大小
           _heightBox8,
-          LevelSizePoint(count: levels[index].size),
+          LevelSizePoint(count: levels[_index].size),
           _heightBox8,
           _heightBox8,
           StarsCount(leveData?.starCount),
