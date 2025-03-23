@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:sliding_puzzle/pages/setting_page.dart';
 
 import 'model_page.dart';
 
 class StartPage extends StatelessWidget {
   const StartPage({super.key});
 
-  void _start(BuildContext context){
-    Navigator.of(context).push(
-      MaterialPageRoute(builder: (context) => ModelPage()),
-    );
+  void _start(BuildContext context) {
+    Navigator.of(context).push(MaterialPageRoute(builder: (context) => ModelPage()));
+  }
+
+  void _setting(BuildContext context) {
+    Navigator.of(context).push(MaterialPageRoute(builder: (context) => SettingPage()));
   }
 
   @override
@@ -22,9 +25,7 @@ class StartPage extends StatelessWidget {
             Container(
               width: 288,
               height: 300,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.all(Radius.circular(80)),
-              ),
+              decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(80))),
               // clipBehavior: Clip.antiAlias,
               child: Image.asset(
                 'assets/images/title.png',
@@ -36,20 +37,16 @@ class StartPage extends StatelessWidget {
             SizedBox(height: 53),
             // 开始 Start Button
             ElevatedButton(
-              onPressed: ()=>_start(context),
+              onPressed: () => _start(context),
               child: SizedBox(
                 // height: ,
                 width: 251,
                 height: 79,
-                child: Center(
-                  child: Text('Start', style: TextStyle(fontSize: 50)),
-                ),
+                child: Center(child: Text('Start', style: TextStyle(fontSize: 50))),
               ),
             ),
             SizedBox(height: 53),
             SizedBox(
-              // color: Colors.red,
-              // height: ,
               width: 251,
               height: 79,
               child: Row(
@@ -57,7 +54,7 @@ class StartPage extends StatelessWidget {
                   Expanded(child: SizedBox()),
                   IconButton(onPressed: () {}, icon: Icon(Icons.share_outlined)),
                   Expanded(child: SizedBox()),
-                  IconButton(onPressed: () {}, icon: Icon(Icons.settings)),
+                  IconButton(onPressed: () => _setting(context), icon: Icon(Icons.settings)),
                   Expanded(child: SizedBox()),
                 ],
               ),

@@ -50,7 +50,6 @@ class DBTools {
                   levelDataJsonStringList,
                 ),
           );
-    } else if (Platform.isIOS) {
     } else {
       _sharedPreferences = await SharedPreferences.getInstance();
       final List<String>? levelDataJsonStringList = _sharedPreferences

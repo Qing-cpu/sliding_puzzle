@@ -1,3 +1,4 @@
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 
 import 'models/square_model.dart';
@@ -22,6 +23,9 @@ class SlidingSquare extends StatefulWidget {
 class _SlidingSquareState extends State<SlidingSquare>
     with SingleTickerProviderStateMixin {
   static final GlobalKey _globalKey = GlobalKey();
+  // 初始化播放器
+  final AudioPlayer audioPlayer = AudioPlayer();
+
 
   late final AnimationController _animationController;
   late Animation<Offset> _animation;
@@ -43,6 +47,7 @@ class _SlidingSquareState extends State<SlidingSquare>
 
   @override
   void initState() {
+    audioPlayer.setSource(AssetSource('sounds/tap/mixkit-modern-click-box-check-1120.wav'));
     super.initState();
     _animationController =
         AnimationController(vsync: this)
@@ -71,6 +76,8 @@ class _SlidingSquareState extends State<SlidingSquare>
   }
 
   _onTapDown(d) {
+    print('TapDown');
+    audioPlayer.play(AssetSource('sounds/tap/mixkit-modern-click-box-check-1120.wav'));
     if (widget.squareModel.canMove == false || tapId != -1) {
       return;
     }

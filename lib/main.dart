@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sliding_puzzle/pages/start_page.dart';
-
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'data/db_tools/db_tools.dart';
 
 void main() {
@@ -11,12 +11,12 @@ void main() {
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
-
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: '拼图滑块',
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
       home: const StartPage(),
     );
   }
