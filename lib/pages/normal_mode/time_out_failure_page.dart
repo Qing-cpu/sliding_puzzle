@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'cus_widget/stars_count.dart';
+import '../cus_widget/stars_count.dart';
 
 class TimeOutFailurePage extends StatelessWidget {
   final VoidCallback retry;

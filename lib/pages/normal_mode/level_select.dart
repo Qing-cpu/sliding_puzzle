@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:sliding_puzzle/data/db_tools/db_tools.dart';
 import 'package:sliding_puzzle/data/db_tools/level_data.dart';
 import 'package:sliding_puzzle/data/levels/levels.dart';
-import 'package:sliding_puzzle/pages/level_list_page.dart';
+import 'package:sliding_puzzle/pages/normal_mode/level_list_page.dart';
 
-import 'cus_widget/star_count.dart';
-import 'cus_widget/stars_count.dart';
-import 'cus_widget/start_box.dart';
+import '../cus_widget/star_count.dart';
+import '../cus_widget/stars_count.dart';
+import '../cus_widget/start_box.dart';
 import 'game_page.dart';
 
 class LevelSelect extends StatefulWidget {
@@ -75,19 +75,22 @@ class _LevelSelectState extends State<LevelSelect> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(toolbarHeight: 44, actions: [GestureDetector(onTap: _openLevelListPage, child: StarCount()), SizedBox(width: 8)]),
+      appBar: AppBar(toolbarHeight: 54, actions: [GestureDetector(onTap: _openLevelListPage, child: StarCount()), SizedBox(width: 8)]),
       body: Column(
         children: [
           // < icon, level 序列, > icon
           SizedBox(
-            height: 44,
+            height: 54,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Expanded(child: IconButton(onPressed: _onPressedLeftIcon, icon: Icon(Icons.chevron_left, color: const Color(0xFF1D2129)))),
                 Expanded(
                   child: Center(
-                    child: Text('${_index+1} / ${Levels.levelInfos.length}', style: TextStyle(color: const Color(0xFF1D2129), fontSize: 18)),
+                    child: Text(
+                      Levels.levelInfos[_index].name,
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.normal, color: Color(0xFF1D2129)),
+                    ),
                   ),
                 ),
                 Expanded(
@@ -108,9 +111,8 @@ class _LevelSelectState extends State<LevelSelect> {
                       i <= DBTools.maxLevelId + 1
                           ? StartBox(
                             onTap: () => _play(context, i),
-                            height: 288,
-                            width: 288,
-                            // onTap: () => _play(context, i),
+                            height: 280,
+                            width: 280,
                             child: Hero(tag: levels[i].id, child: Image.asset(levels[i].imageAssets)),
                           )
                           : Icon(Icons.image_rounded, size: 288, color: Colors.grey),
@@ -120,11 +122,11 @@ class _LevelSelectState extends State<LevelSelect> {
           ),
           const SizedBox(height: 8),
           // level name
-          Text(Levels.levelInfos[_index].name, style: TextStyle(fontSize: 21, fontWeight: FontWeight.normal, color: Color(0xff1D2129))),
-          const SizedBox(height: 8),
+          Text('${_index + 1} / ${Levels.levelInfos.length}', style: TextStyle(color: const Color(0xFF7D8285), fontSize: 12)),
+          const SizedBox(height: 16),
           // 星星
           StarsCount(leveData?.starCount),
-          const SizedBox(height: 8),
+          const SizedBox(height: 16),
           // 记录
           if (leveData != null)
             Text(

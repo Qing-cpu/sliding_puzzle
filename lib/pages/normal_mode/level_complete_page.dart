@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:sliding_puzzle/data/db_tools/level_data.dart';
 
-import 'cus_widget/stars_count.dart';
+import '../cus_widget/stars_count.dart';
 
 class LevelCompletePage extends StatelessWidget {
   const LevelCompletePage({

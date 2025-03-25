@@ -16,11 +16,18 @@ class SlidingPuzzle extends StatefulWidget {
     required this.size,
     required this.bigImageAsset,
     required this.imageAssetsList,
+    this.isSpeedModel = false,
+    this.isOnlyNum = false,
+    this.buildNumWidget,
   });
 
+  final bool isSpeedModel;
+  final bool isOnlyNum;
   final double width;
 
   final int reSetFlag;
+
+  final Widget Function(int)? buildNumWidget;
 
   final int size;
   final List<String> imageAssetsList;
@@ -49,6 +56,9 @@ class _SlidingPuzzleState extends State<SlidingPuzzle> {
     slidingPuzzleModel = SlidingPuzzleModel(size: size, imageAssetsList: widget.imageAssetsList);
     slidingPuzzleModel.shuffle();
     slidingPuzzleModel.upSquareCanMoveState();
+    if(widget.isSpeedModel){
+      startTime = DateTime.now();
+    }
   }
 
   @override
@@ -91,18 +101,26 @@ class _SlidingPuzzleState extends State<SlidingPuzzle> {
       child: AnimatedSwitcher(
         duration: Duration(milliseconds: 60),
         child:
-            isBegin
+            widget.isSpeedModel || isBegin
                 ? Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    for (final squareList in slidingPuzzleModel.squaresTwoDList)
-                      Row(
+                    ...slidingPuzzleModel.squaresTwoDList.map(
+                      (dList) => Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          for (final square in squareList)
-                            SlidingSquare(squareModel: square, onTapCallBack: _onTapCallBack, squareWidth: _squareWidth),
+                          ...dList.map(
+                            (square) => SlidingSquare(
+                              buildNumWidget: widget.buildNumWidget,
+                              isOnlyNum: widget.isOnlyNum,
+                              squareModel: square,
+                              onTapCallBack: _onTapCallBack,
+                              squareWidth: _squareWidth,
+                            ),
+                          ),
                         ],
                       ),
+                    ),
                   ],
                 )
                 : CountdownTimer3Sec(
@@ -113,7 +131,7 @@ class _SlidingPuzzleState extends State<SlidingPuzzle> {
                     });
                     widget.onBegin?.call();
                   },
-                  image: Image.asset(widget.bigImageAsset),
+                  image: widget.isOnlyNum ? null : Image.asset(widget.bigImageAsset),
                 ),
       ),
     );
@@ -124,7 +142,7 @@ class CountdownTimer3Sec extends StatefulWidget {
   const CountdownTimer3Sec({super.key, required this.endCallBack, required this.image});
 
   final VoidCallback endCallBack;
-  final Image image;
+  final Image? image;
 
   @override
   State<CountdownTimer3Sec> createState() => _CountdownTimer3SecState();
@@ -158,7 +176,7 @@ class _CountdownTimer3SecState extends State<CountdownTimer3Sec> {
     return Container(
       decoration: BoxDecoration(
         color: Colors.black12,
-        image: DecorationImage(image: widget.image.image),
+        image: widget.image == null ? null : DecorationImage(image: widget.image!.image),
         borderRadius: BorderRadius.circular(8),
       ),
       child: Container(

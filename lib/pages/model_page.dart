@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:sliding_puzzle/pages/speed_model/speed_model_page.dart';
 
-import 'level_select.dart';
+import 'normal_mode/level_select.dart';
 
 class ModelPage extends StatelessWidget {
   const ModelPage({super.key});
@@ -10,7 +11,7 @@ class ModelPage extends StatelessWidget {
   }
 
   void _startSpeedModel1(BuildContext context) {
-    Navigator.of(context).push(MaterialPageRoute(builder: (context) => LevelSelect()));
+    Navigator.of(context).push(MaterialPageRoute(builder: (context) => SpeedModelPage()));
   }
 
   @override

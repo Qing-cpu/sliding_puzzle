@@ -4,8 +4,8 @@ import 'package:sliding_puzzle/data/db_tools/level_data.dart';
 import 'package:sliding_puzzle/data/levels/level_info.dart';
 import 'package:sliding_puzzle/data/levels/levels.dart';
 
-import 'cus_widget/star_count.dart';
-import 'cus_widget/stars_count.dart';
+import '../cus_widget/star_count.dart';
+import '../cus_widget/stars_count.dart';
 
 class LevelListPage extends StatelessWidget {
   const LevelListPage({super.key, required this.pageController, });
