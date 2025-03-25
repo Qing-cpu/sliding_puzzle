@@ -5,7 +5,6 @@ import 'package:sliding_puzzle/data/db_tools/db_tools.dart';
 import 'package:sliding_puzzle/data/db_tools/level_data.dart';
 import 'package:sliding_puzzle/data/levels/levels.dart';
 import 'package:sliding_puzzle/pages/cus_widget/photo_frame.dart';
-import 'package:sliding_puzzle/pages/cus_widget/stars_count.dart';
 import 'package:sliding_puzzle/pages/time_out_failure_page.dart';
 
 import '../sliding_puzzle/sliding_puzzle.dart';
@@ -62,7 +61,14 @@ class _GamePageState extends State<GamePage> {
     overlayEntry?.remove();
     if (newData != null) {
       overlayEntry = OverlayEntry(
-        builder: (BuildContext context) => LevelCompletePage(oldData: oldData, newData: newData, playAgain: _playAgain, next: _next),
+        builder:
+            (BuildContext context) => LevelCompletePage(
+              oldDMil: oldData?.timeMil,
+              newDMil: newData.timeMil,
+              starCount: newData.starCount,
+              playAgain: _playAgain,
+              next: _next,
+            ),
       );
     } else {
       overlayEntry = OverlayEntry(
@@ -102,11 +108,13 @@ class _GamePageState extends State<GamePage> {
     _onBegin();
   }
 
-  _onCompletedCallback(LevelData newData) {
+  _onCompletedCallback(int newDMil) {
     setState(() {
       isCompleted = true;
-      dMil = newData.timeMil;
+      dMil = newDMil;
     });
+
+    final LevelData newData = _levelInfo.getLevelData(dMil);
     showGameCompletedDialog(newData, _data);
     DBTools.setLevelDataByLeveData(newData.smaller(_data));
   }
@@ -130,8 +138,8 @@ class _GamePageState extends State<GamePage> {
           PopupMenuButton(
             itemBuilder: (BuildContext context) {
               return [
-                PopupMenuItem(child: Text('next'), onTap: _next),
-                PopupMenuItem(child: Text('返回'), onTap: _back),
+                PopupMenuItem(onTap: _next, child: Text('next')),
+                PopupMenuItem(onTap: _back, child: Text('返回')),
                 PopupMenuItem(
                   child: Text('showD'),
                   onTap: () {
@@ -177,7 +185,9 @@ class _GamePageState extends State<GamePage> {
               ),
               child: SlidingPuzzle(
                 reSetFlag: reSetFlag,
-                levelInfoIndex: widget.levelInfoIndex,
+                size: _levelInfo.size,
+                imageAssetsList: _levelInfo.squareImageAssets,
+                bigImageAsset: _levelInfo.imageAssets,
                 width: _slidingPuzzleWidth,
                 onBegin: _onBegin,
                 onCompletedCallback: _onCompletedCallback,

@@ -4,10 +4,18 @@ import 'package:sliding_puzzle/data/db_tools/level_data.dart';
 import 'cus_widget/stars_count.dart';
 
 class LevelCompletePage extends StatelessWidget {
-  const LevelCompletePage({super.key, required this.oldData, required this.newData, required this.playAgain, required this.next});
+  const LevelCompletePage({
+    super.key,
+    required this.oldDMil,
+    required this.newDMil,
+    required this.starCount,
+    required this.playAgain,
+    required this.next,
+  });
 
-  final LevelData? oldData;
-  final LevelData newData;
+  final int? oldDMil;
+  final int newDMil;
+  final int starCount;
 
   final VoidCallback playAgain;
   final VoidCallback next;
@@ -25,17 +33,17 @@ class LevelCompletePage extends StatelessWidget {
               const SizedBox(height: 20),
               Text('完成', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: const Color(0xFF262626))),
               const SizedBox(height: 8),
-              StarsCount(newData.starCount),
+              StarsCount(starCount),
               const SizedBox(height: 8),
               Text(
-                '耗时：${newData.timeMil ~/ 60000} m ${newData.timeMil ~/ 1000 % 60} s ${newData.timeMil % 1000} ms',
+                '耗时：${newDMil ~/ 60000} m ${newDMil ~/ 1000 % 60} s ${newDMil % 1000} ms',
                 style: TextStyle(fontSize: 16, color: const Color(0xFF5B5B5B)),
               ),
               const SizedBox(height: 4),
               Text(
-                oldData == null || oldData!.timeMil > newData.timeMil
+                oldDMil == null || oldDMil! > newDMil
                     ? '新纪录'
-                    : '记录：${oldData!.timeMil ~/ 60000} m ${oldData!.timeMil ~/ 1000 % 60} s ${oldData!.timeMil % 1000} ms',
+                    : '记录：${oldDMil! ~/ 60000} m ${oldDMil! ~/ 1000 % 60} s ${oldDMil! % 1000} ms',
                 style: TextStyle(fontSize: 10, color: const Color(0xFF9E9E9E)),
               ),
               SizedBox(height: 20),

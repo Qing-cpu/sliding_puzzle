@@ -1,3 +1,5 @@
+import 'package:sliding_puzzle/data/db_tools/level_data.dart';
+
 class LevelInfo {
   const LevelInfo._({
     required this.imageAssets,
@@ -55,6 +57,8 @@ class LevelInfo {
     }
     return res;
   }
+
+  LevelData getLevelData(int dMil) => LevelData(id, calculateStarRating(dMil), dMil, false);
 
   @override
   String toString() {

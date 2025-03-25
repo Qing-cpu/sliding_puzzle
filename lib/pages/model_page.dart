@@ -6,20 +6,17 @@ class ModelPage extends StatelessWidget {
   const ModelPage({super.key});
 
   void _startModel1(BuildContext context) {
-    Navigator.of(
-      context,
-    ).push(MaterialPageRoute(builder: (context) => LevelSelect()));
+    Navigator.of(context).push(MaterialPageRoute(builder: (context) => LevelSelect()));
+  }
+
+  void _startSpeedModel1(BuildContext context) {
+    Navigator.of(context).push(MaterialPageRoute(builder: (context) => LevelSelect()));
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        // title: Text('选择模式'),
-        actions: [
-          // Expanded(child: Container(height: 10, width: 100, color: Colors.red)),
-        ],
-      ),
+      appBar: AppBar(),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -34,10 +31,17 @@ class ModelPage extends StatelessWidget {
                   // height: ,
                   width: 251,
                   height: 79,
-                  child: Center(
-                    child: Text('普通', style: TextStyle(fontSize: 50)),
-                  ),
+                  child: Center(child: Text('普通', style: TextStyle(fontSize: 50))),
                 ),
+              ),
+            ),
+            ElevatedButton(
+              onPressed: () => _startSpeedModel1(context),
+              child: SizedBox(
+                // height: ,
+                width: 251,
+                height: 79,
+                child: Center(child: Text('极速模式', style: TextStyle(fontSize: 50))),
               ),
             ),
             ElevatedButton(
@@ -46,20 +50,7 @@ class ModelPage extends StatelessWidget {
                 // height: ,
                 width: 251,
                 height: 79,
-                child: Center(
-                  child: Text('Start', style: TextStyle(fontSize: 50)),
-                ),
-              ),
-            ),
-            ElevatedButton(
-              onPressed: () {},
-              child: SizedBox(
-                // height: ,
-                width: 251,
-                height: 79,
-                child: Center(
-                  child: Text('Start', style: TextStyle(fontSize: 50)),
-                ),
+                child: Center(child: Text('天梯模式', style: TextStyle(fontSize: 50))),
               ),
             ),
           ],

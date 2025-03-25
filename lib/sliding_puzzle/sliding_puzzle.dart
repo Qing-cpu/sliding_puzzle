@@ -1,9 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:sliding_puzzle/data/db_tools/level_data.dart';
-import 'package:sliding_puzzle/data/levels/level_info.dart';
-import 'package:sliding_puzzle/data/levels/levels.dart';
 import 'package:sliding_puzzle/sliding_puzzle/models/sliding_puzzle_model.dart';
 import 'package:sliding_puzzle/sliding_puzzle/sliding_square.dart';
 
@@ -14,18 +11,22 @@ class SlidingPuzzle extends StatefulWidget {
     super.key,
     this.onCompletedCallback,
     this.onBegin,
-    required this.levelInfoIndex,
     required this.reSetFlag,
     required this.width,
+    required this.size,
+    required this.bigImageAsset,
+    required this.imageAssetsList,
   });
-
-  final int levelInfoIndex;
 
   final double width;
 
   final int reSetFlag;
 
-  final void Function(LevelData)? onCompletedCallback;
+  final int size;
+  final List<String> imageAssetsList;
+  final String bigImageAsset;
+
+  final void Function(int)? onCompletedCallback;
 
   final void Function()? onBegin;
 
@@ -35,8 +36,7 @@ class SlidingPuzzle extends StatefulWidget {
 
 class _SlidingPuzzleState extends State<SlidingPuzzle> {
   late final SlidingPuzzleModel slidingPuzzleModel;
-  late LevelInfo levelInfo = Levels.levelInfos[widget.levelInfoIndex];
-  late final size = levelInfo.size;
+  late final size = widget.size;
   late final double _squareWidth = widget.width / size;
   DateTime? startTime;
 
@@ -46,7 +46,7 @@ class _SlidingPuzzleState extends State<SlidingPuzzle> {
   void initState() {
     super.initState();
     SquareModel.nullGridWidgetOffset = null;
-    slidingPuzzleModel = SlidingPuzzleModel(levelInfo);
+    slidingPuzzleModel = SlidingPuzzleModel(size: size, imageAssetsList: widget.imageAssetsList);
     slidingPuzzleModel.shuffle();
     slidingPuzzleModel.upSquareCanMoveState();
   }
@@ -70,26 +70,15 @@ class _SlidingPuzzleState extends State<SlidingPuzzle> {
     final nullSquareIndex = slidingPuzzleModel.getNullSquareIndex();
     final tapSquareIndex = slidingPuzzleModel.getTapSquareIndex(id);
 
-    final nullGrid =
-        slidingPuzzleModel.squaresTwoDList[nullSquareIndex!.$1][nullSquareIndex
-            .$2];
+    final nullGrid = slidingPuzzleModel.squaresTwoDList[nullSquareIndex!.$1][nullSquareIndex.$2];
     slidingPuzzleModel.squaresTwoDList[nullSquareIndex.$1][nullSquareIndex.$2] =
-        slidingPuzzleModel.squaresTwoDList[tapSquareIndex!.$1][tapSquareIndex
-            .$2];
-    slidingPuzzleModel.squaresTwoDList[tapSquareIndex.$1][tapSquareIndex.$2] =
-        nullGrid;
+        slidingPuzzleModel.squaresTwoDList[tapSquareIndex!.$1][tapSquareIndex.$2];
+    slidingPuzzleModel.squaresTwoDList[tapSquareIndex.$1][tapSquareIndex.$2] = nullGrid;
     slidingPuzzleModel.upSquareCanMoveState();
     if (slidingPuzzleModel.isCompleted()) {
       final DateTime endTime = DateTime.now();
       final dMil = endTime.difference(startTime!).inMilliseconds;
-      widget.onCompletedCallback?.call(
-        LevelData(
-          levelInfo.id,
-          levelInfo.calculateStarRating(dMil),
-          dMil,
-          false,
-        ),
-      );
+      widget.onCompletedCallback?.call(dMil);
     }
     setState(() {});
   }
@@ -111,11 +100,7 @@ class _SlidingPuzzleState extends State<SlidingPuzzle> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           for (final square in squareList)
-                            SlidingSquare(
-                              squareModel: square,
-                              onTapCallBack: _onTapCallBack,
-                              squareWidth: _squareWidth,
-                            ),
+                            SlidingSquare(squareModel: square, onTapCallBack: _onTapCallBack, squareWidth: _squareWidth),
                         ],
                       ),
                   ],
@@ -128,7 +113,7 @@ class _SlidingPuzzleState extends State<SlidingPuzzle> {
                     });
                     widget.onBegin?.call();
                   },
-                  image: Image.asset(slidingPuzzleModel.levelInfo.imageAssets),
+                  image: Image.asset(widget.bigImageAsset),
                 ),
       ),
     );
@@ -136,11 +121,7 @@ class _SlidingPuzzleState extends State<SlidingPuzzle> {
 }
 
 class CountdownTimer3Sec extends StatefulWidget {
-  const CountdownTimer3Sec({
-    super.key,
-    required this.endCallBack,
-    required this.image,
-  });
+  const CountdownTimer3Sec({super.key, required this.endCallBack, required this.image});
 
   final VoidCallback endCallBack;
   final Image image;
@@ -191,9 +172,7 @@ class _CountdownTimer3SecState extends State<CountdownTimer3Sec> {
             color: Color(0xfffffffa),
             fontSize: 100,
             fontWeight: FontWeight.bold,
-            shadows: [
-              Shadow(color: Colors.black, blurRadius: 3, offset: Offset.zero),
-            ],
+            shadows: [Shadow(color: Colors.black, blurRadius: 3, offset: Offset.zero)],
           ),
         ),
       ),

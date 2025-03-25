@@ -1,17 +1,16 @@
 import 'dart:math';
-import 'package:sliding_puzzle/data/levels/level_info.dart';
 import 'square_model.dart';
 
 class SlidingPuzzleModel {
-  SlidingPuzzleModel(this.levelInfo);
+  SlidingPuzzleModel({required this.size, required this.imageAssetsList});
 
   List<List<SquareModel>>? _squaresTwoDList;
-  final LevelInfo levelInfo;
-  late final size = levelInfo.size;
+  final int size;
+  final List<String> imageAssetsList;
 
   List<List<SquareModel>> get squaresTwoDList {
     if (_squaresTwoDList == null) {
-      final imageAssetsList = levelInfo.squareImageAssets;
+      // final imageAssetsList = levelInfo.squareImageAssets;
 
       _squaresTwoDList = List<List<SquareModel>>.generate(
         size,
