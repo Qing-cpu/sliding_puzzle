@@ -22,6 +22,7 @@ class LevelListPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+          toolbarHeight: 44,
         actions: [
           StarCount()
         ],

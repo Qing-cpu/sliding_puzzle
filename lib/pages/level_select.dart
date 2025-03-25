@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:sliding_puzzle/data/db_tools/db_tools.dart';
 import 'package:sliding_puzzle/data/db_tools/level_data.dart';
@@ -17,7 +18,6 @@ class LevelSelect extends StatefulWidget {
 }
 
 class _LevelSelectState extends State<LevelSelect> {
-  final _heightBox8 = const SizedBox(height: 8);
   int _index = 0;
   final levels = Levels.levelInfos;
   late final PageController _pageController;
@@ -36,7 +36,7 @@ class _LevelSelectState extends State<LevelSelect> {
     super.initState();
     final maxId = DBTools.maxLevelId;
     _index = Levels.levelInfos.indexWhere((i) => i.id == maxId);
-    _pageController = PageController(viewportFraction: 0.8, initialPage: _index);
+    _pageController = PageController(initialPage: _index);
     _pageController.addListener(_listener);
   }
 
@@ -60,7 +60,7 @@ class _LevelSelectState extends State<LevelSelect> {
   }
 
   void _openLevelListPage() =>
-      Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => LevelListPage(pageController: _pageController)));
+      Navigator.of(context).push(CupertinoPageRoute(builder: (BuildContext context) => LevelListPage(pageController: _pageController)));
 
   _onPressedLeftIcon() =>
       _pageController.animateToPage(_pageController.page!.toInt() - 1, duration: Duration(milliseconds: 200), curve: Curves.easeInOut);
@@ -68,77 +68,42 @@ class _LevelSelectState extends State<LevelSelect> {
   _onPressedRightIcon() =>
       _pageController.animateToPage(_pageController.page!.toInt() + 1, duration: Duration(milliseconds: 200), curve: Curves.easeInOut);
 
+  String mil2TimeString(int mil) {
+    return '${mil ~/ 60000} m ${mil ~/ 1000 % 60} s ${mil % 1000 ~/ 10} ms';
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(actions: [
-        IconButton(
-          icon: Icon(Icons.list,
-          size: 31,
-            color: Colors.white,
-            shadows: [
-              Shadow(
-                color: Colors.black87,
-                blurRadius: 2,
-                offset: Offset(1, 1),
-              )
-            ],
-          ), onPressed: _openLevelListPage,
-        ),
-        GestureDetector(
-            onTap: _openLevelListPage,
-            child: StarCount()),
-        SizedBox(
-          width: 8,
-        ),
-      ]),
+      appBar: AppBar(toolbarHeight: 44, actions: [GestureDetector(onTap: _openLevelListPage, child: StarCount()), SizedBox(width: 8)]),
       body: Column(
         children: [
-          _heightBox8,
+          // < icon, level 序列, > icon
           SizedBox(
-            height: 36,
+            height: 44,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                Expanded(child: IconButton(onPressed: _onPressedLeftIcon, icon: Icon(Icons.chevron_left, color: const Color(0xFF1D2129)))),
                 Expanded(
-                  child: Container(
-                    alignment: Alignment.centerRight,
-                    child: IconButton(
-                      onPressed: _onPressedLeftIcon,
-                      icon: Icon(
-                        Icons.chevron_left,
-                        shadows: [Shadow(color: Colors.black87, blurRadius: 2, offset: Offset(1, 1))],
-                        color: Colors.black54,
-                      ),
-                    ),
+                  child: Center(
+                    child: Text('$_index / ${Levels.levelInfos.length}', style: TextStyle(color: const Color(0xFF1D2129), fontSize: 18)),
                   ),
                 ),
-                Expanded(child: Center(child: Text(Levels.levelInfos[_index].name, style: TextStyle(fontSize: 24)))),
                 Expanded(
-                  child: Container(
-                    alignment: Alignment.centerLeft,
-                    child: IconButton(
-                      onPressed: _onPressedRightIcon,
-                      icon: Icon(
-                        color: Colors.black54,
-                        shadows: [Shadow(color: Colors.black87, blurRadius: 2, offset: Offset(1, 1))],
-                        Icons.chevron_right,
-                      ),
-                    ),
-                  ),
+                  child: IconButton(onPressed: _onPressedRightIcon, icon: Icon(color: const Color(0xFF1D2129), Icons.chevron_right)),
                 ),
               ],
             ),
           ),
-          _heightBox8,
+          // level page view
           SizedBox(
             height: 288,
             child: PageView.builder(
               controller: _pageController,
               itemCount: levels.length,
               itemBuilder: (BuildContext context, int i) {
-                return Padding(
-                  padding: const EdgeInsets.all(4.0),
+                return Container(
                   child:
                       i <= DBTools.maxLevelId + 1
                           ? StartBox(
@@ -153,15 +118,19 @@ class _LevelSelectState extends State<LevelSelect> {
               },
             ),
           ),
-
-          // 大小
-          _heightBox8,
-          LevelSizePoint(count: levels[_index].size),
-          _heightBox8,
-          _heightBox8,
+          const SizedBox(height: 8),
+          // level name
+          Text(Levels.levelInfos[_index].name, style: TextStyle(fontSize: 21, fontWeight: FontWeight.normal, color: Color(0xff1D2129))),
+          const SizedBox(height: 8),
+          // 星星
           StarsCount(leveData?.starCount),
-          // Text('大小: ${_levelInfo.size} X ${_levelInfo.size}'),
-          // Expanded(child: Container()),
+          const SizedBox(height: 8),
+          // 记录
+          if (leveData != null)
+            Text(
+              '记录：${mil2TimeString(leveData!.timeMil)}',
+              style: TextStyle(fontSize: 14, fontWeight: FontWeight.normal, color: Color(0xff7d8aa1)),
+            ),
         ],
       ),
     );

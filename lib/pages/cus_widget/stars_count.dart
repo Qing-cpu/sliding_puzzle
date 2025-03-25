@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class StarsCount extends StatelessWidget {
-  const StarsCount(this.hasCount, {super.key,this.maxCount = 3,this.size = 46});
+  const StarsCount(this.hasCount, {super.key, this.maxCount = 3, this.size = 46});
 
   final int? hasCount;
 
@@ -13,31 +13,50 @@ class StarsCount extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      alignment: Alignment.center,
-      height: 100,
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.center,
-        spacing: 17,
-        children: List.generate(
-          3,
-              (i) => AnimatedSwitcher(
-            duration: Duration(milliseconds: 300),
-            child:
-            Image.asset(
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.center,
+      spacing: 17,
+      children: [
+        AnimatedSwitcher(
+          duration: Duration(milliseconds: 300),
+          child: Transform.rotate(
+            angle: 1,
+            child: Image.asset(
               height: size,
-                width: size,
-                key: Key('${i < _count}'),
-                i < _count ? 'assets/images/star_s.png' : 'assets/images/star_d.png'),
-            // Icon(
-            //   color: i < _count ? Colors.yellow.shade400 : Color(0xFFE4CBC8),
-            //   size: size,
-            //   Icons.star_sharp,
-            // ),
+              width: size,
+              key: Key('${0 < _count}'),
+              0 < _count ? 'assets/images/star_s.png' : 'assets/images/star_d.png',
+            ),
           ),
         ),
-      ),
+
+        Transform.translate(
+          offset: Offset(0.0, -3.0),
+          child: AnimatedSwitcher(
+            duration: Duration(milliseconds: 300),
+            child: Image.asset(
+              height: size,
+              width: size,
+              key: Key('${1 < _count}'),
+              1 < _count ? 'assets/images/star_s.png' : 'assets/images/star_d.png',
+            ),
+          ),
+        ),
+
+        AnimatedSwitcher(
+          duration: Duration(milliseconds: 300),
+          child: Transform.rotate(
+            angle: -1,
+            child: Image.asset(
+              height: size,
+              width: size,
+              key: Key('${2 < _count}'),
+              2 < _count ? 'assets/images/star_s.png' : 'assets/images/star_d.png',
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
@@ -55,7 +74,7 @@ class LevelSizePoint extends StatelessWidget {
       spacing: 12,
       children: List<Widget>.generate(
         count,
-            (_) => CircleAvatar(
+        (_) => CircleAvatar(
           radius: size, // 半径
           backgroundColor: Color(0xFF8F8F8F),
         ),

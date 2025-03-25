@@ -42,7 +42,7 @@ class StartPage extends StatelessWidget {
                 // height: ,
                 width: 251,
                 height: 79,
-                child: Center(child: Text('Start', style: TextStyle(fontSize: 50))),
+                child: Center(child: Text('Start', style: TextStyle(fontSize: 24,))),
               ),
             ),
             SizedBox(height: 53),
