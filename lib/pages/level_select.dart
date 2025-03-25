@@ -72,8 +72,6 @@ class _LevelSelectState extends State<LevelSelect> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(actions: [
-
-
         IconButton(
           icon: Icon(Icons.list,
           size: 31,
