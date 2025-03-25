@@ -43,6 +43,12 @@ class _GamePageState extends State<GamePage> {
     });
   }
 
+  @override
+  void dispose() {
+    overlayEntry?.remove();
+    super.dispose();
+  }
+
   _onBegin() {
     setState(() {
       isBegin = true;
@@ -51,14 +57,19 @@ class _GamePageState extends State<GamePage> {
     });
   }
 
-  void showGameCompletedDialog(LevelData? newData,LevelData? oldData) {
+  void showGameCompletedDialog(LevelData? newData, LevelData? oldData) {
     final overlay = Overlay.of(context);
+    overlayEntry?.remove();
     if (newData != null) {
       overlayEntry = OverlayEntry(
         builder: (BuildContext context) => LevelCompletePage(oldData: oldData, newData: newData, playAgain: _playAgain, next: _next),
       );
     } else {
-      overlayEntry = OverlayEntry(builder: (BuildContext context) => TimeOutFailurePage(retry: _playAgain, exit: _back));
+      overlayEntry = OverlayEntry(
+        builder:
+            (BuildContext context) =>
+                TimeOutFailurePage(retry: _playAgain, exit: _back, maxDMil: _levelInfo.starCountTimes.first.inMilliseconds),
+      );
     }
     overlay.insert(overlayEntry!);
   }
@@ -96,7 +107,7 @@ class _GamePageState extends State<GamePage> {
       isCompleted = true;
       dMil = newData.timeMil;
     });
-    showGameCompletedDialog(newData,_data);
+    showGameCompletedDialog(newData, _data);
     DBTools.setLevelDataByLeveData(newData.smaller(_data));
   }
 

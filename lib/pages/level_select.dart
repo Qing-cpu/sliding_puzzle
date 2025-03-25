@@ -87,7 +87,7 @@ class _LevelSelectState extends State<LevelSelect> {
                 Expanded(child: IconButton(onPressed: _onPressedLeftIcon, icon: Icon(Icons.chevron_left, color: const Color(0xFF1D2129)))),
                 Expanded(
                   child: Center(
-                    child: Text('$_index / ${Levels.levelInfos.length}', style: TextStyle(color: const Color(0xFF1D2129), fontSize: 18)),
+                    child: Text('${_index+1} / ${Levels.levelInfos.length}', style: TextStyle(color: const Color(0xFF1D2129), fontSize: 18)),
                   ),
                 ),
                 Expanded(

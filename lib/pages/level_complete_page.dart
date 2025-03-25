@@ -22,14 +22,25 @@ class LevelCompletePage extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
+              const SizedBox(height: 20),
+              Text('完成', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: const Color(0xFF262626))),
+              const SizedBox(height: 8),
               StarsCount(newData.starCount),
-              if (oldData == null) Text('新纪录'),
-              if (oldData != null && newData.timeMil < oldData!.timeMil) Text('恭喜，新纪录'),
-              Text('用时：${newData.timeMil ~/ 60000} m ${newData.timeMil ~/ 1000 % 60} s ${newData.timeMil % 1000} ms'),
-              if (oldData != null) Text('历史：${oldData!.timeMil ~/ 60000} m ${oldData!.timeMil ~/ 1000 % 60} s ${oldData!.timeMil % 1000} ms'),
-              SizedBox(height: 16),
+              const SizedBox(height: 8),
+              Text(
+                '耗时：${newData.timeMil ~/ 60000} m ${newData.timeMil ~/ 1000 % 60} s ${newData.timeMil % 1000} ms',
+                style: TextStyle(fontSize: 16, color: const Color(0xFF5B5B5B)),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                oldData == null || oldData!.timeMil > newData.timeMil
+                    ? '新纪录'
+                    : '记录：${oldData!.timeMil ~/ 60000} m ${oldData!.timeMil ~/ 1000 % 60} s ${oldData!.timeMil % 1000} ms',
+                style: TextStyle(fontSize: 10, color: const Color(0xFF9E9E9E)),
+              ),
+              SizedBox(height: 20),
               Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [TextButton(onPressed: playAgain, child: Text('Play Again')), TextButton(onPressed: next, child: Text('Next'))],
               ),
               SizedBox(height: 16),
