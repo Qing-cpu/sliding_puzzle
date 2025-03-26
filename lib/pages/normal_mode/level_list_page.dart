@@ -24,7 +24,9 @@ class LevelListPage extends StatelessWidget {
       appBar: AppBar(
           toolbarHeight: 44,
         actions: [
-          StarCount()
+          StarCount(
+            count: DBTools.allStarCount,
+          )
         ],
       ),
       body: ListView.builder(

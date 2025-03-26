@@ -158,10 +158,16 @@ class _GamePageState extends State<GamePage> {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Expanded(child: SizedBox()),
-            box16H,
+            box8H,
             Hero(tag: _levelInfo.id, child: PhotoFrame(image: Image.asset(_levelInfo.imageAssets))),
-            Expanded(child: SizedBox()),
+            Expanded(
+                flex: 1,
+                child: Center(
+                  child: SizedBox(
+                    width: 1,
+                    height: 1,
+                  ),
+                )),
             TimeProgress(
               key: Key('$reSetFlag'),
               dMil: dMil,
@@ -194,7 +200,9 @@ class _GamePageState extends State<GamePage> {
                 onCompletedCallback: _onCompletedCallback,
               ),
             ),
-            Expanded(child: SizedBox()),
+            Expanded(
+                flex: 3,
+                child: Center(child: SizedBox(width: 1,height: 1,))),
           ],
         ),
       ),

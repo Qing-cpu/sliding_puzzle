@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sliding_puzzle/data/db_tools/db_tools.dart';
 import 'package:sliding_puzzle/data/levels/levels.dart';
+import 'package:sliding_puzzle/pages/cus_widget/score.dart';
 import 'package:sliding_puzzle/pages/cus_widget/time_progress.dart';
 import 'package:sliding_puzzle/pages/speed_model/game_over_page.dart';
 import 'package:sliding_puzzle/sliding_puzzle/sliding_puzzle.dart';
@@ -16,9 +17,8 @@ class _SpeedModelPageState extends State<SpeedModelPage> {
   int levelCount = 0;
   int? oldScore;
   late List<String> levelSquareImageAssetList;
-  int maxDTime = 25000;
-  int ddMil = 7000;
-  double x = 1.8;
+  int maxDTime = 23000;
+  int ddMil = 1000;
   bool isCompleted = false;
   OverlayEntry? overlayEntry;
   int score = 0;
@@ -32,12 +32,16 @@ class _SpeedModelPageState extends State<SpeedModelPage> {
   }
 
   void _next() {
+    dMil = 0;
     maxDTime = maxDTime - ddMil;
-    if (x > 0.68) {
-      ddMil = (ddMil / x) ~/ 1;
-      x = x * 0.95;
-    } else {
+    if (maxDTime < 15000) {
+      ddMil = 400;
+    }
+    if (maxDTime < 10000) {
       ddMil = 100;
+    }
+    if (maxDTime < 9000) {
+      ddMil = 50;
     }
     setState(() {
       isCompleted = false;
@@ -52,8 +56,6 @@ class _SpeedModelPageState extends State<SpeedModelPage> {
       score += 123;
     });
     _next();
-    // Future.then((_) {
-    // });
   }
 
   void _onGameOver() {
@@ -89,16 +91,32 @@ class _SpeedModelPageState extends State<SpeedModelPage> {
 
   int dMil = 0;
 
-  Widget buildNumWidget(int n) => Container(color: Color(0xFFFFD6C0), child: Center(child: Text('$n', style: TextStyle(fontSize: 27))));
+  final List<Color> colors = [
+    Color(0xFFC30074),
+
+  ];
+
+  Widget buildNumWidget(int n) =>
+
+      Container(color: Color(0xFF00C3BD), child: Center(child:
+      Text('$n', style: TextStyle(
+        shadows: [
+          Shadow(
+            color: Colors.black87,
+            offset: Offset(2, 4),
+            blurRadius: 12
+          )
+        ],
+        fontWeight: FontWeight.bold,
+          fontSize: 52,color: Colors.white))));
 
   @override
   Widget build(BuildContext context) => Scaffold(
-    // floatingActionButton: FloatingActionButton(onPressed: _test),
     appBar: AppBar(toolbarHeight: 44, title: Text('Speed Model')),
     body: Center(
       child: Column(
         children: [
-          Text('Score: $score'),
+          Expanded(child: Center(child: Score(score: score, fontSize: 48))),
           TimeProgress(
             key: Key('tp$levelCount'),
             dMil: dMil,
@@ -107,6 +125,7 @@ class _SpeedModelPageState extends State<SpeedModelPage> {
             isCompleted: isCompleted,
             onTimeOutFailure: _onGameOver,
           ),
+          SizedBox(height: 8,),
           Container(
             padding: EdgeInsets.all(12), // 内边距
             decoration: BoxDecoration(
@@ -122,7 +141,7 @@ class _SpeedModelPageState extends State<SpeedModelPage> {
             ),
             child: SlidingPuzzle(
               key: Key('$levelCount'),
-              isSpeedModel: levelCount != 0,
+              isSpeedModel: false,
               isOnlyNum: true,
               reSetFlag: 0,
               width: 288,
@@ -134,6 +153,7 @@ class _SpeedModelPageState extends State<SpeedModelPage> {
               buildNumWidget: buildNumWidget,
             ),
           ),
+          Expanded(child: SizedBox(width: 1,height: 20,)),
         ],
       ),
     ),

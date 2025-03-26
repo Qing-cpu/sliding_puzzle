@@ -75,7 +75,10 @@ class _LevelSelectState extends State<LevelSelect> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(toolbarHeight: 54, actions: [GestureDetector(onTap: _openLevelListPage, child: StarCount()), SizedBox(width: 8)]),
+      appBar: AppBar(
+        toolbarHeight: 54,
+        actions: [GestureDetector(onTap: _openLevelListPage, child: StarCount(count: DBTools.allStarCount)), SizedBox(width: 8)],
+      ),
       body: Column(
         children: [
           // < icon, level 序列, > icon

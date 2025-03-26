@@ -72,7 +72,6 @@ class _SlidingSquareState extends State<SlidingSquare> with SingleTickerProvider
   }
 
   _onTapDown(d) {
-    print('TapDown');
     audioPlayer.play(AssetSource('sounds/tap/mixkit-modern-click-box-check-1120.wav'));
     if (widget.squareModel.canMove == false || tapId != -1) {
       return;
