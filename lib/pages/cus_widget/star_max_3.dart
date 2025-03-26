@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class StarsCount extends StatelessWidget {
-  const StarsCount(this.hasCount, {super.key, this.maxCount = 3, this.size = 46});
+class StarMax3 extends StatelessWidget {
+  const StarMax3(this.hasCount, {super.key, this.maxCount = 3, this.size = 46});
 
   final int? hasCount;
 
@@ -18,10 +18,10 @@ class StarsCount extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       spacing: 17,
       children: [
-        AnimatedSwitcher(
-          duration: Duration(milliseconds: 300),
-          child: Transform.rotate(
-            angle: 1,
+        Transform.rotate(
+          angle: 1,
+          child: AnimatedSwitcher(
+            duration: Duration(milliseconds: 300),
             child: Image.asset(
               height: size,
               width: size,
@@ -44,10 +44,10 @@ class StarsCount extends StatelessWidget {
           ),
         ),
 
-        AnimatedSwitcher(
-          duration: Duration(milliseconds: 300),
-          child: Transform.rotate(
-            angle: -1,
+        Transform.rotate(
+          angle: -1,
+          child: AnimatedSwitcher(
+            duration: Duration(milliseconds: 300),
             child: Image.asset(
               height: size,
               width: size,

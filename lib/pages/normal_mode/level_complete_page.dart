@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:sliding_puzzle/pages/cus_widget/star_max_3_for_completion.dart';
 
-import '../cus_widget/stars_count.dart';
+import '../cus_widget/star_max_3.dart';
 
 class LevelCompletePage extends StatelessWidget {
   const LevelCompletePage({
@@ -32,7 +33,7 @@ class LevelCompletePage extends StatelessWidget {
               const SizedBox(height: 20),
               Text('完成', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: const Color(0xFF262626))),
               const SizedBox(height: 8),
-              StarsCount(starCount),
+              StarMax3ForCompletion(starCount: starCount,),
               const SizedBox(height: 8),
               Text(
                 '耗时：${newDMil ~/ 60000} m ${newDMil ~/ 1000 % 60} s ${newDMil % 1000} ms',

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../cus_widget/stars_count.dart';
+import '../cus_widget/star_max_3.dart';
 
 class TimeOutFailurePage extends StatelessWidget {
   final VoidCallback retry;
@@ -22,7 +22,7 @@ class TimeOutFailurePage extends StatelessWidget {
               const SizedBox(height: 20),
               Text('You Ran Time Of Out！', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: const Color(0xFF262626))),
               const SizedBox(height: 8),
-              StarsCount(0),
+              StarMax3(0),
               const SizedBox(height: 8),
               Text(
                 '限时：${maxDMil ~/ 60000} m ${maxDMil ~/ 1000 % 60} s ${maxDMil % 1000} ms',

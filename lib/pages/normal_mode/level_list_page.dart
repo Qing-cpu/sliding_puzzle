@@ -5,7 +5,7 @@ import 'package:sliding_puzzle/data/levels/level_info.dart';
 import 'package:sliding_puzzle/data/levels/levels.dart';
 
 import '../cus_widget/star_count.dart';
-import '../cus_widget/stars_count.dart';
+import '../cus_widget/star_max_3.dart';
 
 class LevelListPage extends StatelessWidget {
   const LevelListPage({super.key, required this.pageController, });
@@ -86,7 +86,7 @@ class _ItemWidget extends StatelessWidget {
               ,
             ),
           ),
-          StarsCount(data?.starCount, maxCount: levelInfo.starsCount, size: 32),
+          StarMax3(data?.starCount, maxCount: levelInfo.starsCount, size: 32),
           Text('${levelInfo.size}'),
         ],
       ),

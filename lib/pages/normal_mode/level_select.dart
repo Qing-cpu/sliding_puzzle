@@ -6,7 +6,7 @@ import 'package:sliding_puzzle/data/levels/levels.dart';
 import 'package:sliding_puzzle/pages/normal_mode/level_list_page.dart';
 
 import '../cus_widget/star_count.dart';
-import '../cus_widget/stars_count.dart';
+import '../cus_widget/star_max_3.dart';
 import '../cus_widget/start_box.dart';
 import 'game_page.dart';
 
@@ -125,7 +125,7 @@ class _LevelSelectState extends State<LevelSelect> {
           Text('${_index + 1} / ${Levels.levelInfos.length}', style: TextStyle(color: const Color(0xFF7D8285), fontSize: 12)),
           const SizedBox(height: 16),
           // 星星
-          StarsCount(leveData?.starCount),
+          StarMax3(leveData?.starCount),
           const SizedBox(height: 16),
           // 记录
           if (leveData != null)
