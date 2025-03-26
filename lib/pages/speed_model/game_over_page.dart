@@ -24,7 +24,7 @@ class GameOverPage extends StatelessWidget {
               Text('成绩：$newScore', style: TextStyle(fontSize: 16, color: const Color(0xFF5B5B5B))),
               const SizedBox(height: 4),
               Text(
-                oldScore == null || oldScore! > newScore ? '新纪录' : '记录：$oldScore',
+                oldScore == null || newScore > oldScore! ? '新纪录' : '记录：$oldScore',
                 style: TextStyle(fontSize: 10, color: const Color(0xFF9E9E9E)),
               ),
               SizedBox(height: 20),

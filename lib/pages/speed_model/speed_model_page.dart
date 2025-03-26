@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sliding_puzzle/data/db_tools/db_tools.dart';
 import 'package:sliding_puzzle/data/levels/levels.dart';
 import 'package:sliding_puzzle/pages/cus_widget/time_progress.dart';
 import 'package:sliding_puzzle/pages/speed_model/game_over_page.dart';
@@ -13,6 +14,7 @@ class SpeedModelPage extends StatefulWidget {
 
 class _SpeedModelPageState extends State<SpeedModelPage> {
   int levelCount = 0;
+  int? oldScore;
   late List<String> levelSquareImageAssetList;
   int maxDTime = 25000;
   int ddMil = 7000;
@@ -20,6 +22,14 @@ class _SpeedModelPageState extends State<SpeedModelPage> {
   bool isCompleted = false;
   OverlayEntry? overlayEntry;
   int score = 0;
+
+  @override
+  void initState() {
+    levelSquareImageAssetList = Levels.levelInfos.first.squareImageAssets;
+    isCompleted = false;
+    oldScore = DBTools.getSpeedModelScore();
+    super.initState();
+  }
 
   void _next() {
     maxDTime = maxDTime - ddMil;
@@ -46,14 +56,17 @@ class _SpeedModelPageState extends State<SpeedModelPage> {
     // });
   }
 
-  void _onTimeOutFailure() {
+  void _onGameOver() {
+    if (score > (oldScore ?? 0)) {
+      DBTools.setSpeedModelScore(score);
+    }
     final overlay = Overlay.of(context);
     overlayEntry?.remove();
     overlayEntry = OverlayEntry(
       builder:
           (BuildContext context) => GameOverPage(
             newScore: score,
-            oldScore: null,
+            oldScore: oldScore,
             playAgain: () {
               overlayEntry?.remove();
               Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => SpeedModelPage()));
@@ -64,7 +77,6 @@ class _SpeedModelPageState extends State<SpeedModelPage> {
             },
           ),
     );
-
     overlay.insert(overlayEntry!);
   }
 
@@ -77,17 +89,11 @@ class _SpeedModelPageState extends State<SpeedModelPage> {
 
   int dMil = 0;
 
-  @override
-  void initState() {
-    levelSquareImageAssetList = Levels.levelInfos.first.squareImageAssets;
-    isCompleted = false;
-    super.initState();
-  }
-
   Widget buildNumWidget(int n) => Container(color: Color(0xFFFFD6C0), child: Center(child: Text('$n', style: TextStyle(fontSize: 27))));
 
   @override
   Widget build(BuildContext context) => Scaffold(
+    // floatingActionButton: FloatingActionButton(onPressed: _test),
     appBar: AppBar(toolbarHeight: 44, title: Text('Speed Model')),
     body: Center(
       child: Column(
@@ -99,7 +105,7 @@ class _SpeedModelPageState extends State<SpeedModelPage> {
             width: 288,
             times: [Duration(milliseconds: maxDTime)],
             isCompleted: isCompleted,
-            onTimeOutFailure: _onTimeOutFailure,
+            onTimeOutFailure: _onGameOver,
           ),
           Container(
             padding: EdgeInsets.all(12), // 内边距
