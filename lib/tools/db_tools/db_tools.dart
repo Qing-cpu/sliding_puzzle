@@ -2,7 +2,10 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:sliding_puzzle/data/db_tools/level_data.dart';
+
+import 'level_data.dart';
+
+
 
 class DBTools {
   static dynamic _sharedPreferences;

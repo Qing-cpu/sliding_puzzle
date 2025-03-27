@@ -1,13 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:sliding_puzzle/data/db_tools/db_tools.dart';
-import 'package:sliding_puzzle/data/db_tools/level_data.dart';
-import 'package:sliding_puzzle/data/levels/levels.dart';
-import 'package:sliding_puzzle/pages/normal_mode/level_list_page.dart';
-
-import '../cus_widget/star_count.dart';
-import '../cus_widget/star_max_3.dart';
-import '../cus_widget/start_box.dart';
+import 'package:sliding_puzzle/tools/tools.dart';
+import 'package:sliding_puzzle/cus_widget/cus_widget.dart';
+import 'level_list_page.dart';
 import 'game_page.dart';
 
 class LevelSelect extends StatefulWidget {

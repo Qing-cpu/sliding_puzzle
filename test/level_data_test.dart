@@ -1,6 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:sliding_puzzle/data/db_tools/level_data.dart';
-
+import 'package:sliding_puzzle/tools/tools.dart';
 void main() {
   testWidgets(r'Test [LevelData.smaller] 比较dMil 返回DMil小的', (_) async {
     final LevelData data1 = LevelData(

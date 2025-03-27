@@ -1,10 +1,14 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:sliding_puzzle/sliding_puzzle/models/sliding_puzzle_model.dart';
+import 'package:sliding_puzzle/sliding_puzzle/sliding_square.dart';
 
-import 'models/sliding_puzzle_model.dart';
 import 'models/square_model.dart';
-import 'sliding_square.dart';
+
+export 'models/sliding_puzzle_model.dart';
+export 'models/square_model.dart';
+export 'sliding_square.dart';
 
 class SlidingPuzzle extends StatefulWidget {
   const SlidingPuzzle({
@@ -56,7 +60,7 @@ class _SlidingPuzzleState extends State<SlidingPuzzle> {
     slidingPuzzleModel = SlidingPuzzleModel(size: size, imageAssetsList: widget.imageAssetsList);
     slidingPuzzleModel.shuffle();
     slidingPuzzleModel.upSquareCanMoveState();
-    if(widget.isSpeedModel){
+    if (widget.isSpeedModel) {
       startTime = DateTime.now();
     }
   }

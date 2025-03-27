@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:sliding_puzzle/data/db_tools/db_tools.dart';
 
 class StarCount extends StatelessWidget {
   const StarCount({super.key, required this.count});

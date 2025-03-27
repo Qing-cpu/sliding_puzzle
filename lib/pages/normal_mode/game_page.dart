@@ -1,14 +1,9 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:sliding_puzzle/data/db_tools/db_tools.dart';
-import 'package:sliding_puzzle/data/db_tools/level_data.dart';
-import 'package:sliding_puzzle/data/levels/levels.dart';
-import 'package:sliding_puzzle/pages/cus_widget/photo_frame.dart';
-import 'package:sliding_puzzle/pages/cus_widget/sliding_puzzle/sliding_puzzle.dart';
-import 'package:sliding_puzzle/pages/cus_widget/time_progress.dart';
-import 'package:sliding_puzzle/pages/normal_mode/time_out_failure_page.dart';
-
+import 'time_out_failure_page.dart';
+import 'package:sliding_puzzle/cus_widget/cus_widget.dart';
+import 'package:sliding_puzzle/tools/tools.dart';
 import 'final_completion_page.dart';
 import 'level_complete_page.dart';
 

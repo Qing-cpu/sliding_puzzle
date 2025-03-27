@@ -1,4 +1,4 @@
-import 'package:sliding_puzzle/data/db_tools/level_data.dart';
+import '../db_tools/level_data.dart';
 
 class LevelInfo {
   const LevelInfo._({

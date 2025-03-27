@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:sliding_puzzle/data/db_tools/db_tools.dart';
-import 'package:sliding_puzzle/data/levels/levels.dart';
-import 'package:sliding_puzzle/pages/cus_widget/score.dart';
-import 'package:sliding_puzzle/pages/cus_widget/sliding_puzzle/sliding_puzzle.dart';
-import 'package:sliding_puzzle/pages/cus_widget/time_progress.dart';
+import 'package:sliding_puzzle/cus_widget/cus_widget.dart';
+import 'package:sliding_puzzle/tools/tools.dart';
 import 'package:sliding_puzzle/pages/speed_model/game_over_page.dart';
 
 class SpeedModelPage extends StatefulWidget {
@@ -91,24 +88,22 @@ class _SpeedModelPageState extends State<SpeedModelPage> {
 
   int dMil = 0;
 
-  final List<Color> colors = [
-    Color(0xFFC30074),
+  final List<Color> colors = [Color(0xFFC30074)];
 
-  ];
-
-  Widget buildNumWidget(int n) =>
-
-      Container(color: Color(0xFF00C3BD), child: Center(child:
-      Text('$n', style: TextStyle(
-        shadows: [
-          Shadow(
-            color: Colors.black87,
-            offset: Offset(2, 4),
-            blurRadius: 12
-          )
-        ],
-        fontWeight: FontWeight.bold,
-          fontSize: 52,color: Colors.white))));
+  Widget buildNumWidget(int n) => Container(
+    color: Color(0xFF00C3BD),
+    child: Center(
+      child: Text(
+        '$n',
+        style: TextStyle(
+          shadows: [Shadow(color: Colors.black87, offset: Offset(2, 4), blurRadius: 12)],
+          fontWeight: FontWeight.bold,
+          fontSize: 52,
+          color: Colors.white,
+        ),
+      ),
+    ),
+  );
 
   @override
   Widget build(BuildContext context) => Scaffold(
@@ -125,7 +120,7 @@ class _SpeedModelPageState extends State<SpeedModelPage> {
             isCompleted: isCompleted,
             onTimeOutFailure: _onGameOver,
           ),
-          SizedBox(height: 8,),
+          SizedBox(height: 8),
           Container(
             padding: EdgeInsets.all(12), // 内边距
             decoration: BoxDecoration(
@@ -153,7 +148,7 @@ class _SpeedModelPageState extends State<SpeedModelPage> {
               buildNumWidget: buildNumWidget,
             ),
           ),
-          Expanded(child: SizedBox(width: 1,height: 20,)),
+          Expanded(child: SizedBox(width: 1, height: 20)),
         ],
       ),
     ),

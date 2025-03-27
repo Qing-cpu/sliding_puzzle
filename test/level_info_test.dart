@@ -1,6 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:sliding_puzzle/data/levels/levels.dart';
-
+import 'package:sliding_puzzle/tools/tools.dart';
 void main() {
   testWidgets(r'Test [LevelInfo.calculateStarRating()] 星数计算', (_) async {
     final levelInfo = Levels.levelInfos.first;

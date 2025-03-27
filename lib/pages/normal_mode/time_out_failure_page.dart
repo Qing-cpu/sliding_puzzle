@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-
-import '../cus_widget/star_max_3.dart';
+import 'package:sliding_puzzle/cus_widget/cus_widget.dart';
 
 class TimeOutFailurePage extends StatelessWidget {
   final VoidCallback retry;

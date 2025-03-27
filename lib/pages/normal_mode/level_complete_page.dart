@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sliding_puzzle/pages/cus_widget/star_max_3_for_completion.dart';
-
-import '../cus_widget/star_max_3.dart';
+import 'package:sliding_puzzle/cus_widget/cus_widget.dart';
 
 class LevelCompletePage extends StatelessWidget {
   const LevelCompletePage({

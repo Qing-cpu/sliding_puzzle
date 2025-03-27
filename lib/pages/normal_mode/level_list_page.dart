@@ -1,11 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:sliding_puzzle/data/db_tools/db_tools.dart';
-import 'package:sliding_puzzle/data/db_tools/level_data.dart';
-import 'package:sliding_puzzle/data/levels/level_info.dart';
-import 'package:sliding_puzzle/data/levels/levels.dart';
-
-import '../cus_widget/star_count.dart';
-import '../cus_widget/star_max_3.dart';
+import 'package:sliding_puzzle/tools/tools.dart';
+import 'package:sliding_puzzle/cus_widget/cus_widget.dart';
 
 class LevelListPage extends StatelessWidget {
   const LevelListPage({super.key, required this.pageController, });
