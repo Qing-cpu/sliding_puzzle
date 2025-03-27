@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:sliding_puzzle/data/db_tools/db_tools.dart';
 import 'package:sliding_puzzle/data/levels/levels.dart';
 import 'package:sliding_puzzle/pages/cus_widget/score.dart';
+import 'package:sliding_puzzle/pages/cus_widget/sliding_puzzle/sliding_puzzle.dart';
 import 'package:sliding_puzzle/pages/cus_widget/time_progress.dart';
 import 'package:sliding_puzzle/pages/speed_model/game_over_page.dart';
-import 'package:sliding_puzzle/sliding_puzzle/sliding_puzzle.dart';
 
 class SpeedModelPage extends StatefulWidget {
   const SpeedModelPage({super.key});

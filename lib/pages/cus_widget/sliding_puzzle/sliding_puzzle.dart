@@ -1,10 +1,10 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:sliding_puzzle/sliding_puzzle/models/sliding_puzzle_model.dart';
-import 'package:sliding_puzzle/sliding_puzzle/sliding_square.dart';
 
+import 'models/sliding_puzzle_model.dart';
 import 'models/square_model.dart';
+import 'sliding_square.dart';
 
 class SlidingPuzzle extends StatefulWidget {
   const SlidingPuzzle({

@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:sliding_puzzle/sliding_puzzle/models/sliding_puzzle_model.dart';
+import 'package:sliding_puzzle/pages/cus_widget/sliding_puzzle/models/sliding_puzzle_model.dart';
 
 void main() {
   testWidgets('SlidingPuzzleModel.isSolvable Test', (WidgetTester test) async {
