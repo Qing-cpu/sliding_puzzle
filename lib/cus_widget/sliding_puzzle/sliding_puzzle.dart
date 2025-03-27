@@ -1,9 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:sliding_puzzle/sliding_puzzle/models/sliding_puzzle_model.dart';
-import 'package:sliding_puzzle/sliding_puzzle/sliding_square.dart';
-
+import 'models/sliding_puzzle_model.dart';
+import 'sliding_square.dart';
 import 'models/square_model.dart';
 
 export 'models/sliding_puzzle_model.dart';
@@ -82,13 +81,14 @@ class _SlidingPuzzleState extends State<SlidingPuzzle> {
 
   _onTapCallBack(int id) {
     final nullSquareIndex = slidingPuzzleModel.getNullSquareIndex();
-    final tapSquareIndex = slidingPuzzleModel.getTapSquareIndex(id);
+    final tapSquareIndex = slidingPuzzleModel.getSquareIndex(id);
 
     final nullGrid = slidingPuzzleModel.squaresTwoDList[nullSquareIndex!.$1][nullSquareIndex.$2];
     slidingPuzzleModel.squaresTwoDList[nullSquareIndex.$1][nullSquareIndex.$2] =
         slidingPuzzleModel.squaresTwoDList[tapSquareIndex!.$1][tapSquareIndex.$2];
     slidingPuzzleModel.squaresTwoDList[tapSquareIndex.$1][tapSquareIndex.$2] = nullGrid;
     slidingPuzzleModel.upSquareCanMoveState();
+    slidingPuzzleModel.upDataSquareIndexIsProper();
     if (slidingPuzzleModel.isCompleted()) {
       final DateTime endTime = DateTime.now();
       final dMil = endTime.difference(startTime!).inMilliseconds;

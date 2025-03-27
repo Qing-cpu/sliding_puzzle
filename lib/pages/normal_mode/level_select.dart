@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:sliding_puzzle/tools/tools.dart';
@@ -31,7 +33,7 @@ class _LevelSelectState extends State<LevelSelect> {
     super.initState();
     final maxId = DBTools.maxLevelId;
     _index = Levels.levelInfos.indexWhere((i) => i.id == maxId);
-    _pageController = PageController(initialPage: _index);
+    _pageController = PageController(initialPage: _index, viewportFraction: 0.8);
     _pageController.addListener(_listener);
   }
 
@@ -70,67 +72,164 @@ class _LevelSelectState extends State<LevelSelect> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        toolbarHeight: 54,
-        actions: [GestureDetector(onTap: _openLevelListPage, child: StarCount(count: DBTools.allStarCount)), SizedBox(width: 8)],
-      ),
-      body: Column(
+      body: Stack(
         children: [
-          // < icon, level 序列, > icon
-          SizedBox(
-            height: 54,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+          Positioned(
+            top: 88,
+            bottom: 0,
+            left: 0,
+            right: 0,
+            child: AnimatedSwitcher(
+              duration: Duration(milliseconds: 500),
+              child: Container(
+                key: Key('$_index'),
+                decoration: BoxDecoration(image: DecorationImage(image: AssetImage(levels[_index].imageAssets), fit: BoxFit.cover)),
+              ),
+            ),
+          ),
+
+          Positioned(
+            top: 0,
+            bottom: 0,
+            left: 0,
+            right: 0,
+            child: BackdropFilter(filter: ImageFilter.blur(sigmaX: 60, sigmaY: 60), child: Container(color: Colors.white54)),
+          ),
+
+          Positioned(
+            top: 0,
+            left: 0,
+            right: 0,
+            child: SafeArea(
+              child: Container(
+                // margin: EdgeInsets.only(right: 16, left: 16),
+                height: 44,
+                decoration: BoxDecoration(
+                  // color: Color(0xEEFFFFFF),
+                  // borderRadius: BorderRadius.all(Radius.circular(4)),
+                  image: DecorationImage(image: AssetImage('assets/images/bg2.png'),fit: BoxFit.cover)
+                  // boxShadow: [
+                  //   BoxShadow(color: Colors.black12, offset: Offset(2, 2)),
+                  //   BoxShadow(color: Colors.grey, offset: Offset(5, 5), blurRadius: 10),
+                  // ],
+                ),
+                child: Row(
+                  children: [
+                    IconButton(onPressed: (){
+                      Navigator.of(context).pop();
+                    }, icon: Icon(Icons.arrow_back_ios, color: Colors.white,shadows: [
+                      Shadow(
+                        color: Colors.black,
+                        offset: Offset(1.5, 1),
+                        blurRadius: 5
+                      )
+                    ],)),
+                    Expanded(child: SizedBox()),
+                    GestureDetector(onTap: _openLevelListPage, child: StarCount(count: DBTools.allStarCount)),
+                    SizedBox(width: 8),
+                  ],
+                ),
+              ),
+            ),
+          ),
+
+          SafeArea(
+            child: Column(
               children: [
-                Expanded(child: IconButton(onPressed: _onPressedLeftIcon, icon: Icon(Icons.chevron_left, color: const Color(0xFF1D2129)))),
-                Expanded(
-                  child: Center(
-                    child: Text(
-                      Levels.levelInfos[_index].name,
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.normal, color: Color(0xFF1D2129)),
-                    ),
+                // < icon, level 序列, > icon
+                SizedBox(height: 54),
+                SizedBox(
+                  height: 54,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Expanded(
+                        child: IconButton(onPressed: _onPressedLeftIcon, icon: Icon(Icons.chevron_left, color: const Color(0xFF1D2129))),
+                      ),
+                      Expanded(
+                        child: Center(
+                          child: Text(
+                            Levels.levelInfos[_index].name,
+                            style: TextStyle(fontSize: 18, fontWeight: FontWeight.normal, color: Color(0xFF1D2129)),
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        child: IconButton(onPressed: _onPressedRightIcon, icon: Icon(color: const Color(0xFF1D2129), Icons.chevron_right)),
+                      ),
+                    ],
                   ),
                 ),
-                Expanded(
-                  child: IconButton(onPressed: _onPressedRightIcon, icon: Icon(color: const Color(0xFF1D2129), Icons.chevron_right)),
+                // level page view
+                SizedBox(
+                  height: 288,
+                  child: PageView.builder(
+                    controller: _pageController,
+                    itemCount: levels.length,
+                    itemBuilder: (BuildContext context, int i) {
+                      return Container(
+                        child:
+                            i <= DBTools.maxLevelId + 1
+                                ? StartBox(
+                                  onTap: () => _play(context, i),
+                                  height: 300,
+                                  width: 300,
+                                  child: Container(
+                                    padding: EdgeInsets.all(23),
+                                    decoration: BoxDecoration(
+                                      color: Color(0xBB220000),
+                                      borderRadius: BorderRadius.all(Radius.circular(21)),
+                                      boxShadow: [
+                                        BoxShadow(color: Colors.black12, offset: Offset(2, 2)),
+                                        // BoxShadow(color: Colors.grey, offset: Offset(5, 5), blurRadius: 10),
+                                      ],
+                                    ),
+                                    child: Hero(
+                                      tag: levels[i].id,
+                                      child: Container(
+                                        decoration:
+                                        BoxDecoration(
+                                          borderRadius: BorderRadius.all(Radius.circular(3)),
+                                          border: Border.all(
+                                            color: Colors.white,
+                                            width: 16
+                                          ),
+                                          image: DecorationImage(image: AssetImage(levels[i].imageAssets),
+                                            fit: BoxFit.cover
+                                        ),
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color: Colors.grey,
+                                              offset: Offset(1, 1),
+                                              blurRadius: 2
+                                            )
+                                          ]
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                )
+                                : Icon(Icons.image_rounded, size: 288, color: Colors.grey),
+                      );
+                    },
+                  ),
                 ),
+                const SizedBox(height: 8),
+                // level name
+                Text('${_index + 1} / ${Levels.levelInfos.length}', style: TextStyle(color: const Color(0xFF7D8285), fontSize: 12)),
+                const SizedBox(height: 16),
+                // 星星
+                StarMax3(leveData?.starCount),
+                const SizedBox(height: 16),
+                // 记录
+                if (leveData != null)
+                  Text(
+                    '记录：${mil2TimeString(leveData!.timeMil)}',
+                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.normal, color: Color(0xff7d8aa1)),
+                  ),
               ],
             ),
           ),
-          // level page view
-          SizedBox(
-            height: 288,
-            child: PageView.builder(
-              controller: _pageController,
-              itemCount: levels.length,
-              itemBuilder: (BuildContext context, int i) {
-                return Container(
-                  child:
-                      i <= DBTools.maxLevelId + 1
-                          ? StartBox(
-                            onTap: () => _play(context, i),
-                            height: 280,
-                            width: 280,
-                            child: Hero(tag: levels[i].id, child: Image.asset(levels[i].imageAssets)),
-                          )
-                          : Icon(Icons.image_rounded, size: 288, color: Colors.grey),
-                );
-              },
-            ),
-          ),
-          const SizedBox(height: 8),
-          // level name
-          Text('${_index + 1} / ${Levels.levelInfos.length}', style: TextStyle(color: const Color(0xFF7D8285), fontSize: 12)),
-          const SizedBox(height: 16),
-          // 星星
-          StarMax3(leveData?.starCount),
-          const SizedBox(height: 16),
-          // 记录
-          if (leveData != null)
-            Text(
-              '记录：${mil2TimeString(leveData!.timeMil)}',
-              style: TextStyle(fontSize: 14, fontWeight: FontWeight.normal, color: Color(0xff7d8aa1)),
-            ),
         ],
       ),
     );

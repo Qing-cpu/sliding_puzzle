@@ -108,48 +108,64 @@ class _SpeedModelPageState extends State<SpeedModelPage> {
   @override
   Widget build(BuildContext context) => Scaffold(
     appBar: AppBar(toolbarHeight: 44, title: Text('Speed Model')),
-    body: Center(
-      child: Column(
-        children: [
-          Expanded(child: Center(child: Score(score: score, fontSize: 48))),
-          TimeProgress(
-            key: Key('tp$levelCount'),
-            dMil: dMil,
-            width: 288,
-            times: [Duration(milliseconds: maxDTime)],
-            isCompleted: isCompleted,
-            onTimeOutFailure: _onGameOver,
-          ),
-          SizedBox(height: 8),
-          Container(
-            padding: EdgeInsets.all(12), // 内边距
-            decoration: BoxDecoration(
-              color: Color(0xFFF8F8F8),
-              borderRadius: BorderRadius.circular(16), // 圆角
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey, // 深棕色阴影
-                  blurRadius: 12, // 阴影模糊半径
-                  offset: Offset(4, 6), // 阴影偏移
-                ),
-              ],
-            ),
-            child: SlidingPuzzle(
-              key: Key('$levelCount'),
-              isSpeedModel: false,
-              isOnlyNum: true,
-              reSetFlag: 0,
+    body: Container(
+      decoration: BoxDecoration(
+        image: DecorationImage(image: AssetImage('assets/images/bg3.png'),fit: BoxFit.cover)
+      ),
+      child: Center(
+        child: Column(
+          children: [
+            Expanded(child: Center(child: Score(score: score, textStyle: TextStyle(
+              fontSize: 42 + levelCount * 2,
+              fontWeight: FontWeight.bold,
+              color: Colors.pinkAccent.shade200,
+              shadows: [
+                Shadow(
+                  color: Colors.black54,
+                  offset: Offset(2, 4),
+                  blurRadius: 10,
+                )
+              ]
+            ),))),
+            TimeProgress(
+              key: Key('tp$levelCount'),
+              dMil: dMil,
               width: 288,
-              size: 3,
-              bigImageAsset: '',
-              imageAssetsList: levelSquareImageAssetList,
-              onBegin: _onBegin,
-              onCompletedCallback: _onCompletion,
-              buildNumWidget: buildNumWidget,
+              times: [Duration(milliseconds: maxDTime)],
+              isCompleted: isCompleted,
+              onTimeOutFailure: _onGameOver,
             ),
-          ),
-          Expanded(child: SizedBox(width: 1, height: 20)),
-        ],
+            SizedBox(height: 8),
+            Container(
+              padding: EdgeInsets.all(12), // 内边距
+              decoration: BoxDecoration(
+                color: Color(0xFFF8F8F8),
+                borderRadius: BorderRadius.circular(16), // 圆角
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey, // 深棕色阴影
+                    blurRadius: 12, // 阴影模糊半径
+                    offset: Offset(4, 6), // 阴影偏移
+                  ),
+                ],
+              ),
+              child: SlidingPuzzle(
+                key: Key('$levelCount'),
+                isSpeedModel: false,
+                isOnlyNum: true,
+                reSetFlag: 0,
+                width: 288,
+                size: 3,
+                bigImageAsset: '',
+                imageAssetsList: levelSquareImageAssetList,
+                onBegin: _onBegin,
+                onCompletedCallback: _onCompletion,
+                buildNumWidget: buildNumWidget,
+              ),
+            ),
+            Expanded(child: SizedBox(width: 1, height: 20)),
+          ],
+        ),
       ),
     ),
   );

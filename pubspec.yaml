@@ -15,10 +15,10 @@ dependencies:
   json_serializable: ^6.9.4
   json_annotation: ^4.9.0
   build_runner: ^2.4.15
+  flutter_soloud: ^3.1.1
   flutter_localizations:
     sdk: flutter
   intl: any
-  audioplayers: ^6.4.0
 
 dev_dependencies:
   flutter_test:
@@ -31,6 +31,9 @@ flutter:
     - assets/sounds/music/mixkit-goin-back-to-alabama-830.mp3
     - assets/sounds/tap/mixkit-modern-click-box-check-1120.wav
     - assets/images/star.png
+    - assets/images/bg.png
+    - assets/images/bg2.png
+    - assets/images/bg3.png
     - assets/images/star_d.png
     - assets/images/star_s.png
     - assets/images/start_button_image.png

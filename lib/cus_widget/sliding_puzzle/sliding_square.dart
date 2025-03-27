@@ -1,6 +1,4 @@
-import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
-
 import 'models/square_model.dart';
 
 class SlidingSquare extends StatefulWidget {
@@ -10,7 +8,7 @@ class SlidingSquare extends StatefulWidget {
     required this.onTapCallBack,
     required this.squareWidth,
     this.isOnlyNum = false,
-    this.buildNumWidget
+    this.buildNumWidget,
   });
 
   final double squareWidth;
@@ -26,9 +24,6 @@ class SlidingSquare extends StatefulWidget {
 
 class _SlidingSquareState extends State<SlidingSquare> with SingleTickerProviderStateMixin {
   static final GlobalKey _globalKey = GlobalKey();
-
-  // 初始化播放器
-  final AudioPlayer audioPlayer = AudioPlayer();
 
   late final AnimationController _animationController;
   late Animation<Offset> _animation;
@@ -46,7 +41,6 @@ class _SlidingSquareState extends State<SlidingSquare> with SingleTickerProvider
 
   @override
   void initState() {
-    audioPlayer.setSource(AssetSource('sounds/tap/mixkit-modern-click-box-check-1120.wav'));
     super.initState();
     _animationController =
         AnimationController(vsync: this)
@@ -72,11 +66,12 @@ class _SlidingSquareState extends State<SlidingSquare> with SingleTickerProvider
   }
 
   _onTapDown(d) {
-    audioPlayer.play(AssetSource('sounds/tap/mixkit-modern-click-box-check-1120.wav'));
     if (widget.squareModel.canMove == false || tapId != -1) {
       return;
     }
+    // 判断 空白格子屏幕坐标是否为空
     if (SquareModel.nullGridWidgetOffset == null) {
+      // 获取空白格子屏幕坐标
       upNullWidgetOffset();
     }
     final selfOffset = d.globalPosition - d.localPosition;
@@ -121,7 +116,7 @@ class _SlidingSquareState extends State<SlidingSquare> with SingleTickerProvider
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTapDown: _onTapDown,
+      onTapDown: widget.squareModel.isNullSquare ? null : _onTapDown,
       child: AnimatedBuilder(
         animation: _animation,
         builder: (BuildContext context, Widget? child) => Transform.translate(offset: _animation.value, child: child),

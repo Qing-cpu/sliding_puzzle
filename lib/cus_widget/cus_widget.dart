@@ -7,3 +7,4 @@ export 'time_progress.dart';
 export 'start_box.dart';
 
 export 'sliding_puzzle/sliding_puzzle.dart';
+export 'buttons.dart';

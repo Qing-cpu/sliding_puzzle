@@ -8,19 +8,14 @@ class SlidingPuzzleModel {
   final int size;
   final List<String> imageAssetsList;
 
+  /// 生成2维数组
   List<List<SquareModel>> get squaresTwoDList {
     if (_squaresTwoDList == null) {
       // final imageAssetsList = levelInfo.squareImageAssets;
 
       _squaresTwoDList = List<List<SquareModel>>.generate(
         size,
-        (i) => List<SquareModel>.generate(
-          size,
-          (j) => SquareModel(
-            squareImageAsset: imageAssetsList[i * size + j],
-            id: i * size + j,
-          ),
-        ),
+        (i) => List<SquareModel>.generate(size, (j) => SquareModel(squareImageAsset: imageAssetsList[i * size + j], id: i * size + j)),
       );
       // 设置 nullSquareId 末尾是空 Square
       SquareModel.nullSquareId = squaresTwoDList.last.last.id;
@@ -32,6 +27,7 @@ class SlidingPuzzleModel {
     return o.$1 >= 0 && o.$1 < size && o.$2 >= 0 && o.$2 < size;
   }
 
+  /// 返回空白 Square 的位置
   (int, int)? getNullSquareIndex() {
     for (final gListIndexed in squaresTwoDList.indexed) {
       for (final gIndexed in gListIndexed.$2.indexed) {
@@ -44,7 +40,8 @@ class SlidingPuzzleModel {
     return null;
   }
 
-  (int, int)? getTapSquareIndex(int id) {
+  /// 返回 Square 的位置
+  (int, int)? getSquareIndex(int id) {
     for (final gListIndexed in squaresTwoDList.indexed) {
       for (final gIndexed in gListIndexed.$2.indexed) {
         if (gIndexed.$2.id == id) {
@@ -61,10 +58,7 @@ class SlidingPuzzleModel {
   /// 有不正确id 直接判定失败。
   /// 成功返回 true, 失败返回 false。
   bool isCompleted() => squaresTwoDList.indexed.every(
-    (gridListIndexed) => gridListIndexed.$2.indexed.every(
-      (gridIndexed) =>
-          gridIndexed.$2.id == gridListIndexed.$1 * size + gridIndexed.$1,
-    ),
+    (gridListIndexed) => gridListIndexed.$2.indexed.every((gridIndexed) => gridIndexed.$2.id == gridListIndexed.$1 * size + gridIndexed.$1),
   );
 
   void upSquareCanMoveState() {
@@ -75,23 +69,20 @@ class SlidingPuzzleModel {
     }
     final nullSquareIndex = getNullSquareIndex()!;
     if (_isInBounds((nullSquareIndex.$1 + 1, nullSquareIndex.$2))) {
-      squaresTwoDList[nullSquareIndex.$1 + 1][nullSquareIndex.$2].canMove =
-          true;
+      squaresTwoDList[nullSquareIndex.$1 + 1][nullSquareIndex.$2].canMove = true;
     }
     if (_isInBounds((nullSquareIndex.$1 - 1, nullSquareIndex.$2))) {
-      squaresTwoDList[nullSquareIndex.$1 - 1][nullSquareIndex.$2].canMove =
-          true;
+      squaresTwoDList[nullSquareIndex.$1 - 1][nullSquareIndex.$2].canMove = true;
     }
     if (_isInBounds((nullSquareIndex.$1, nullSquareIndex.$2 + 1))) {
-      squaresTwoDList[nullSquareIndex.$1][nullSquareIndex.$2 + 1].canMove =
-          true;
+      squaresTwoDList[nullSquareIndex.$1][nullSquareIndex.$2 + 1].canMove = true;
     }
     if (_isInBounds((nullSquareIndex.$1, nullSquareIndex.$2 - 1))) {
-      squaresTwoDList[nullSquareIndex.$1][nullSquareIndex.$2 - 1].canMove =
-          true;
+      squaresTwoDList[nullSquareIndex.$1][nullSquareIndex.$2 - 1].canMove = true;
     }
   }
 
+  /// 判断是否有解
   static bool isSolvable(List<List<int>> dList) {
     int n = dList.length;
     int m = dList[0].length;
@@ -118,9 +109,11 @@ class SlidingPuzzleModel {
       }
     }
 
-    if (m % 2 == 1) { // 列数为奇数
+    if (m % 2 == 1) {
+      // 列数为奇数
       return inversions % 2 == 0;
-    } else { // 列数为偶数
+    } else {
+      // 列数为偶数
       return (inversions + blankRowFromBottom) % 2 == 0;
     }
   }
@@ -137,10 +130,18 @@ class SlidingPuzzleModel {
       squaresTwoDList[y1][x1] = squaresTwoDList[y2][x2];
       squaresTwoDList[y2][x2] = grid;
     }
-    if (!isSolvable(
-      squaresTwoDList.map((l) => l.map((m) => m.id).toList()).toList(),
-    )) {
+    if (!isSolvable(squaresTwoDList.map((l) => l.map((m) => m.id).toList()).toList())) {
       shuffle();
+    }
+    upDataSquareIndexIsProper();
+  }
+
+  /// 更新 Square 是否在正确位置
+  void upDataSquareIndexIsProper() {
+    for (var list in squaresTwoDList.indexed) {
+      for (var qI in list.$2.indexed) {
+        qI.$2.squareIndexIsProper = qI.$2.id == list.$1 * size + qI.$1;
+      }
     }
   }
 }

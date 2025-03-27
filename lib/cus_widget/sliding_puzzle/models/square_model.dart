@@ -1,5 +1,7 @@
 import 'dart:ui';
 
+import 'package:sliding_puzzle/tools/sound/sound_tools.dart';
+
 /// 滑块数据类
 class SquareModel {
   SquareModel({required this.squareImageAsset, required this.id});
@@ -15,4 +17,17 @@ class SquareModel {
   static set nullSquareId(int id) => _nullSquareId = id;
 
   bool canMove = false;
+  bool _squareIndexIsProper = false;
+
+  bool get squareIndexIsProper => _squareIndexIsProper;
+
+  set squareIndexIsProper(bool b) {
+    if (_squareIndexIsProper == b) {
+      return;
+    }
+    if (b == true) {
+      SoundTools.playCheck();
+    }
+    _squareIndexIsProper = b;
+  }
 }
