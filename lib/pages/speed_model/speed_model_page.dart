@@ -28,6 +28,8 @@ class _SpeedModelPageState extends State<SpeedModelPage> with SingleTickerProvid
 
   @override
   void dispose() {
+    overlayEntry?.remove();
+    overlayEntry = null;
     _timeProgressController.dispose();
     super.dispose();
   }
@@ -62,6 +64,7 @@ class _SpeedModelPageState extends State<SpeedModelPage> with SingleTickerProvid
     }
     final overlay = Overlay.of(context);
     overlayEntry?.remove();
+    overlayEntry = null;
     overlayEntry = OverlayEntry(
       builder:
           (BuildContext context) => GameOverPage(
@@ -69,10 +72,12 @@ class _SpeedModelPageState extends State<SpeedModelPage> with SingleTickerProvid
             oldScore: oldScore,
             playAgain: () {
               overlayEntry?.remove();
+              overlayEntry = null;
               Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => SpeedModelPage()));
             },
             exit: () {
               overlayEntry?.remove();
+              overlayEntry = null;
               Navigator.of(context).pop();
             },
           ),

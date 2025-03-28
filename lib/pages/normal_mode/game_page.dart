@@ -41,6 +41,7 @@ class _GamePageState extends State<GamePage> with SingleTickerProviderStateMixin
   @override
   void dispose() {
     overlayEntry?.remove();
+    overlayEntry = null;
     _timeProgressController.dispose();
     super.dispose();
   }
@@ -48,6 +49,7 @@ class _GamePageState extends State<GamePage> with SingleTickerProviderStateMixin
   void showGameCompletedDialog(LevelData? newData, LevelData? oldData) {
     final overlay = Overlay.of(context);
     overlayEntry?.remove();
+    overlayEntry = null;
     if (newData != null) {
       overlayEntry = OverlayEntry(
         builder:
@@ -92,9 +94,9 @@ class _GamePageState extends State<GamePage> with SingleTickerProviderStateMixin
 
   void _playAgain() {
     overlayEntry?.remove();
+    overlayEntry = null;
     setState(() => reSetFlag++);
     _timeProgressController.value = 0;
-    overlayEntry = null;
   }
 
   _onCompletedCallback() {

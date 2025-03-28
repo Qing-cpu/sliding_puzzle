@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'models/sliding_puzzle_model.dart';
@@ -147,29 +148,64 @@ class _CountdownTimerSecState extends State<CountdownTimerSec> {
 
   @override
   Widget build(BuildContext context) {
-    return s <= 0
-        ? widget.child
-        : Container(
-          decoration: BoxDecoration(
-            color: Colors.black12,
-            image: widget.image == null ? null : DecorationImage(image: widget.image!.image),
-            borderRadius: BorderRadius.circular(8),
+    return Stack(
+      clipBehavior: Clip.none,
+      children: [
+        widget.child,
+        if (s > 0)
+          Positioned(
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.black12,
+                image: widget.image == null ? null : DecorationImage(image: widget.image!.image),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Container(color: Colors.black26, alignment: Alignment.center, width: double.infinity, height: double.infinity),
+            ),
           ),
-          child: Container(
-            color: Colors.black26,
-            alignment: Alignment.center,
-            width: double.infinity,
-            height: double.infinity,
-            child: Text(
-              '$s',
-              style: TextStyle(
-                color: Color(0xfffffffa),
-                fontSize: 100,
-                fontWeight: FontWeight.bold,
-                shadows: [Shadow(color: Colors.black, blurRadius: 3, offset: Offset.zero)],
+
+        if (s > 0)
+          Positioned(
+            left: 0,
+            right: 0,
+            top: -72,
+            child: Center(
+              child: Container(
+                clipBehavior: Clip.hardEdge,
+                height: 80,
+                width: 80,
+                decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(17))),
+                child: BackdropFilter(filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16), child: Container(color: Colors.black12)),
               ),
             ),
           ),
-        );
+        if (s > 0)
+          Positioned(
+            left: 0,
+            right: 0,
+            top: -72,
+            child: Center(
+              child: Container(
+                alignment: Alignment.center,
+                height: 80,
+                width: 80,
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.white54, width: 0.72),
+                  borderRadius: BorderRadius.all(Radius.circular(17)),
+                ),
+                child: Text(
+                  '$s',
+                  style: TextStyle(
+                    color: Color(0xfffffffa),
+                    fontSize: 50,
+                    fontWeight: FontWeight.bold,
+                    shadows: [Shadow(color: Colors.black, blurRadius: 3, offset: Offset.zero)],
+                  ),
+                ),
+              ),
+            ),
+          ),
+      ],
+    );
   }
 }
