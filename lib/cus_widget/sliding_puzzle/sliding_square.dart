@@ -2,17 +2,9 @@ import 'package:flutter/material.dart';
 import 'models/square_model.dart';
 
 class SlidingSquare extends StatefulWidget {
-  const SlidingSquare({
-    super.key,
-    required this.squareModel,
-    required this.onTapCallBack,
-    required this.squareWidth,
-    this.isOnlyNum = false,
-    this.buildNumWidget,
-  });
+  const SlidingSquare({super.key, required this.squareModel, required this.onTapCallBack, required this.squareWidth, this.buildNumWidget});
 
   final double squareWidth;
-  final bool isOnlyNum;
   final Widget Function(int)? buildNumWidget;
 
   final void Function(int) onTapCallBack;
@@ -94,20 +86,14 @@ class _SlidingSquareState extends State<SlidingSquare> with SingleTickerProvider
       return Opacity(
         opacity: 0,
         key: _globalKey,
-        child:
-        widget.isOnlyNum
-            ? widget.buildNumWidget!.call(widget.squareModel.id + 1)
-                : Image.asset(widget.squareModel.squareImageAsset),
+        child: widget.buildNumWidget?.call(widget.squareModel.id + 1) ?? Image.asset(widget.squareModel.squareImageAsset),
       );
     } else {
       return Opacity(
         opacity: widget.squareModel.isNullSquare ? 0 : 1,
         child: Container(
           color: Colors.white,
-          child:
-              widget.isOnlyNum
-                  ? widget.buildNumWidget!.call(widget.squareModel.id + 1)
-                  : Image.asset(widget.squareModel.squareImageAsset),
+          child: widget.buildNumWidget?.call(widget.squareModel.id + 1) ?? Image.asset(widget.squareModel.squareImageAsset),
         ),
       );
     }

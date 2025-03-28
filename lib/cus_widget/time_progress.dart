@@ -1,26 +1,20 @@
-
 import 'package:flutter/material.dart';
 
-class TimeProgress extends StatelessWidget {
-  const TimeProgress({
-    super.key,
-    required this.times,
-    required this.dMil,
-    required this.width,
-    required this.isCompleted,
-    required this.onTimeOutFailure,
-  });
+class TimeProgress extends StatefulWidget {
+  const TimeProgress({super.key, required this.times, required this.width, required this.timeProgressController});
 
   final List<Duration> times;
-  final int dMil;
   final double width;
-  final bool isCompleted;
+  final TimeProgressController timeProgressController;
 
-  final VoidCallback onTimeOutFailure;
+  @override
+  State<TimeProgress> createState() => _TimeProgressState();
+}
 
+class _TimeProgressState extends State<TimeProgress> {
   final height = 4.0;
 
-  BoxDecoration get decoration => BoxDecoration(color: Color(0xAB72FF77), borderRadius: BorderRadius.circular(3), boxShadow: []);
+  BoxDecoration get _decoration => BoxDecoration(color: Color(0xAB72FF77), borderRadius: BorderRadius.circular(3), boxShadow: []);
 
   BoxDecoration get bDecoration => BoxDecoration(
     color: Colors.black12,
@@ -34,40 +28,48 @@ class TimeProgress extends StatelessWidget {
     ],
   );
 
+  void _statusListener(AnimationStatus state) {
+    if (state == AnimationStatus.completed) {
+      widget.timeProgressController.onEnd();
+    }
+  }
+
+  @override
+  void initState() {
+    widget.timeProgressController.addStatusListener(_statusListener);
+    widget.timeProgressController.duration = widget.times.first;
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    widget.timeProgressController.removeStatusListener(_statusListener);
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Stack(
       fit: StackFit.passthrough,
       children: [
-        Container(margin: const EdgeInsets.all(8), width: width, height: height, decoration: bDecoration),
+        Container(margin: const EdgeInsets.all(8), width: widget.width, height: height, decoration: bDecoration),
         Positioned(
-          child:
-          isCompleted
-              ? Container(
-            margin: const EdgeInsets.all(8),
-            decoration: decoration,
-            height: height,
-            width: dMil / times.first.inMilliseconds * width,
-          )
-              : TweenAnimationBuilder(
-            key: key,
-            tween: Tween<double>(begin: 1.0, end: dMil.toDouble()),
-            duration: times.first,
-            onEnd: onTimeOutFailure,
-            builder: (BuildContext context, double value, Widget? child) {
+          child: AnimatedBuilder(
+            animation: widget.timeProgressController,
+            builder: (BuildContext context, Widget? child) {
               return Container(
                 margin: const EdgeInsets.all(8),
                 height: height,
-                width: dMil == 0 ? 0 : value / dMil * width,
-                decoration: decoration,
+                width: Tween<double>(begin: 0, end: widget.width).evaluate(widget.timeProgressController),
+                decoration: _decoration,
               );
             },
           ),
         ),
-        ...times.skip(1).map((t) {
+        ...widget.times.skip(1).map((t) {
           return Positioned(
             top: 8,
-            left: t.inMilliseconds / times.first.inMilliseconds * width + 4,
+            left: t.inMilliseconds / widget.times.first.inMilliseconds * widget.width + 4,
             child: _Point(color: Colors.black38, size: 4),
           );
         }),
@@ -90,4 +92,16 @@ class _Point extends StatelessWidget {
       decoration: BoxDecoration(color: color, borderRadius: BorderRadius.all(Radius.circular(size))),
     );
   }
+}
+
+class TimeProgressController extends AnimationController {
+  TimeProgressController(this.onEnd, {required super.vsync});
+
+  final VoidCallback onEnd;
+
+  void stopProgress() => stop();
+
+  void reSet() => value = 0;
+
+  void start() => forward();
 }

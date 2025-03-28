@@ -10,48 +10,47 @@ class SpeedModelPage extends StatefulWidget {
   State<SpeedModelPage> createState() => _SpeedModelPageState();
 }
 
-class _SpeedModelPageState extends State<SpeedModelPage> {
+class _SpeedModelPageState extends State<SpeedModelPage> with SingleTickerProviderStateMixin {
   int levelCount = 0;
   int? oldScore;
-  late List<String> levelSquareImageAssetList;
-  int maxDTime = 23000;
-  int ddMil = 1000;
-  bool isCompleted = false;
+  int mil = 23000;
+  double d = 0.95;
   OverlayEntry? overlayEntry;
   int score = 0;
 
+  late TimeProgressController _timeProgressController;
+
   @override
   void initState() {
-    levelSquareImageAssetList = Levels.levelInfos.first.squareImageAssets;
-    isCompleted = false;
+    _timeProgressController = TimeProgressController(_onGameOver, vsync: this);
     oldScore = DBTools.getSpeedModelScore();
     super.initState();
   }
 
-  void _next() {
-    dMil = 0;
-    maxDTime = maxDTime - ddMil;
-    if (maxDTime < 15000) {
-      ddMil = 400;
-    }
-    if (maxDTime < 10000) {
-      ddMil = 100;
-    }
-    if (maxDTime < 9000) {
-      ddMil = 50;
-    }
-    setState(() {
-      isCompleted = false;
-      levelCount++;
-    });
+  @override
+  void dispose() {
+    _timeProgressController.dispose();
+    super.dispose();
   }
 
-  void _onCompletion(int dMil) {
-    setState(() {
-      isCompleted = true;
-      dMil = dMil;
-      score += 123;
-    });
+  void _next() {
+    _timeProgressController.duration = Duration(milliseconds: mil);
+    if (d > 17000) {
+      d -= 2000;
+    } else if (d > 12000) {
+      d -= 1000;
+    } else if (d > 9000) {
+      d -= 500;
+    } else if (d > 6000) {
+      d -= 100;
+    } else {
+      d -= 10;
+    }
+    setState(() => levelCount++);
+  }
+
+  void _onCompletion() {
+    setState(() => score += 123);
     _next();
   }
 
@@ -79,15 +78,6 @@ class _SpeedModelPageState extends State<SpeedModelPage> {
     overlay.insert(overlayEntry!);
   }
 
-  void _onBegin() {
-    setState(() {
-      isCompleted = false;
-      dMil = maxDTime;
-    });
-  }
-
-  int dMil = 0;
-
   final List<Color> colors = [Color(0xFFC30074)];
 
   Widget buildNumWidget(int n) => Container(
@@ -109,31 +99,28 @@ class _SpeedModelPageState extends State<SpeedModelPage> {
   Widget build(BuildContext context) => Scaffold(
     appBar: AppBar(toolbarHeight: 44, title: Text('Speed Model')),
     body: Container(
-      decoration: BoxDecoration(
-        image: DecorationImage(image: AssetImage('assets/images/bg3.png'),fit: BoxFit.cover)
-      ),
+      decoration: BoxDecoration(image: DecorationImage(image: AssetImage('assets/images/bg3.png'), fit: BoxFit.cover)),
       child: Center(
         child: Column(
           children: [
-            Expanded(child: Center(child: Score(score: score, textStyle: TextStyle(
-              fontSize: 42 + levelCount * 2,
-              fontWeight: FontWeight.bold,
-              color: Colors.pinkAccent.shade200,
-              shadows: [
-                Shadow(
-                  color: Colors.black54,
-                  offset: Offset(2, 4),
-                  blurRadius: 10,
-                )
-              ]
-            ),))),
+            Expanded(
+              child: Center(
+                child: Score(
+                  score: score,
+                  textStyle: TextStyle(
+                    fontSize: 42 + levelCount * 2,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.pinkAccent.shade200,
+                    shadows: [Shadow(color: Colors.black54, offset: Offset(2, 4), blurRadius: 10)],
+                  ),
+                ),
+              ),
+            ),
             TimeProgress(
               key: Key('tp$levelCount'),
-              dMil: dMil,
               width: 288,
-              times: [Duration(milliseconds: maxDTime)],
-              isCompleted: isCompleted,
-              onTimeOutFailure: _onGameOver,
+              times: [Duration(milliseconds: mil)],
+              timeProgressController: _timeProgressController,
             ),
             SizedBox(height: 8),
             Container(
@@ -151,16 +138,13 @@ class _SpeedModelPageState extends State<SpeedModelPage> {
               ),
               child: SlidingPuzzle(
                 key: Key('$levelCount'),
-                isSpeedModel: false,
-                isOnlyNum: true,
-                reSetFlag: 0,
                 width: 288,
                 size: 3,
-                bigImageAsset: '',
-                imageAssetsList: levelSquareImageAssetList,
-                onBegin: _onBegin,
+                imageAssetsList: Levels.levelInfos.first.squareImageAssets,
                 onCompletedCallback: _onCompletion,
                 buildNumWidget: buildNumWidget,
+                seconds: 3,
+                onStart: () => _timeProgressController.start(),
               ),
             ),
             Expanded(child: SizedBox(width: 1, height: 20)),

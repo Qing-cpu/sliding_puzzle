@@ -17,22 +17,22 @@ class GamePage extends StatefulWidget {
   State<GamePage> createState() => _GamePageState();
 }
 
-class _GamePageState extends State<GamePage> {
+class _GamePageState extends State<GamePage> with SingleTickerProviderStateMixin {
   late final _levelInfo = Levels.levelInfos[widget.levelInfoIndex];
-  bool isBegin = false;
-  bool isCompleted = false;
-  int reSetFlag = 1;
-  int dMil = 0;
   final _slidingPuzzleWidth = 288.0;
   final DBTools dbTools = DBTools();
+  late final TimeProgressController _timeProgressController;
 
   LevelData? get _data => DBTools.getLevelDataByLeveId(_levelInfo.id);
 
   OverlayEntry? overlayEntry;
 
+  int reSetFlag = 0;
+
   @override
   void initState() {
     super.initState();
+    _timeProgressController = TimeProgressController(_onTimeOutFailure, vsync: this);
     Future(() {
       widget.pageController.jumpToPage(widget.levelInfoIndex);
     });
@@ -41,15 +41,8 @@ class _GamePageState extends State<GamePage> {
   @override
   void dispose() {
     overlayEntry?.remove();
+    _timeProgressController.dispose();
     super.dispose();
-  }
-
-  _onBegin() {
-    setState(() {
-      isBegin = true;
-      isCompleted = false;
-      dMil = _levelInfo.starCountTimes.first.inMilliseconds;
-    });
   }
 
   void showGameCompletedDialog(LevelData? newData, LevelData? oldData) {
@@ -99,27 +92,25 @@ class _GamePageState extends State<GamePage> {
 
   void _playAgain() {
     overlayEntry?.remove();
+    setState(() => reSetFlag++);
+    _timeProgressController.value = 0;
     overlayEntry = null;
-    reSetFlag++;
-    _onBegin();
   }
 
-  _onCompletedCallback(int newDMil) {
-    setState(() {
-      isCompleted = true;
-      dMil = newDMil;
-    });
+  _onCompletedCallback() {
+    final Duration duration = Tween<Duration>(
+      begin: const Duration(),
+      end: _levelInfo.starCountTimes.first,
+    ).evaluate(_timeProgressController);
 
-    final LevelData newData = _levelInfo.getLevelData(dMil);
+    _timeProgressController.stop();
+
+    final LevelData newData = _levelInfo.getLevelData(duration.inMilliseconds);
     showGameCompletedDialog(newData, _data);
     DBTools.setLevelDataByLeveData(newData.smaller(_data));
   }
 
   _onTimeOutFailure() {
-    setState(() {
-      isCompleted = true;
-      dMil = 0;
-    });
     showGameCompletedDialog(null, _data);
   }
 
@@ -155,22 +146,8 @@ class _GamePageState extends State<GamePage> {
           children: [
             box8H,
             Hero(tag: _levelInfo.id, child: PhotoFrame(image: Image.asset(_levelInfo.imageAssets))),
-            Expanded(
-                flex: 1,
-                child: Center(
-                  child: SizedBox(
-                    width: 1,
-                    height: 1,
-                  ),
-                )),
-            TimeProgress(
-              key: Key('$reSetFlag'),
-              dMil: dMil,
-              width: 288,
-              times: _levelInfo.starCountTimes,
-              isCompleted: isCompleted,
-              onTimeOutFailure: _onTimeOutFailure,
-            ),
+            Expanded(flex: 1, child: Center(child: SizedBox(width: 1, height: 1))),
+            TimeProgress(width: 288, times: _levelInfo.starCountTimes, timeProgressController: _timeProgressController),
             box8H,
             Container(
               padding: EdgeInsets.all(12), // 内边距
@@ -186,23 +163,22 @@ class _GamePageState extends State<GamePage> {
                 ],
               ),
               child: SlidingPuzzle(
-                reSetFlag: reSetFlag,
+                key: Key('$reSetFlag'),
                 size: _levelInfo.size,
                 imageAssetsList: _levelInfo.squareImageAssets,
-                bigImageAsset: _levelInfo.imageAssets,
+                image: Image.asset(_levelInfo.imageAssets),
                 width: _slidingPuzzleWidth,
-                onBegin: _onBegin,
                 onCompletedCallback: _onCompletedCallback,
+                seconds: 3,
+                onStart: () {
+                  _timeProgressController.start();
+                },
               ),
             ),
-            Expanded(
-                flex: 3,
-                child: Center(child: SizedBox(width: 1,height: 1,))),
+            Expanded(flex: 3, child: Center(child: SizedBox(width: 1, height: 1))),
           ],
         ),
       ),
     );
   }
 }
-
-

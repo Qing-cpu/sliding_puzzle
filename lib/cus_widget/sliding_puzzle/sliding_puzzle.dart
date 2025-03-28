@@ -13,32 +13,26 @@ class SlidingPuzzle extends StatefulWidget {
   const SlidingPuzzle({
     super.key,
     this.onCompletedCallback,
-    this.onBegin,
-    required this.reSetFlag,
     required this.width,
     required this.size,
-    required this.bigImageAsset,
+    this.image,
     required this.imageAssetsList,
-    this.isSpeedModel = false,
-    this.isOnlyNum = false,
     this.buildNumWidget,
+    required this.seconds,
+    required this.onStart,
   });
 
-  final bool isSpeedModel;
-  final bool isOnlyNum;
   final double width;
-
-  final int reSetFlag;
+  final int seconds;
 
   final Widget Function(int)? buildNumWidget;
+  final VoidCallback onStart;
 
   final int size;
   final List<String> imageAssetsList;
-  final String bigImageAsset;
+  final Image? image;
 
-  final void Function(int)? onCompletedCallback;
-
-  final void Function()? onBegin;
+  final void Function()? onCompletedCallback;
 
   @override
   State<SlidingPuzzle> createState() => _SlidingPuzzleState();
@@ -48,29 +42,15 @@ class _SlidingPuzzleState extends State<SlidingPuzzle> {
   late final SlidingPuzzleModel slidingPuzzleModel;
   late final size = widget.size;
   late final double _squareWidth = widget.width / size;
-  DateTime? startTime;
-
-  bool isBegin = false;
 
   @override
   void initState() {
     super.initState();
+
     SquareModel.nullGridWidgetOffset = null;
     slidingPuzzleModel = SlidingPuzzleModel(size: size, imageAssetsList: widget.imageAssetsList);
     slidingPuzzleModel.shuffle();
     slidingPuzzleModel.upSquareCanMoveState();
-    if (widget.isSpeedModel) {
-      startTime = DateTime.now();
-    }
-  }
-
-  @override
-  void didUpdateWidget(SlidingPuzzle oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (oldWidget.reSetFlag != widget.reSetFlag) {
-      slidingPuzzleModel.shuffle();
-      slidingPuzzleModel.upSquareCanMoveState();
-    }
   }
 
   @override
@@ -90,9 +70,7 @@ class _SlidingPuzzleState extends State<SlidingPuzzle> {
     slidingPuzzleModel.upSquareCanMoveState();
     slidingPuzzleModel.upDataSquareIndexIsProper();
     if (slidingPuzzleModel.isCompleted()) {
-      final DateTime endTime = DateTime.now();
-      final dMil = endTime.difference(startTime!).inMilliseconds;
-      widget.onCompletedCallback?.call(dMil);
+      widget.onCompletedCallback?.call();
     }
     setState(() {});
   }
@@ -104,58 +82,50 @@ class _SlidingPuzzleState extends State<SlidingPuzzle> {
       height: widget.width,
       child: AnimatedSwitcher(
         duration: Duration(milliseconds: 60),
-        child:
-            widget.isSpeedModel || isBegin
-                ? Column(
+        child: CountdownTimerSec(
+          onEnd: widget.onStart,
+          image: widget.image,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ...slidingPuzzleModel.squaresTwoDList.map(
+                (dList) => Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    ...slidingPuzzleModel.squaresTwoDList.map(
-                      (dList) => Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          ...dList.map(
-                            (square) => SlidingSquare(
-                              buildNumWidget: widget.buildNumWidget,
-                              isOnlyNum: widget.isOnlyNum,
-                              squareModel: square,
-                              onTapCallBack: _onTapCallBack,
-                              squareWidth: _squareWidth,
-                            ),
-                          ),
-                        ],
+                    ...dList.map(
+                      (square) => SlidingSquare(
+                        buildNumWidget: widget.buildNumWidget,
+                        squareModel: square,
+                        onTapCallBack: _onTapCallBack,
+                        squareWidth: _squareWidth,
                       ),
                     ),
                   ],
-                )
-                : CountdownTimer3Sec(
-                  endCallBack: () {
-                    setState(() {
-                      isBegin = true;
-                      startTime = DateTime.now();
-                    });
-                    widget.onBegin?.call();
-                  },
-                  image: widget.isOnlyNum ? null : Image.asset(widget.bigImageAsset),
                 ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
 }
 
-class CountdownTimer3Sec extends StatefulWidget {
-  const CountdownTimer3Sec({super.key, required this.endCallBack, required this.image});
+class CountdownTimerSec extends StatefulWidget {
+  const CountdownTimerSec({super.key, required this.image, this.seconds = 3, required this.child, required this.onEnd});
 
-  final VoidCallback endCallBack;
   final Image? image;
+  final int seconds;
+  final Widget child;
+  final VoidCallback onEnd;
 
   @override
-  State<CountdownTimer3Sec> createState() => _CountdownTimer3SecState();
+  State<CountdownTimerSec> createState() => _CountdownTimerSecState();
 }
 
-class _CountdownTimer3SecState extends State<CountdownTimer3Sec> {
-  int s = 3;
-
+class _CountdownTimerSecState extends State<CountdownTimerSec> {
   Timer? _timer;
+  late int s = widget.seconds;
 
   @override
   void dispose() {
@@ -167,37 +137,39 @@ class _CountdownTimer3SecState extends State<CountdownTimer3Sec> {
   void initState() {
     super.initState();
     _timer = Timer.periodic(Duration(seconds: 1), (timer) {
-      if (s == 1) {
-        timer.cancel();
-        widget.endCallBack();
-      }
       setState(() => s--);
+      if (s <= 0) {
+        widget.onEnd.call();
+        timer.cancel();
+      }
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.black12,
-        image: widget.image == null ? null : DecorationImage(image: widget.image!.image),
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Container(
-        color: Colors.black26,
-        alignment: Alignment.center,
-        width: double.infinity,
-        height: double.infinity,
-        child: Text(
-          '$s',
-          style: TextStyle(
-            color: Color(0xfffffffa),
-            fontSize: 100,
-            fontWeight: FontWeight.bold,
-            shadows: [Shadow(color: Colors.black, blurRadius: 3, offset: Offset.zero)],
+    return s <= 0
+        ? widget.child
+        : Container(
+          decoration: BoxDecoration(
+            color: Colors.black12,
+            image: widget.image == null ? null : DecorationImage(image: widget.image!.image),
+            borderRadius: BorderRadius.circular(8),
           ),
-        ),
-      ),
-    );
+          child: Container(
+            color: Colors.black26,
+            alignment: Alignment.center,
+            width: double.infinity,
+            height: double.infinity,
+            child: Text(
+              '$s',
+              style: TextStyle(
+                color: Color(0xfffffffa),
+                fontSize: 100,
+                fontWeight: FontWeight.bold,
+                shadows: [Shadow(color: Colors.black, blurRadius: 3, offset: Offset.zero)],
+              ),
+            ),
+          ),
+        );
   }
 }
