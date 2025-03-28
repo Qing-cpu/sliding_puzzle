@@ -14,7 +14,6 @@ class _SpeedModelPageState extends State<SpeedModelPage> with SingleTickerProvid
   int levelCount = 0;
   int? oldScore;
   int mil = 23000;
-  double d = 0.95;
   OverlayEntry? overlayEntry;
   int score = 0;
 
@@ -35,22 +34,25 @@ class _SpeedModelPageState extends State<SpeedModelPage> with SingleTickerProvid
 
   void _next() {
     _timeProgressController.duration = Duration(milliseconds: mil);
-    if (d > 17000) {
-      d -= 2000;
-    } else if (d > 12000) {
-      d -= 1000;
-    } else if (d > 9000) {
-      d -= 500;
-    } else if (d > 6000) {
-      d -= 100;
+    _timeProgressController.value = 0;
+    if (mil > 17000) {
+      mil -= 2000;
+    } else if (mil > 12000) {
+      mil -= 1000;
+    } else if (mil > 9000) {
+      mil -= 500;
+    } else if (mil > 6000) {
+      mil -= 100;
     } else {
-      d -= 10;
+      mil -= 10;
     }
-    setState(() => levelCount++);
   }
 
   void _onCompletion() {
-    setState(() => score += 123);
+    if (_timeProgressController.status == AnimationStatus.completed) {
+      return;
+    }
+    setState(() => score += (123 * ++levelCount * (1 - _timeProgressController.value)).toInt());
     _next();
   }
 
