@@ -51,7 +51,7 @@ class _LevelSelectState extends State<LevelSelect> {
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           return FadeTransition(opacity: animation, child: child);
         },
-        transitionDuration: Duration(milliseconds: 500),
+        transitionDuration: Duration(milliseconds: 360),
       ),
     );
   }
@@ -107,7 +107,17 @@ class _LevelSelectState extends State<LevelSelect> {
                 decoration: BoxDecoration(
                   // color: Color(0xEEFFFFFF),
                   // borderRadius: BorderRadius.all(Radius.circular(4)),
-                  image: DecorationImage(image: AssetImage('assets/images/bg2.png'),fit: BoxFit.cover)
+                  // image: DecorationImage(image: AssetImage('assets/images/b.png'), fit: BoxFit.cover),
+                  // color: Colors.white,
+                  gradient: LinearGradient(
+                    // 渐变起始点（左上角）
+                    begin: Alignment.topCenter,
+                    // 渐变结束点（右下角）
+                    end: Alignment.bottomCenter,
+                    // 定义渐变颜色列表
+                    colors: [Color(0x00FFFFFF), Color(0xEFFFFFFF)],
+                  ),
+                  border: Border(bottom: BorderSide(color: Colors.black54, width: 0.2)),
                   // boxShadow: [
                   //   BoxShadow(color: Colors.black12, offset: Offset(2, 2)),
                   //   BoxShadow(color: Colors.grey, offset: Offset(5, 5), blurRadius: 10),
@@ -115,15 +125,16 @@ class _LevelSelectState extends State<LevelSelect> {
                 ),
                 child: Row(
                   children: [
-                    IconButton(onPressed: (){
-                      Navigator.of(context).pop();
-                    }, icon: Icon(Icons.arrow_back_ios, color: Colors.white,shadows: [
-                      Shadow(
-                        color: Colors.black,
-                        offset: Offset(1.5, 1),
-                        blurRadius: 5
-                      )
-                    ],)),
+                    IconButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      icon: Icon(
+                        Icons.arrow_back_ios,
+                        color: Colors.white,
+                        shadows: [Shadow(color: Colors.black, offset: Offset(1.5, 1), blurRadius: 5)],
+                      ),
+                    ),
                     Expanded(child: SizedBox()),
                     GestureDetector(onTap: _openLevelListPage, child: StarCount(count: DBTools.allStarCount)),
                     SizedBox(width: 8),
@@ -149,8 +160,13 @@ class _LevelSelectState extends State<LevelSelect> {
                       Expanded(
                         child: Center(
                           child: Text(
-                            Levels.levelInfos[_index].name,
-                            style: TextStyle(fontSize: 18, fontWeight: FontWeight.normal, color: Color(0xFF1D2129)),
+                            '${_index + 1} / ${Levels.levelInfos.length}',
+
+                            style: TextStyle(
+                              color: const Color(0xFF7D8285),
+                              fontSize: 19,
+                              // shadows: [Shadow(color: Colors.grey, offset: Offset(0.6, 1.5), blurRadius: 13)],
+                            ),
                           ),
                         ),
                       ),
@@ -162,48 +178,38 @@ class _LevelSelectState extends State<LevelSelect> {
                 ),
                 // level page view
                 SizedBox(
-                  height: 288,
+                  height: 330,
                   child: PageView.builder(
                     controller: _pageController,
                     itemCount: levels.length,
                     itemBuilder: (BuildContext context, int i) {
-                      return Container(
+                      return Center(
                         child:
                             i <= DBTools.maxLevelId + 1
-                                ? StartBox(
-                                  onTap: () => _play(context, i),
-                                  height: 300,
-                                  width: 300,
-                                  child: Container(
-                                    padding: EdgeInsets.all(23),
-                                    decoration: BoxDecoration(
-                                      color: Color(0xBB220000),
-                                      borderRadius: BorderRadius.all(Radius.circular(21)),
-                                      boxShadow: [
-                                        BoxShadow(color: Colors.black12, offset: Offset(2, 2)),
-                                        // BoxShadow(color: Colors.grey, offset: Offset(5, 5), blurRadius: 10),
-                                      ],
-                                    ),
+                                ? Container(
+                                  width: 288,
+                                  height: 288,
+                                  padding: EdgeInsets.all(23),
+                                  margin: EdgeInsets.only(top: 5, bottom: 10),
+                                  decoration: BoxDecoration(
+                                    color: Color(0xFBFFFAFA),
+                                    borderRadius: BorderRadius.all(Radius.circular(21)),
+                                    border: Border.all(color: Colors.black, width: 0.3),
+                                    boxShadow: [
+                                      BoxShadow(color: Colors.black54, offset: Offset(2, 2), blurRadius: 6),
+                                      // BoxShadow(color: Colors.grey, offset: Offset(5, 5), blurRadius: 10),
+                                    ],
+                                  ),
+                                  child: InkWell(
+                                    onTap: () => _play(context, i),
                                     child: Hero(
                                       tag: levels[i].id,
                                       child: Container(
-                                        decoration:
-                                        BoxDecoration(
+                                        decoration: BoxDecoration(
                                           borderRadius: BorderRadius.all(Radius.circular(3)),
-                                          border: Border.all(
-                                            color: Colors.white,
-                                            width: 16
-                                          ),
-                                          image: DecorationImage(image: AssetImage(levels[i].imageAssets),
-                                            fit: BoxFit.cover
-                                        ),
-                                          boxShadow: [
-                                            BoxShadow(
-                                              color: Colors.grey,
-                                              offset: Offset(1, 1),
-                                              blurRadius: 2
-                                            )
-                                          ]
+                                          border: Border.all(color: Colors.white, width: 16),
+                                          image: DecorationImage(image: AssetImage(levels[i].imageAssets), fit: BoxFit.cover),
+                                          boxShadow: [BoxShadow(color: Colors.grey, offset: Offset(1, 1), blurRadius: 2)],
                                         ),
                                       ),
                                     ),
@@ -214,19 +220,55 @@ class _LevelSelectState extends State<LevelSelect> {
                     },
                   ),
                 ),
-                const SizedBox(height: 8),
-                // level name
-                Text('${_index + 1} / ${Levels.levelInfos.length}', style: TextStyle(color: const Color(0xFF7D8285), fontSize: 12)),
-                const SizedBox(height: 16),
-                // 星星
-                StarMax3(leveData?.starCount),
-                const SizedBox(height: 16),
-                // 记录
-                if (leveData != null)
-                  Text(
-                    '记录：${mil2TimeString(leveData!.timeMil)}',
-                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.normal, color: Color(0xff7d8aa1)),
+                SizedBox(height: 16,),
+                Expanded(
+                  child: Container(
+                    // width: 310,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(4)),
+                      gradient: LinearGradient(
+                        // 渐变起始点（左上角）
+                        begin: Alignment.topCenter,
+                        // 渐变结束点（右下角）
+                        end: Alignment.bottomCenter,
+                        // 定义渐变颜色列表
+                        colors: [
+                          Color(0x00FFFFFF),
+                          Color(0x88FFFFFF),
+                          Color(0x00FFFFFF),
+                        ],
+                      ),
+                      // border: Border(top: BorderSide(color: Colors.black54, width: 0.2)),
+                    ),
+                    child: Center(
+                      child: Column(
+                        children: [
+                          Text(
+                            Levels.levelInfos[_index].name,
+                            style: TextStyle(
+                              fontSize: 23,
+                              shadows: [Shadow(color: Colors.grey, offset: Offset(0.6, 1.5), blurRadius: 16)],
+                              color: Color(0xEE1D2129),
+                              fontWeight: FontWeight.w500
+                            ),
+                          ),
+                          SizedBox(height: 28),
+                          // 星星
+                          StarMax3(leveData?.starCount, size: 72),
+                          const SizedBox(height: 16),
+                          // 记录
+                          if (leveData != null)
+                            Text(
+                              '记录：${mil2TimeString(leveData!.timeMil)}',
+                              style: TextStyle(fontSize: 19, fontWeight: null, color: Color(0xd5445468)),
+                            ),
+
+                          // Expanded(child: SizedBox(height: 8,)),
+                        ],
+                      ),
+                    ),
                   ),
+                ),
               ],
             ),
           ),

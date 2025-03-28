@@ -29,13 +29,7 @@ class _StartPageState extends State<StartPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          setState(() {
-            is1 = true;
-          });
-        },
-      ),
+      floatingActionButton: is1 ? null : FloatingActionButton(onPressed: () => setState(() => is1 = true)),
       body: Container(
         decoration: const BoxDecoration(image: DecorationImage(image: AssetImage('assets/images/bg2.png'), fit: BoxFit.cover)),
         child: SafeArea(
@@ -43,9 +37,14 @@ class _StartPageState extends State<StartPage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                // 开始 Start Button
+                // 开始 Start
                 AnimatedSwitcher(
-                  duration: Duration(milliseconds: 300),
+                  duration: Duration(milliseconds: 320),
+                  switchInCurve: Curves.ease,
+                  switchOutCurve: Curves.ease,
+                  transitionBuilder: (Widget child, Animation<double> animation) {
+                    return ScaleTransition(scale: animation, child: child);
+                  },
                   child:
                       is1
                           ? AButton(
@@ -57,47 +56,42 @@ class _StartPageState extends State<StartPage> {
                             text: 'Start',
                             radius: Radius.circular(32),
                           )
-                          : SizedBox(),
+                          : Column(
+                            children: [
+                              AButton(
+                                onTap: () => _startModel1(context),
+                                width: 300,
+                                fontSize: 32,
+                                text: '普通模式',
+                                radius: Radius.circular(32),
+                              ),
+                              SizedBox( height: 32,),
+                              AButton(
+                                onTap: () => _startSpeedModel1(context),
+                                width: 300,
+                                fontSize: 32,
+                                fontColor: Colors.blueAccent.shade700,
+                                backgroundColor: Colors.greenAccent.shade100,
+                                text: 'SpeedModel',
+                                radius: Radius.circular(32),
+                              ),
+                            ],
+                          ),
                 ),
-
-                AnimatedSwitcher(
-                  duration: Duration(milliseconds: 100),
-                  child:
-                      !is1
-                          ? AButton(onTap: () => _startModel1(context), width: 300, fontSize: 32, text: '普通模式', radius: Radius.circular(32))
-                          : SizedBox(),
-                ),
-                SizedBox(height: 32),
-                AnimatedSwitcher(
-                  duration: Duration(milliseconds: 100),
-                  child:
-                      !is1
-                          ? AButton(
-                            onTap: () => _startSpeedModel1(context),
-                            width: 300,
-                            fontSize: 32,
-                            fontColor: Colors.blueAccent.shade700,
-                            backgroundColor: Colors.greenAccent.shade100,
-                            text: 'SpeedModel',
-                            radius: Radius.circular(32),
-                          )
-                          : SizedBox(),
-                ),
-
-                SizedBox(height: 53),
-                SizedBox(
-                  width: 251,
-                  height: 79,
-                  child: Row(
-                    children: [
-                      // Expanded(child: SizedBox()),
-                      // IconButton(onPressed: () {}, icon: Icon(Icons.share_outlined)),
-                      // Expanded(child: SizedBox()),
-                      // IconButton(onPressed: () => _setting(context), icon: Icon(Icons.settings)),
-                      // Expanded(child: SizedBox()),
-                    ],
-                  ),
-                ),
+                // SizedBox(height: 53),
+                // SizedBox(
+                //   width: 251,
+                //   height: 79,
+                //   child: Row(
+                //     children: [
+                //       Expanded(child: SizedBox()),
+                //       IconButton(onPressed: () {}, icon: Icon(Icons.share_outlined)),
+                //       Expanded(child: SizedBox()),
+                //       IconButton(onPressed: () => _setting(context), icon: Icon(Icons.settings)),
+                //       Expanded(child: SizedBox()),
+                //     ],
+                //   ),
+                // ),
               ],
             ),
           ),

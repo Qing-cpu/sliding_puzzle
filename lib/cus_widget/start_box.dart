@@ -1,13 +1,7 @@
 import 'package:flutter/material.dart';
 
 class StartBox extends StatefulWidget {
-  const StartBox({
-    super.key,
-    required this.child,
-    required this.height,
-    required this.width,
-    required this.onTap,
-  });
+  const StartBox({super.key, required this.child, required this.height, required this.width, required this.onTap});
 
   final double height;
   final double width;
@@ -27,11 +21,11 @@ class _StartBoxState extends State<StartBox> {
     setState(() {
       isTapStart = true;
     });
-    widget.onTap?.call();
 
-    Future.delayed(Duration(milliseconds: 800), () {
-      setState(() => isTapStart = false);
-    });
+    widget.onTap?.call();
+    // Future.delayed(Duration(milliseconds: 600), () {
+    //   setState(() => isTapStart = false);
+    // });
   }
 
   @override
@@ -40,7 +34,7 @@ class _StartBoxState extends State<StartBox> {
       child: SizedBox(
         height: widget.height,
         width: widget.width,
-        child: GestureDetector(
+        child: InkWell(
           onTap: onTap,
           child: Stack(
             alignment: Alignment.center,
@@ -51,7 +45,10 @@ class _StartBoxState extends State<StartBox> {
                 left: 87,
                 right: 76,
                 bottom: 79,
-                child: Image.asset('assets/images/start_button_image_s.png'),
+                child: AnimatedSwitcher(
+                  duration: Duration(milliseconds: 32),
+                  child: isTapStart ? null : Image.asset('assets/images/start_button_image_s.png'),
+                ),
               ),
             ],
           ),
