@@ -22,12 +22,18 @@ class _SlidingSquareState extends State<SlidingSquare> with SingleTickerProvider
   Offset _translateOffset = Offset.zero;
   late final _squareWidth = widget.squareWidth;
 
-  int tapId = -1;
-
   void upNullWidgetOffset() {
     if (SquareModel.nullGridWidgetOffset == null) {
       final RenderBox? renderObject = _globalKey.currentContext?.findAncestorRenderObjectOfType() as RenderBox?;
       SquareModel.nullGridWidgetOffset = renderObject?.localToGlobal(Offset.zero);
+    }
+  }
+
+  void _statusListener(state) {
+    if (state == AnimationStatus.completed) {
+      SquareModel.hasMoving = false;
+      _animationController.value = 0;
+      widget.onTapCallBack(widget.squareModel.id);
     }
   }
 
@@ -37,30 +43,22 @@ class _SlidingSquareState extends State<SlidingSquare> with SingleTickerProvider
     _animationController =
         AnimationController(vsync: this)
           ..duration = const Duration(milliseconds: 80)
-          ..addStatusListener((state) {
-            if (state == AnimationStatus.completed) {
-              if (tapId != -1) {
-                widget.onTapCallBack(tapId);
-                setState(() {
-                  tapId = -1;
-                });
-                _animationController.value = 0;
-              }
-            }
-          });
+          ..addStatusListener(_statusListener);
     _animation = Tween<Offset>(begin: Offset.zero, end: Offset.zero).animate(_animationController);
   }
 
   @override
   void dispose() {
+    _animationController.removeStatusListener(_statusListener);
     _animationController.dispose();
     super.dispose();
   }
 
   _onTapDown(d) {
-    if (widget.squareModel.canMove == false || tapId != -1) {
+    if (SquareModel.hasMoving || widget.squareModel.canMove == false) {
       return;
     }
+
     // 判断 空白格子屏幕坐标是否为空
     if (SquareModel.nullGridWidgetOffset == null) {
       // 获取空白格子屏幕坐标
@@ -72,12 +70,12 @@ class _SlidingSquareState extends State<SlidingSquare> with SingleTickerProvider
     _animation = Tween<Offset>(
       begin: Offset.zero,
       end: _translateOffset,
-    ).chain(CurveTween(curve: Curves.easeOut)).animate(_animationController)..addStatusListener((state) {
+    ).chain(CurveTween(curve: Curves.fastOutSlowIn)).animate(_animationController)..addStatusListener((state) {
       if (state == AnimationStatus.completed) {
         _animationController.stop();
       }
     });
-    tapId = widget.squareModel.id;
+    SquareModel.hasMoving = true;
     _animationController.forward();
   }
 

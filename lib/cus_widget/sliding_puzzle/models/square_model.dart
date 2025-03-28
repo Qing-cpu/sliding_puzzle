@@ -6,6 +6,8 @@ import 'package:sliding_puzzle/tools/sound/sound_tools.dart';
 class SquareModel {
   SquareModel({required this.squareImageAsset, required this.id});
 
+  static bool hasMoving = false;
+
   static Offset? nullGridWidgetOffset;
   static int _nullSquareId = -1;
 
