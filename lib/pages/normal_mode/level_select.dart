@@ -53,7 +53,7 @@ class _LevelSelectState extends State<LevelSelect> {
         },
         transitionDuration: Duration(milliseconds: 360),
       ),
-    );
+    ).then((_) => setState(() {}));
   }
 
   void _openLevelListPage() =>
@@ -220,7 +220,7 @@ class _LevelSelectState extends State<LevelSelect> {
                     },
                   ),
                 ),
-                SizedBox(height: 16,),
+                SizedBox(height: 16),
                 Expanded(
                   child: Container(
                     // width: 310,
@@ -232,11 +232,7 @@ class _LevelSelectState extends State<LevelSelect> {
                         // 渐变结束点（右下角）
                         end: Alignment.bottomCenter,
                         // 定义渐变颜色列表
-                        colors: [
-                          Color(0x00FFFFFF),
-                          Color(0x88FFFFFF),
-                          Color(0x00FFFFFF),
-                        ],
+                        colors: [Color(0x00FFFFFF), Color(0x88FFFFFF), Color(0x00FFFFFF)],
                       ),
                       // border: Border(top: BorderSide(color: Colors.black54, width: 0.2)),
                     ),
@@ -249,7 +245,7 @@ class _LevelSelectState extends State<LevelSelect> {
                               fontSize: 23,
                               shadows: [Shadow(color: Colors.grey, offset: Offset(0.6, 1.5), blurRadius: 16)],
                               color: Color(0xEE1D2129),
-                              fontWeight: FontWeight.w500
+                              fontWeight: FontWeight.w500,
                             ),
                           ),
                           SizedBox(height: 28),

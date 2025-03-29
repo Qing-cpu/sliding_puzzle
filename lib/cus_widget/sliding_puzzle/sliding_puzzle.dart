@@ -21,6 +21,7 @@ class SlidingPuzzle extends StatefulWidget {
     this.buildNumWidget,
     required this.seconds,
     required this.onStart,
+    this.reSetTag = 0,
   });
 
   final double width;
@@ -32,6 +33,7 @@ class SlidingPuzzle extends StatefulWidget {
   final int size;
   final List<String> imageAssetsList;
   final Image? image;
+  final int reSetTag;
 
   final void Function()? onCompletedCallback;
 
@@ -43,6 +45,7 @@ class _SlidingPuzzleState extends State<SlidingPuzzle> {
   late final SlidingPuzzleModel slidingPuzzleModel;
   late final size = widget.size;
   late final double _squareWidth = widget.width / size;
+  late int _reSetTag = widget.reSetTag;
 
   @override
   void initState() {
@@ -50,8 +53,7 @@ class _SlidingPuzzleState extends State<SlidingPuzzle> {
 
     SquareModel.nullGridWidgetOffset = null;
     slidingPuzzleModel = SlidingPuzzleModel(size: size, imageAssetsList: widget.imageAssetsList);
-    slidingPuzzleModel.shuffle();
-    slidingPuzzleModel.upSquareCanMoveState();
+    slidingPuzzleModel.reSet();
   }
 
   @override
@@ -76,16 +78,30 @@ class _SlidingPuzzleState extends State<SlidingPuzzle> {
     setState(() {});
   }
 
+  bool get needReSet => widget.reSetTag != _reSetTag;
+
+  set needReSet(bool need) {
+    if (need == true) {
+      _reSetTag = widget.reSetTag - 100;
+    } else {
+      _reSetTag = widget.reSetTag;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    if (needReSet) {
+      slidingPuzzleModel.reSet();
+      needReSet = false;
+    }
     return SizedBox(
       width: widget.width,
       height: widget.width,
       child: AnimatedSwitcher(
         duration: Duration(milliseconds: 60),
         child: CountdownTimerSec(
+          key: Key('$_reSetTag'),
           onEnd: widget.onStart,
-          image: widget.image,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -113,9 +129,8 @@ class _SlidingPuzzleState extends State<SlidingPuzzle> {
 }
 
 class CountdownTimerSec extends StatefulWidget {
-  const CountdownTimerSec({super.key, required this.image, this.seconds = 3, required this.child, required this.onEnd});
+  const CountdownTimerSec({super.key, this.seconds = 3, required this.child, required this.onEnd});
 
-  final Image? image;
   final int seconds;
   final Widget child;
   final VoidCallback onEnd;
@@ -155,11 +170,7 @@ class _CountdownTimerSecState extends State<CountdownTimerSec> {
         if (s > 0)
           Positioned(
             child: Container(
-              decoration: BoxDecoration(
-                color: Colors.black12,
-                image: widget.image == null ? null : DecorationImage(image: widget.image!.image),
-                borderRadius: BorderRadius.circular(8),
-              ),
+              decoration: BoxDecoration(color: Colors.black12, borderRadius: BorderRadius.circular(8)),
               child: Container(color: Colors.black26, alignment: Alignment.center, width: double.infinity, height: double.infinity),
             ),
           ),

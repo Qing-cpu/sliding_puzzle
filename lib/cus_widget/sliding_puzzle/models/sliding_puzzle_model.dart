@@ -1,4 +1,6 @@
 import 'dart:math';
+import 'package:flutter/material.dart';
+
 import 'square_model.dart';
 
 class SlidingPuzzleModel {
@@ -136,7 +138,7 @@ class SlidingPuzzleModel {
     upDataSquareIndexIsProper();
   }
 
-  /// 更新 Square 是否在正确位置
+  /// 检查所有 Square 位置是否正确，并保存结果
   void upDataSquareIndexIsProper() {
     for (var list in squaresTwoDList.indexed) {
       for (var qI in list.$2.indexed) {
@@ -144,4 +146,11 @@ class SlidingPuzzleModel {
       }
     }
   }
+
+  void reSet() {
+    shuffle();
+    upSquareCanMoveState();
+  }
 }
+
+typedef SetStateCallBack = void Function();

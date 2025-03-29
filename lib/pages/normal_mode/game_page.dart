@@ -18,12 +18,14 @@ class GamePage extends StatefulWidget {
 }
 
 class _GamePageState extends State<GamePage> with SingleTickerProviderStateMixin {
-  late final _levelInfo = Levels.levelInfos[widget.levelInfoIndex];
   final _slidingPuzzleWidth = 288.0;
   final DBTools dbTools = DBTools();
   late final TimeProgressController _timeProgressController;
 
   LevelData? get _data => DBTools.getLevelDataByLeveId(_levelInfo.id);
+  late int _levelInfoIndex = widget.levelInfoIndex;
+
+  LevelInfo get _levelInfo => Levels.levelInfos[_levelInfoIndex];
 
   OverlayEntry? overlayEntry;
 
@@ -34,7 +36,7 @@ class _GamePageState extends State<GamePage> with SingleTickerProviderStateMixin
     super.initState();
     _timeProgressController = TimeProgressController(_onTimeOutFailure, vsync: this);
     Future(() {
-      widget.pageController.jumpToPage(widget.levelInfoIndex);
+      widget.pageController.jumpToPage(_levelInfoIndex);
     });
   }
 
@@ -80,13 +82,12 @@ class _GamePageState extends State<GamePage> with SingleTickerProviderStateMixin
   void _next() {
     overlayEntry?.remove();
     overlayEntry = null;
-    if (widget.levelInfoIndex + 1 < Levels.levelInfos.length) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (BuildContext context) => GamePage(levelInfoIndex: widget.levelInfoIndex + 1, pageController: widget.pageController),
-        ),
-      );
+    if (_levelInfoIndex + 1 < Levels.levelInfos.length) {
+      _timeProgressController.value = 0;
+      setState(() {
+        _levelInfoIndex++;
+        reSetFlag++;
+      });
     } else {
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => FinalCompletionPage()));
     }
@@ -149,7 +150,12 @@ class _GamePageState extends State<GamePage> with SingleTickerProviderStateMixin
             box8H,
             Hero(tag: _levelInfo.id, child: PhotoFrame(image: Image.asset(_levelInfo.imageAssets))),
             Expanded(flex: 1, child: Center(child: SizedBox(width: 1, height: 1))),
-            TimeProgress(width: 288, times: _levelInfo.starCountTimes, timeProgressController: _timeProgressController),
+            TimeProgress(
+              key: Key(_levelInfo.imageAssets),
+              width: 288,
+              times: _levelInfo.starCountTimes,
+              timeProgressController: _timeProgressController,
+            ),
             box8H,
             Container(
               padding: EdgeInsets.all(12), // 内边距
@@ -165,7 +171,8 @@ class _GamePageState extends State<GamePage> with SingleTickerProviderStateMixin
                 ],
               ),
               child: SlidingPuzzle(
-                key: Key('$reSetFlag'),
+                key: Key(_levelInfo.toString()),
+                reSetTag: reSetFlag,
                 size: _levelInfo.size,
                 imageAssetsList: _levelInfo.squareImageAssets,
                 image: Image.asset(_levelInfo.imageAssets),

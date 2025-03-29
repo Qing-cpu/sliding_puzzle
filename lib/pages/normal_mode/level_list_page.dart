@@ -84,7 +84,6 @@ class _ItemWidget extends StatelessWidget {
             ),
           ),
           StarMax3(data?.starCount, maxCount: levelInfo.starsCount, size: 32),
-          Text('${levelInfo.size}'),
         ],
       ),
     );

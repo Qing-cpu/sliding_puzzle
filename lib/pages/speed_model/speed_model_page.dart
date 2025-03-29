@@ -9,7 +9,6 @@ class SpeedModelPage extends StatefulWidget {
   @override
   State<SpeedModelPage> createState() => _SpeedModelPageState();
 }
-
 class _SpeedModelPageState extends State<SpeedModelPage> with SingleTickerProviderStateMixin {
   int levelCount = 0;
   int? oldScore;
@@ -51,6 +50,7 @@ class _SpeedModelPageState extends State<SpeedModelPage> with SingleTickerProvid
   }
 
   void _onCompletion() {
+    // 避免 超时后 调用 _next()
     if (_timeProgressController.status == AnimationStatus.completed) {
       return;
     }
@@ -85,10 +85,11 @@ class _SpeedModelPageState extends State<SpeedModelPage> with SingleTickerProvid
     overlay.insert(overlayEntry!);
   }
 
-  final List<Color> colors = [Color(0xFFC30074)];
-
-  Widget buildNumWidget(int n) => Container(
-    color: Color(0xFF00C3BD),
+  Widget buildNumWidget(int n) => TweenAnimationBuilder(
+    key: Key('$n'),
+    duration: Duration(seconds: 1),
+    tween: ColorTween(begin: Color(0xffffffff), end: _colors[levelCount % _colors.length]),
+    builder: (BuildContext context, Color? value, Widget? child) => Container(color: value, child: child),
     child: Center(
       child: Text(
         '$n',
@@ -144,7 +145,7 @@ class _SpeedModelPageState extends State<SpeedModelPage> with SingleTickerProvid
                 ],
               ),
               child: SlidingPuzzle(
-                key: Key('$levelCount'),
+                reSetTag: levelCount,
                 width: 288,
                 size: 3,
                 imageAssetsList: Levels.levelInfos.first.squareImageAssets,
@@ -161,3 +162,14 @@ class _SpeedModelPageState extends State<SpeedModelPage> with SingleTickerProvid
     ),
   );
 }
+
+const List<Color> _colors = [
+  Color(0xFF00C3BD),
+  Color(0xFFBC0000),
+  Color(0xFF4FDA70),
+  Color(0xFFC30074),
+  Color(0xFF8DCF26),
+  Color(0xFFD8710E),
+  Color(0xFFC38400),
+  Color(0xFFE1D815),
+];
