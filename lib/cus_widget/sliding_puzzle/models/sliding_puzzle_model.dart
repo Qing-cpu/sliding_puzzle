@@ -1,5 +1,4 @@
 import 'dart:math';
-import 'package:flutter/material.dart';
 
 import 'square_model.dart';
 
@@ -122,19 +121,38 @@ class SlidingPuzzleModel {
 
   /// 洗牌
   shuffle() {
-    final r = Random(DateTime.now().millisecondsSinceEpoch);
-    for (int i = 0; i < size * size * 2; i++) {
-      final y1 = r.nextInt(size);
-      final x1 = r.nextInt(size);
-      final y2 = r.nextInt(size);
-      final x2 = r.nextInt(size);
-      final grid = squaresTwoDList[y1][x1];
-      squaresTwoDList[y1][x1] = squaresTwoDList[y2][x2];
-      squaresTwoDList[y2][x2] = grid;
+    final r = Random(DateTime.now().millisecond);
+    var yx = getNullSquareIndex() ?? (size - 1, size - 1);
+    (int, int) random() {
+      late (int, int) res;
+      switch (r.nextInt(4)) {
+        case 0:
+          res = (yx.$1, yx.$2 + 1);
+          break;
+        case 1:
+          res = (yx.$1, yx.$2 - 1);
+          break;
+        case 2:
+          res = (yx.$1 + 1, yx.$2);
+          break;
+        case 3:
+          res = (yx.$1 - 1, yx.$2);
+          break;
+      }
+      if (!_isInBounds(res)) {
+        res = random();
+      }
+      return res;
     }
-    if (!isSolvable(squaresTwoDList.map((l) => l.map((m) => m.id).toList()).toList())) {
-      shuffle();
+
+    for (int i = 0; i < size * size * 10; i++) {
+      var newYX = random();
+      var gridX = squaresTwoDList[newYX.$1][newYX.$2];
+      squaresTwoDList[newYX.$1][newYX.$2] = squaresTwoDList[yx.$1][yx.$2];
+      squaresTwoDList[yx.$1][yx.$2] = gridX;
+      yx = newYX;
     }
+
     upDataSquareIndexIsProper();
   }
 
