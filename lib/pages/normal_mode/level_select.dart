@@ -33,6 +33,9 @@ class _LevelSelectState extends State<LevelSelect> {
     super.initState();
     final maxId = DBTools.maxLevelId;
     _index = Levels.levelInfos.indexWhere((i) => i.id == maxId);
+    if (++_index == Levels.levelInfos.length) {
+      _index--;
+    }
     _pageController = PageController(initialPage: _index, viewportFraction: 0.8);
     _pageController.addListener(_listener);
   }

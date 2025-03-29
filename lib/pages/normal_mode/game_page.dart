@@ -35,9 +35,7 @@ class _GamePageState extends State<GamePage> with SingleTickerProviderStateMixin
   void initState() {
     super.initState();
     _timeProgressController = TimeProgressController(_onTimeOutFailure, vsync: this);
-    Future(() {
-      widget.pageController.jumpToPage(_levelInfoIndex);
-    });
+    Future(() => widget.pageController.jumpToPage(_levelInfoIndex));
   }
 
   @override
@@ -88,6 +86,7 @@ class _GamePageState extends State<GamePage> with SingleTickerProviderStateMixin
         _levelInfoIndex++;
         reSetFlag++;
       });
+      Future(() => widget.pageController.jumpToPage(_levelInfoIndex));
     } else {
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => FinalCompletionPage()));
     }
@@ -128,20 +127,14 @@ class _GamePageState extends State<GamePage> with SingleTickerProviderStateMixin
           PopupMenuButton(
             itemBuilder: (BuildContext context) {
               return [
-                PopupMenuItem(onTap: _next, child: Text('next')),
-                PopupMenuItem(onTap: _back, child: Text('返回')),
-                PopupMenuItem(
-                  child: Text('showD'),
-                  onTap: () {
-                    showGameCompletedDialog(LevelData(1, 2, 3, false), _data);
-                  },
-                ),
+                if (_levelInfoIndex != Levels.levelInfos.length - 1 && _levelInfo.id <= DBTools.maxLevelId)
+                  PopupMenuItem(onTap: _next, child: Text('Next')),
+                PopupMenuItem(onTap: _playAgain, child: Text('Restart')),
               ];
             },
           ),
         ],
       ),
-      floatingActionButton: Platform.isAndroid ? null : FloatingActionButton(onPressed: _back, child: Icon(Icons.exit_to_app)),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,

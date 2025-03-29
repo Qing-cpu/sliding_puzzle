@@ -29,7 +29,9 @@ class _StartPageState extends State<StartPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: is1 ? null : FloatingActionButton(onPressed: () => setState(() => is1 = true)),
+      floatingActionButton: is1 ? null : FloatingActionButton(
+          child: Icon(Icons.exit_to_app_rounded),
+          onPressed: () => setState(() => is1 = true)),
       body: Container(
         decoration: const BoxDecoration(image: DecorationImage(image: AssetImage('assets/images/bg2.png'), fit: BoxFit.cover)),
         child: SafeArea(

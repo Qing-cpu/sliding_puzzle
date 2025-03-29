@@ -34,6 +34,9 @@ flutter:
     - assets/images/bg.png
     - assets/images/bg2.png
     - assets/images/bg3.png
+    - assets/images/num3.png
+    - assets/images/num4.png
+    - assets/images/num5.png
     - assets/images/star_d.png
     - assets/images/star_s.png
     - assets/images/start_button_image.png
