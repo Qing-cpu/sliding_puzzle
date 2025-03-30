@@ -69,7 +69,7 @@ class _LevelSelectState extends State<LevelSelect> {
       _pageController.animateToPage(_pageController.page!.toInt() + 1, duration: Duration(milliseconds: 200), curve: Curves.easeInOut);
 
   String mil2TimeString(int mil) {
-    return '${mil ~/ 60000} m ${mil ~/ 1000 % 60} s ${mil % 1000 ~/ 10} ms';
+    return '${mil ~/ 60000}m, ${mil ~/ 1000 % 60}s, ${mil % 1000 ~/ 10}ms';
   }
 
   @override

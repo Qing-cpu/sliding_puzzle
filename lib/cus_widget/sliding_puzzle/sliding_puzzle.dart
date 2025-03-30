@@ -4,7 +4,6 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'models/sliding_puzzle_model.dart';
 import 'sliding_square.dart';
-import 'models/square_model.dart';
 
 export 'models/sliding_puzzle_model.dart';
 export 'models/square_model.dart';
@@ -43,14 +42,14 @@ class SlidingPuzzle extends StatefulWidget {
 
 class _SlidingPuzzleState extends State<SlidingPuzzle> {
   late final SlidingPuzzleModel slidingPuzzleModel;
-  late final size = widget.size;
-  late final double _squareWidth = widget.width / size;
+
+  double get _squareWidth => widget.width / widget.size;
   late int _reSetTag = widget.reSetTag;
 
   @override
   void initState() {
     super.initState();
-    slidingPuzzleModel = SlidingPuzzleModel(squareWidth: _squareWidth, size: size, imageAssetsList: widget.imageAssetsList);
+    slidingPuzzleModel = SlidingPuzzleModel(squareWidth: _squareWidth, size: widget.size, imageAssetsList: widget.imageAssetsList);
     slidingPuzzleModel.reSet();
   }
 

@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:sliding_puzzle/cus_widget/cus_widget.dart';
 
@@ -6,35 +8,72 @@ class TimeOutFailurePage extends StatelessWidget {
   final VoidCallback exit;
   final int maxDMil;
 
-  const TimeOutFailurePage({super.key, required this.retry, required this.exit,required this.maxDMil});
+  const TimeOutFailurePage({super.key, required this.retry, required this.exit, required this.maxDMil});
+
+  String mil2TimeString(int mil) {
+    return '${mil ~/ 60000}m, ${mil ~/ 1000 % 60}s, ${mil % 1000 ~/ 10}ms';
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black38,
+      backgroundColor: Color(0x00000000),
       body: Center(
-        child: Container(
-          decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(16)),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const SizedBox(height: 20),
-              Text('You Ran Time Of Out！', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: const Color(0xFF262626))),
-              const SizedBox(height: 8),
-              StarMax3(0),
-              const SizedBox(height: 8),
-              Text(
-                '限时：${maxDMil ~/ 60000} m ${maxDMil ~/ 1000 % 60} s ${maxDMil % 1000} ms',
-                style: TextStyle(fontSize: 16, color: const Color(0xFF5B5B5B)),
+        child: Stack(
+          children: [
+            Positioned(
+              top: 0,
+              left: 0,
+              bottom: 0,
+              right: 0,
+              child: Container(
+                margin: EdgeInsets.all(15.6),
+                clipBehavior: Clip.hardEdge,
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.black54, width: 0.1),
+                  color: Colors.white54,
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: BackdropFilter(filter: ImageFilter.blur(sigmaX: 27, sigmaY: 27), child: Container(color: Colors.white12)),
               ),
-              SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [TextButton(onPressed: exit, child: Text('Exit')), TextButton(onPressed: retry, child: Text('Retry'))],
+            ),
+            Container(
+              margin: EdgeInsets.all(17),
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.white, width: 0.1),
+                color: Colors.white24,
+                borderRadius: BorderRadius.circular(16),
               ),
-              SizedBox(height: 16),
-            ],
-          ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const SizedBox(height: 20),
+                  Text(
+                    'You Ran Time Of Out！',
+                    style: TextStyle(
+                      shadows: [
+                        Shadow(color: Color(0xD31B1E55), offset: Offset(1, 1), blurRadius: 6),
+                        Shadow(color: Color(0x9E6A0303), offset: Offset(-0.1, -0.1), blurRadius: 1),
+                      ],
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFF262626),
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  StarMax3(0),
+                  const SizedBox(height: 8),
+                  Text('限时：${mil2TimeString(maxDMil)}', style: TextStyle(fontSize: 16, color: const Color(0xFF5B5B5B))),
+                  SizedBox(height: 20),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [TextButton(onPressed: exit, child: Text('Exit')), TextButton(onPressed: retry, child: Text('Retry'))],
+                  ),
+                  SizedBox(height: 16),
+                ],
+              ),
+            ),
+          ],
         ),
       ),
     );

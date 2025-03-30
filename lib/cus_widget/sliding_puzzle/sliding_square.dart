@@ -18,7 +18,6 @@ class SlidingSquare extends StatefulWidget {
 class _SlidingSquareState extends State<SlidingSquare> with SingleTickerProviderStateMixin {
   late final AnimationController _animationController;
   late Animation<Offset> _animation;
-  late final _squareWidth = widget.width;
 
   void _statusListener(state) {
     if (state == AnimationStatus.completed) {
@@ -46,7 +45,7 @@ class _SlidingSquareState extends State<SlidingSquare> with SingleTickerProvider
   }
 
   _onTapDown(d) {
-    if (SquareModel.hasMoving ||  widget.squareModel.translateOffset == null) {
+    if (SquareModel.hasMoving || widget.squareModel.translateOffset == null) {
       return;
     }
 
@@ -86,7 +85,7 @@ class _SlidingSquareState extends State<SlidingSquare> with SingleTickerProvider
       child: AnimatedBuilder(
         animation: _animation,
         builder: (BuildContext context, Widget? child) => Transform.translate(offset: _animation.value, child: child),
-        child: SizedBox(height: _squareWidth, width: _squareWidth, child: _buildAnimatedChild()),
+        child: SizedBox(height: widget.width, width: widget.width, child: _buildAnimatedChild()),
       ),
     );
   }
