@@ -1,9 +1,12 @@
 import 'dart:math';
+import 'dart:ui';
 
 import 'square_model.dart';
 
 class SlidingPuzzleModel {
-  SlidingPuzzleModel({required this.size, required this.imageAssetsList});
+  SlidingPuzzleModel({required this.size, required this.squareWidth, required this.imageAssetsList});
+
+  final double squareWidth;
 
   List<List<SquareModel>>? _squaresTwoDList;
   final int size;
@@ -62,24 +65,32 @@ class SlidingPuzzleModel {
     (gridListIndexed) => gridListIndexed.$2.indexed.every((gridIndexed) => gridIndexed.$2.id == gridListIndexed.$1 * size + gridIndexed.$1),
   );
 
-  void upSquareCanMoveState() {
+  void upSquareTranslateOffset() {
     for (var list in squaresTwoDList) {
       for (var g in list) {
-        g.canMove = false;
+        g.translateOffset = null;
       }
     }
+    bool isOk(int i) {
+      return i >= 0 && i < size;
+    }
+
+    Offset getTranslateOffset(int dy, int dx) => Offset(dx * squareWidth, dy * squareWidth);
+
     final nullSquareIndex = getNullSquareIndex()!;
-    if (_isInBounds((nullSquareIndex.$1 + 1, nullSquareIndex.$2))) {
-      squaresTwoDList[nullSquareIndex.$1 + 1][nullSquareIndex.$2].canMove = true;
+    final nY = nullSquareIndex.$1;
+    final nX = nullSquareIndex.$2;
+    if (isOk(nY + 1)) {
+      squaresTwoDList[nY + 1][nX].translateOffset = getTranslateOffset(-1, 0);
     }
-    if (_isInBounds((nullSquareIndex.$1 - 1, nullSquareIndex.$2))) {
-      squaresTwoDList[nullSquareIndex.$1 - 1][nullSquareIndex.$2].canMove = true;
+    if (isOk(nY - 1)) {
+      squaresTwoDList[nY - 1][nX].translateOffset = getTranslateOffset(1, 0);
     }
-    if (_isInBounds((nullSquareIndex.$1, nullSquareIndex.$2 + 1))) {
-      squaresTwoDList[nullSquareIndex.$1][nullSquareIndex.$2 + 1].canMove = true;
+    if (isOk(nX + 1)) {
+      squaresTwoDList[nY][nX + 1].translateOffset = getTranslateOffset(0, -1);
     }
-    if (_isInBounds((nullSquareIndex.$1, nullSquareIndex.$2 - 1))) {
-      squaresTwoDList[nullSquareIndex.$1][nullSquareIndex.$2 - 1].canMove = true;
+    if (isOk(nX - 1)) {
+      squaresTwoDList[nY][nX - 1].translateOffset = getTranslateOffset(0, 1);
     }
   }
 
@@ -167,7 +178,7 @@ class SlidingPuzzleModel {
 
   void reSet() {
     shuffle();
-    upSquareCanMoveState();
+    upSquareTranslateOffset();
   }
 }
 

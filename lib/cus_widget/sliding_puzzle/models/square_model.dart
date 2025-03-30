@@ -8,17 +8,14 @@ class SquareModel {
 
   static bool hasMoving = false;
 
-  static Offset? nullGridWidgetOffset;
-  static int _nullSquareId = -1;
+  static int nullSquareId = -1;
 
   final String squareImageAsset;
+  Offset? translateOffset;
   final int id;
 
-  bool get isNullSquare => _nullSquareId == id;
+  bool get isNullSquare => nullSquareId == id;
 
-  static set nullSquareId(int id) => _nullSquareId = id;
-
-  bool canMove = false;
   bool _squareIndexIsProper = false;
 
   bool get squareIndexIsProper => _squareIndexIsProper;

@@ -1,33 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:sliding_puzzle/cus_widget/cus_widget.dart';
 import 'models/square_model.dart';
 
 class SlidingSquare extends StatefulWidget {
-  const SlidingSquare({super.key, required this.squareModel, required this.onTapCallBack, required this.squareWidth, this.buildNumWidget});
+  const SlidingSquare({super.key, required this.squareModel, required this.onTapCallBack, this.buildNumWidget, required this.width});
 
-  final double squareWidth;
   final Widget Function(int)? buildNumWidget;
 
   final void Function(int) onTapCallBack;
   final SquareModel squareModel;
+  final double width;
 
   @override
   State<SlidingSquare> createState() => _SlidingSquareState();
 }
 
 class _SlidingSquareState extends State<SlidingSquare> with SingleTickerProviderStateMixin {
-  static final GlobalKey _globalKey = GlobalKey();
-
   late final AnimationController _animationController;
   late Animation<Offset> _animation;
-  Offset _translateOffset = Offset.zero;
-  late final _squareWidth = widget.squareWidth;
-
-  void upNullWidgetOffset() {
-    if (SquareModel.nullGridWidgetOffset == null) {
-      final RenderBox? renderObject = _globalKey.currentContext?.findAncestorRenderObjectOfType() as RenderBox?;
-      SquareModel.nullGridWidgetOffset = renderObject?.localToGlobal(Offset.zero);
-    }
-  }
+  late final _squareWidth = widget.width;
 
   void _statusListener(state) {
     if (state == AnimationStatus.completed) {
@@ -55,21 +46,13 @@ class _SlidingSquareState extends State<SlidingSquare> with SingleTickerProvider
   }
 
   _onTapDown(d) {
-    if (SquareModel.hasMoving || widget.squareModel.canMove == false) {
+    if (SquareModel.hasMoving ||  widget.squareModel.translateOffset == null) {
       return;
     }
 
-    // 判断 空白格子屏幕坐标是否为空
-    if (SquareModel.nullGridWidgetOffset == null) {
-      // 获取空白格子屏幕坐标
-      upNullWidgetOffset();
-    }
-    final selfOffset = d.globalPosition - d.localPosition;
-    _translateOffset = SquareModel.nullGridWidgetOffset! - selfOffset;
-    SquareModel.nullGridWidgetOffset = selfOffset;
     _animation = Tween<Offset>(
       begin: Offset.zero,
-      end: _translateOffset,
+      end: widget.squareModel.translateOffset,
     ).chain(CurveTween(curve: Curves.fastOutSlowIn)).animate(_animationController)..addStatusListener((state) {
       if (state == AnimationStatus.completed) {
         _animationController.stop();
@@ -80,10 +63,9 @@ class _SlidingSquareState extends State<SlidingSquare> with SingleTickerProvider
   }
 
   Widget _buildAnimatedChild() {
-    if (SquareModel.nullGridWidgetOffset == null && widget.squareModel.isNullSquare) {
+    if (widget.squareModel.isNullSquare) {
       return Opacity(
         opacity: 0,
-        key: _globalKey,
         child: widget.buildNumWidget?.call(widget.squareModel.id + 1) ?? Image.asset(widget.squareModel.squareImageAsset),
       );
     } else {

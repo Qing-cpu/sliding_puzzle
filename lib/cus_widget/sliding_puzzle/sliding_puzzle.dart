@@ -50,16 +50,8 @@ class _SlidingPuzzleState extends State<SlidingPuzzle> {
   @override
   void initState() {
     super.initState();
-
-    SquareModel.nullGridWidgetOffset = null;
-    slidingPuzzleModel = SlidingPuzzleModel(size: size, imageAssetsList: widget.imageAssetsList);
+    slidingPuzzleModel = SlidingPuzzleModel(squareWidth: _squareWidth, size: size, imageAssetsList: widget.imageAssetsList);
     slidingPuzzleModel.reSet();
-  }
-
-  @override
-  void dispose() {
-    SquareModel.nullGridWidgetOffset = null;
-    super.dispose();
   }
 
   _onTapCallBack(int id) {
@@ -70,7 +62,7 @@ class _SlidingPuzzleState extends State<SlidingPuzzle> {
     slidingPuzzleModel.squaresTwoDList[nullSquareIndex.$1][nullSquareIndex.$2] =
         slidingPuzzleModel.squaresTwoDList[tapSquareIndex!.$1][tapSquareIndex.$2];
     slidingPuzzleModel.squaresTwoDList[tapSquareIndex.$1][tapSquareIndex.$2] = nullGrid;
-    slidingPuzzleModel.upSquareCanMoveState();
+    slidingPuzzleModel.upSquareTranslateOffset();
     slidingPuzzleModel.upDataSquareIndexIsProper();
     if (slidingPuzzleModel.isCompleted()) {
       widget.onCompletedCallback?.call();
@@ -111,10 +103,10 @@ class _SlidingPuzzleState extends State<SlidingPuzzle> {
                   children: [
                     ...dList.map(
                       (square) => SlidingSquare(
+                        width: _squareWidth,
                         buildNumWidget: widget.buildNumWidget,
                         squareModel: square,
                         onTapCallBack: _onTapCallBack,
-                        squareWidth: _squareWidth,
                       ),
                     ),
                   ],

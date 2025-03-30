@@ -60,7 +60,7 @@ class _TimeProgressState extends State<TimeProgress> {
               return Container(
                 margin: const EdgeInsets.all(8),
                 height: height,
-                width: Tween<double>(begin: 0, end: widget.width).evaluate(widget.timeProgressController),
+                width: Tween<double>(begin:  widget.width, end: 0).evaluate(widget.timeProgressController),
                 decoration: _decoration,
               );
             },
