@@ -30,6 +30,7 @@ flutter:
   assets:
     - assets/sounds/music/mixkit-goin-back-to-alabama-830.mp3
     - assets/sounds/tap/mixkit-modern-click-box-check-1120.wav
+    - assets/images/bg2.webp
     - assets/images/star.png
     - assets/images/bg.png
     - assets/images/bg2.png

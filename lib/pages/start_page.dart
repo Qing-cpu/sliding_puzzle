@@ -34,7 +34,7 @@ class _StartPageState extends State<StartPage> {
       floatingActionButton:
           is1 ? null : FloatingActionButton(child: Icon(Icons.exit_to_app_rounded), onPressed: () => setState(() => is1 = true)),
       body: Container(
-        decoration: const BoxDecoration(image: DecorationImage(image: AssetImage('assets/images/bg2.png'), fit: BoxFit.cover)),
+        decoration: const BoxDecoration(image: DecorationImage(image: AssetImage('assets/images/bg2.webp'), fit: BoxFit.cover)),
         child: SafeArea(
           child: AnimatedSwitcher(
             duration: Duration(milliseconds: 160),
