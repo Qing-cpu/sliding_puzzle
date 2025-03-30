@@ -14,8 +14,6 @@ class TimeProgress extends StatefulWidget {
 class _TimeProgressState extends State<TimeProgress> {
   final height = 4.0;
 
-  BoxDecoration get _decoration => BoxDecoration(color: Color(0xAB72FF77), borderRadius: BorderRadius.circular(3), boxShadow: []);
-
   BoxDecoration get bDecoration => BoxDecoration(
     color: Colors.black12,
     borderRadius: BorderRadius.circular(2),
@@ -60,8 +58,14 @@ class _TimeProgressState extends State<TimeProgress> {
               return Container(
                 margin: const EdgeInsets.all(8),
                 height: height,
-                width: Tween<double>(begin:  widget.width, end: 0).evaluate(widget.timeProgressController),
-                decoration: _decoration,
+                width: Tween<double>(begin: widget.width, end: 0).evaluate(widget.timeProgressController),
+                decoration: BoxDecoration(
+                  color: ColorTween(begin: Color(0xFF72FF77),
+
+                      end: Color(0xFFFF3C00)).evaluate(widget.timeProgressController),
+                  borderRadius: BorderRadius.circular(3),
+                  boxShadow: [],
+                ),
               );
             },
           ),

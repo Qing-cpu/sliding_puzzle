@@ -5,8 +5,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'level_data.dart';
 
-
-
 class DBTools {
   static dynamic _sharedPreferences;
   static const String _levelDataListKey = '_levelDataListKey';
@@ -91,5 +89,7 @@ class DBTools {
   static void setSpeedModelScore(int score) => sharedPreferences.setInt(_speedModelScoreKey, score);
 
   // 获取 SpeedModel 成绩
-  static int? getSpeedModelScore() => sharedPreferences.getInt(_speedModelScoreKey);
+  static Future<int?> getSpeedModelScore() async {
+    return sharedPreferences.getInt(_speedModelScoreKey);
+  }
 }
