@@ -1,25 +1,50 @@
 import 'dart:math';
-import 'dart:ui';
 
-import 'square_model.dart';
+import 'package:flutter/material.dart';
+import 'package:sliding_puzzle/cus_widget/sliding_puzzle/models/square_model.dart';
+import 'package:sliding_puzzle/tools/levels/level_info.dart';
+import 'package:sliding_puzzle/tools/levels/levels.dart';
 
-class SlidingPuzzleModel {
-  SlidingPuzzleModel({required this.size, required this.squareWidth, required this.imageAssetsList});
+class SlidingPuzzleController {
+  SlidingPuzzleController({
+    this.levelIndex,
+    required this.buildSquareWidget,
+    required this.onCompletedCallback,
+    required this.onStart,
+    required this.width,
+  });
 
-  final double squareWidth;
+  double width;
+  final Widget Function(int) buildSquareWidget;
+  final void Function()? onCompletedCallback;
+  final VoidCallback onStart;
+
+  LevelInfo? get levelInfo =>
+      levelIndex == null ? null : Levels.levelInfos[levelIndex!];
+
+  List<String>? get imageAssetsList => levelInfo?.squareImageAssets;
+
+  int get size => levelIndex == null ? 3 : levelInfo!.size;
+
+  int? levelIndex;
+  final ValueNotifier<int> reSetTag = ValueNotifier(0);
+
+  double get squareWidth => width / size;
 
   List<List<SquareModel>>? _squaresTwoDList;
-  final int size;
-  final List<String> imageAssetsList;
 
   /// 生成2维数组
   List<List<SquareModel>> get squaresTwoDList {
     if (_squaresTwoDList == null) {
-      // final imageAssetsList = levelInfo.squareImageAssets;
-
       _squaresTwoDList = List<List<SquareModel>>.generate(
         size,
-        (i) => List<SquareModel>.generate(size, (j) => SquareModel(squareImageAsset: imageAssetsList[i * size + j], id: i * size + j)),
+        (i) => List<SquareModel>.generate(
+          size,
+          (j) => SquareModel(
+            squareImageAsset: imageAssetsList?[i * size + j],
+            id: i * size + j,
+          ),
+        ),
       );
       // 设置 nullSquareId 末尾是空 Square
       SquareModel.nullSquareId = squaresTwoDList.last.last.id;
@@ -62,7 +87,10 @@ class SlidingPuzzleModel {
   /// 有不正确id 直接判定失败。
   /// 成功返回 true, 失败返回 false。
   bool isCompleted() => squaresTwoDList.indexed.every(
-    (gridListIndexed) => gridListIndexed.$2.indexed.every((gridIndexed) => gridIndexed.$2.id == gridListIndexed.$1 * size + gridIndexed.$1),
+    (gridListIndexed) => gridListIndexed.$2.indexed.every(
+      (gridIndexed) =>
+          gridIndexed.$2.id == gridListIndexed.$1 * size + gridIndexed.$1,
+    ),
   );
 
   void upSquareTranslateOffset() {
@@ -75,7 +103,8 @@ class SlidingPuzzleModel {
       return i >= 0 && i < size;
     }
 
-    Offset getTranslateOffset(int dy, int dx) => Offset(dx * squareWidth, dy * squareWidth);
+    Offset getTranslateOffset(int dy, int dx) =>
+        Offset(dx * squareWidth, dy * squareWidth);
 
     final nullSquareIndex = getNullSquareIndex()!;
     final nY = nullSquareIndex.$1;
@@ -176,9 +205,70 @@ class SlidingPuzzleModel {
     }
   }
 
+  void dispose() {
+    reSetTag.dispose(); // 记得在不再使用时释放资源
+  }
+
   void reSet() {
     shuffle();
     upSquareTranslateOffset();
+    reSetTag.value++;
+  }
+
+  void next() {
+    levelIndex = levelIndex! + 1;
+    _squaresTwoDList = null;
+    reSet();
+  }
+
+  void tapSquare((int, int)? tapSquareIndex) {
+    final nullSquareIndex = getNullSquareIndex();
+
+    final nullGrid = squaresTwoDList[nullSquareIndex!.$1][nullSquareIndex.$2];
+    squaresTwoDList[nullSquareIndex.$1][nullSquareIndex.$2] =
+        squaresTwoDList[tapSquareIndex!.$1][tapSquareIndex.$2];
+    squaresTwoDList[tapSquareIndex.$1][tapSquareIndex.$2] = nullGrid;
+    upSquareTranslateOffset();
+    upDataSquareIndexIsProper();
+    if (isCompleted()) {
+      onCompletedCallback?.call();
+    }
+  }
+
+  void leftMove() {
+    final yx = getNullSquareIndex()!;
+    final ny = yx.$1;
+    final nx = yx.$2 + 1;
+    if (nx < size) {
+      tapSquare((ny, nx));
+    }
+  }
+
+  void rightMove() {
+    final yx = getNullSquareIndex()!;
+    final ny = yx.$1;
+    final nx = yx.$2 - 1;
+    if (nx >= 0) {
+      tapSquare((ny, nx));
+    }
+  }
+
+  void topMove() {
+    final yx = getNullSquareIndex()!;
+    final ny = yx.$1 + 1;
+    final nx = yx.$2;
+    if (ny < size) {
+      tapSquare((ny, nx));
+    }
+  }
+
+  void bottomMove() {
+    final yx = getNullSquareIndex()!;
+    final ny = yx.$1 - 1;
+    final nx = yx.$2;
+    if (ny >= 0) {
+      tapSquare((ny, nx));
+    }
   }
 }
 

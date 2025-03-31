@@ -10,117 +10,77 @@ export 'models/square_model.dart';
 export 'sliding_square.dart';
 
 class SlidingPuzzle extends StatefulWidget {
-  const SlidingPuzzle({
-    super.key,
-    this.onCompletedCallback,
-    required this.width,
-    required this.size,
-    this.image,
-    required this.imageAssetsList,
-    this.buildNumWidget,
-    required this.seconds,
-    required this.onStart,
-    this.reSetTag = 0,
-  });
+  const SlidingPuzzle({super.key, required this.slidingPuzzleController});
 
-  final double width;
-  final int seconds;
-
-  final Widget Function(int)? buildNumWidget;
-  final VoidCallback onStart;
-
-  final int size;
-  final List<String> imageAssetsList;
-  final Image? image;
-  final int reSetTag;
-
-  final void Function()? onCompletedCallback;
+  final SlidingPuzzleController slidingPuzzleController;
 
   @override
   State<SlidingPuzzle> createState() => _SlidingPuzzleState();
 }
 
 class _SlidingPuzzleState extends State<SlidingPuzzle> {
-  late final SlidingPuzzleModel slidingPuzzleModel;
-
-  double get _squareWidth => widget.width / widget.size;
-  late int _reSetTag = widget.reSetTag;
+  SlidingPuzzleController get slidingPuzzleController =>
+      widget.slidingPuzzleController;
 
   @override
   void initState() {
     super.initState();
-    slidingPuzzleModel = SlidingPuzzleModel(squareWidth: _squareWidth, size: widget.size, imageAssetsList: widget.imageAssetsList);
-    slidingPuzzleModel.reSet();
+    slidingPuzzleController.reSet();
   }
 
   _onTapCallBack(int id) {
-    final nullSquareIndex = slidingPuzzleModel.getNullSquareIndex();
-    final tapSquareIndex = slidingPuzzleModel.getSquareIndex(id);
-
-    final nullGrid = slidingPuzzleModel.squaresTwoDList[nullSquareIndex!.$1][nullSquareIndex.$2];
-    slidingPuzzleModel.squaresTwoDList[nullSquareIndex.$1][nullSquareIndex.$2] =
-        slidingPuzzleModel.squaresTwoDList[tapSquareIndex!.$1][tapSquareIndex.$2];
-    slidingPuzzleModel.squaresTwoDList[tapSquareIndex.$1][tapSquareIndex.$2] = nullGrid;
-    slidingPuzzleModel.upSquareTranslateOffset();
-    slidingPuzzleModel.upDataSquareIndexIsProper();
-    if (slidingPuzzleModel.isCompleted()) {
-      widget.onCompletedCallback?.call();
-    }
+    slidingPuzzleController.tapSquare(
+      slidingPuzzleController.getSquareIndex(id),
+    );
     setState(() {});
-  }
-
-  bool get needReSet => widget.reSetTag != _reSetTag;
-
-  set needReSet(bool need) {
-    if (need == true) {
-      _reSetTag = widget.reSetTag - 100;
-    } else {
-      _reSetTag = widget.reSetTag;
-    }
   }
 
   @override
   Widget build(BuildContext context) {
-    if (needReSet) {
-      slidingPuzzleModel.reSet();
-      needReSet = false;
-    }
     return SizedBox(
-      width: widget.width,
-      height: widget.width,
-      child: AnimatedSwitcher(
-        duration: Duration(milliseconds: 60),
-        child: CountdownTimerSec(
-          key: Key('$_reSetTag'),
-          onEnd: widget.onStart,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              ...slidingPuzzleModel.squaresTwoDList.map(
-                (dList) => Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    ...dList.map(
-                      (square) => SlidingSquare(
-                        width: _squareWidth,
-                        buildNumWidget: widget.buildNumWidget,
-                        squareModel: square,
-                        onTapCallBack: _onTapCallBack,
+      width: slidingPuzzleController.width,
+      height: slidingPuzzleController.width,
+      child: ValueListenableBuilder(
+        valueListenable: slidingPuzzleController.reSetTag,
+        builder: (_, int value, _) {
+          return CountdownTimerSec(
+            key: Key('$value'),
+            onEnd: slidingPuzzleController.onStart,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ...slidingPuzzleController.squaresTwoDList.map(
+                  (dList) => Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      ...dList.map(
+                        (square) => SlidingSquare(
+                          width: slidingPuzzleController.squareWidth,
+                          buildSquareWidget:
+                              slidingPuzzleController.buildSquareWidget,
+                          squareModel: square,
+                          onTapCallBack: _onTapCallBack,
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-            ],
-          ),
-        ),
+              ],
+            ),
+          );
+        },
       ),
     );
   }
 }
 
 class CountdownTimerSec extends StatefulWidget {
-  const CountdownTimerSec({super.key, this.seconds = 3, required this.child, required this.onEnd});
+  const CountdownTimerSec({
+    super.key,
+    this.seconds = 3,
+    required this.child,
+    required this.onEnd,
+  });
 
   final int seconds;
   final Widget child;
@@ -161,8 +121,16 @@ class _CountdownTimerSecState extends State<CountdownTimerSec> {
         if (s > 0)
           Positioned(
             child: Container(
-              decoration: BoxDecoration(color: Colors.black12, borderRadius: BorderRadius.circular(8)),
-              child: Container(color: Colors.black26, alignment: Alignment.center, width: double.infinity, height: double.infinity),
+              decoration: BoxDecoration(
+                color: Colors.black12,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Container(
+                color: Colors.black26,
+                alignment: Alignment.center,
+                width: double.infinity,
+                height: double.infinity,
+              ),
             ),
           ),
 
@@ -176,8 +144,13 @@ class _CountdownTimerSecState extends State<CountdownTimerSec> {
                 clipBehavior: Clip.hardEdge,
                 height: 80,
                 width: 80,
-                decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(17))),
-                child: BackdropFilter(filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16), child: Container(color: Colors.black12)),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.all(Radius.circular(17)),
+                ),
+                child: BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
+                  child: Container(color: Colors.black12),
+                ),
               ),
             ),
           ),
@@ -201,7 +174,13 @@ class _CountdownTimerSecState extends State<CountdownTimerSec> {
                     color: Color(0xfffffffa),
                     fontSize: 50,
                     fontWeight: FontWeight.bold,
-                    shadows: [Shadow(color: Colors.black, blurRadius: 3, offset: Offset.zero)],
+                    shadows: [
+                      Shadow(
+                        color: Colors.black,
+                        blurRadius: 3,
+                        offset: Offset.zero,
+                      ),
+                    ],
                   ),
                 ),
               ),

@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'time_out_failure_page.dart';
 import 'package:sliding_puzzle/cus_widget/cus_widget.dart';
@@ -8,7 +6,11 @@ import 'final_completion_page.dart';
 import 'level_complete_page.dart';
 
 class GamePage extends StatefulWidget {
-  const GamePage({super.key, required this.levelInfoIndex, required this.pageController});
+  const GamePage({
+    super.key,
+    required this.levelInfoIndex,
+    required this.pageController,
+  });
 
   final int levelInfoIndex;
   final PageController pageController;
@@ -17,24 +19,33 @@ class GamePage extends StatefulWidget {
   State<GamePage> createState() => _GamePageState();
 }
 
-class _GamePageState extends State<GamePage> with SingleTickerProviderStateMixin {
-  final _slidingPuzzleWidth = 288.0;
+class _GamePageState extends State<GamePage>
+    with SingleTickerProviderStateMixin {
   final DBTools dbTools = DBTools();
-  late final TimeProgressController _timeProgressController;
+  OverlayEntry? overlayEntry;
+
+  late final TimeProgressController _timeProgressController =
+      TimeProgressController(_onTimeOutFailure, vsync: this);
+  late int _levelInfoIndex = widget.levelInfoIndex;
+
+  late final SlidingPuzzleController _slidingPuzzleController =
+      SlidingPuzzleController(
+        buildSquareWidget: _buildSquareWidget,
+        onStart: _timeProgressController.start,
+        width: 288.0,
+        levelIndex: _levelInfoIndex,
+        onCompletedCallback: _onCompletedCallback,
+      );
 
   LevelData? get _data => DBTools.getLevelDataByLeveId(_levelInfo.id);
-  late int _levelInfoIndex = widget.levelInfoIndex;
 
   LevelInfo get _levelInfo => Levels.levelInfos[_levelInfoIndex];
 
-  OverlayEntry? overlayEntry;
-
-  int reSetFlag = 0;
+  Widget _buildSquareWidget(int index) => Image.asset(_levelInfo.squareImageAssets[index]);
 
   @override
   void initState() {
     super.initState();
-    _timeProgressController = TimeProgressController(_onTimeOutFailure, vsync: this);
     Future(() => widget.pageController.jumpToPage(_levelInfoIndex));
   }
 
@@ -43,6 +54,7 @@ class _GamePageState extends State<GamePage> with SingleTickerProviderStateMixin
     overlayEntry?.remove();
     overlayEntry = null;
     _timeProgressController.dispose();
+    _slidingPuzzleController.dispose();
     super.dispose();
   }
 
@@ -64,8 +76,11 @@ class _GamePageState extends State<GamePage> with SingleTickerProviderStateMixin
     } else {
       overlayEntry = OverlayEntry(
         builder:
-            (BuildContext context) =>
-                TimeOutFailurePage(retry: _playAgain, exit: _back, maxDMil: _levelInfo.starCountTimes.first.inMilliseconds),
+            (BuildContext context) => TimeOutFailurePage(
+              retry: _playAgain,
+              exit: _back,
+              maxDMil: _levelInfo.starCountTimes.first.inMilliseconds,
+            ),
       );
     }
     overlay.insert(overlayEntry!);
@@ -84,19 +99,24 @@ class _GamePageState extends State<GamePage> with SingleTickerProviderStateMixin
       _timeProgressController.value = 0;
       setState(() {
         _levelInfoIndex++;
-        reSetFlag++;
       });
+      _slidingPuzzleController.next();
       Future(() => widget.pageController.jumpToPage(_levelInfoIndex));
     } else {
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => FinalCompletionPage()));
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (BuildContext context) => FinalCompletionPage(),
+        ),
+      );
     }
   }
 
   void _playAgain() {
     overlayEntry?.remove();
     overlayEntry = null;
-    setState(() => reSetFlag++);
     _timeProgressController.value = 0;
+    _slidingPuzzleController.reSet();
   }
 
   _onCompletedCallback() {
@@ -127,7 +147,8 @@ class _GamePageState extends State<GamePage> with SingleTickerProviderStateMixin
           PopupMenuButton(
             itemBuilder: (BuildContext context) {
               return [
-                if (_levelInfoIndex != Levels.levelInfos.length - 1 && _levelInfo.id <= DBTools.maxLevelId)
+                if (_levelInfoIndex != Levels.levelInfos.length - 1 &&
+                    _levelInfo.id <= DBTools.maxLevelId)
                   PopupMenuItem(onTap: _next, child: Text('Next')),
                 PopupMenuItem(onTap: _playAgain, child: Text('Restart')),
               ];
@@ -141,8 +162,14 @@ class _GamePageState extends State<GamePage> with SingleTickerProviderStateMixin
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             box8H,
-            Hero(tag: _levelInfo.id, child: PhotoFrame(image: Image.asset(_levelInfo.imageAssets))),
-            Expanded(flex: 1, child: Center(child: SizedBox(width: 1, height: 1))),
+            Hero(
+              tag: _levelInfo.id,
+              child: PhotoFrame(image: Image.asset(_levelInfo.imageAssets)),
+            ),
+            Expanded(
+              flex: 1,
+              child: Center(child: SizedBox(width: 1, height: 1)),
+            ),
             TimeProgress(
               key: Key(_levelInfo.imageAssets),
               width: 288,
@@ -164,23 +191,17 @@ class _GamePageState extends State<GamePage> with SingleTickerProviderStateMixin
                 ],
               ),
               child: SlidingPuzzle(
-                key: Key(_levelInfo.toString()),
-                reSetTag: reSetFlag,
-                size: _levelInfo.size,
-                imageAssetsList: _levelInfo.squareImageAssets,
-                image: Image.asset(_levelInfo.imageAssets),
-                width: _slidingPuzzleWidth,
-                onCompletedCallback: _onCompletedCallback,
-                seconds: 3,
-                onStart: () {
-                  _timeProgressController.start();
-                },
+                slidingPuzzleController: _slidingPuzzleController,
               ),
             ),
-            Expanded(flex: 3, child: Center(child: SizedBox(width: 1, height: 1))),
+            Expanded(
+              flex: 3,
+              child: Center(child: SizedBox(width: 1, height: 1)),
+            ),
           ],
         ),
       ),
     );
   }
+
 }

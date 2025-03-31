@@ -8,14 +8,14 @@ void main() {
       [3, 4, 5],
       [6, 7, 8],
     ];
-    expect(SlidingPuzzleModel.isSolvable(testData1), true);
+    expect(SlidingPuzzleController.isSolvable(testData1), true);
     // 修复 testData2：将右下角值改为8，其他位置调整
     final validTestData2 = [
       [2, 0, 1],
       [3, 4, 5],
       [6, 7, 8], // 空白块正确位置
     ];
-    expect(SlidingPuzzleModel.isSolvable(validTestData2), true);
+    expect(SlidingPuzzleController.isSolvable(validTestData2), true);
 
     // 不可解状态（逆序数=1，奇）
     final testData3 = [
@@ -23,6 +23,6 @@ void main() {
       [3, 4, 5],
       [6, 7, 8],
     ];
-    expect(SlidingPuzzleModel.isSolvable(testData3), false);
+    expect(SlidingPuzzleController.isSolvable(testData3), false);
   });
 }

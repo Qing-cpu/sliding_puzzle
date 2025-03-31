@@ -3,9 +3,15 @@ import 'package:sliding_puzzle/cus_widget/cus_widget.dart';
 import 'models/square_model.dart';
 
 class SlidingSquare extends StatefulWidget {
-  const SlidingSquare({super.key, required this.squareModel, required this.onTapCallBack, this.buildNumWidget, required this.width});
+  const SlidingSquare({
+    super.key,
+    required this.squareModel,
+    required this.onTapCallBack,
+    required this.buildSquareWidget,
+    required this.width,
+  });
 
-  final Widget Function(int)? buildNumWidget;
+  final Widget Function(int) buildSquareWidget;
 
   final void Function(int) onTapCallBack;
   final SquareModel squareModel;
@@ -15,7 +21,8 @@ class SlidingSquare extends StatefulWidget {
   State<SlidingSquare> createState() => _SlidingSquareState();
 }
 
-class _SlidingSquareState extends State<SlidingSquare> with SingleTickerProviderStateMixin {
+class _SlidingSquareState extends State<SlidingSquare>
+    with SingleTickerProviderStateMixin {
   late final AnimationController _animationController;
   late Animation<Offset> _animation;
 
@@ -34,7 +41,10 @@ class _SlidingSquareState extends State<SlidingSquare> with SingleTickerProvider
         AnimationController(vsync: this)
           ..duration = const Duration(milliseconds: 80)
           ..addStatusListener(_statusListener);
-    _animation = Tween<Offset>(begin: Offset.zero, end: Offset.zero).animate(_animationController);
+    _animation = Tween<Offset>(
+      begin: Offset.zero,
+      end: Offset.zero,
+    ).animate(_animationController);
   }
 
   @override
@@ -50,9 +60,11 @@ class _SlidingSquareState extends State<SlidingSquare> with SingleTickerProvider
     }
 
     _animation = Tween<Offset>(
-      begin: Offset.zero,
-      end: widget.squareModel.translateOffset,
-    ).chain(CurveTween(curve: Curves.fastOutSlowIn)).animate(_animationController)..addStatusListener((state) {
+        begin: Offset.zero,
+        end: widget.squareModel.translateOffset,
+      )
+      .chain(CurveTween(curve: Curves.fastOutSlowIn))
+      .animate(_animationController)..addStatusListener((state) {
       if (state == AnimationStatus.completed) {
         _animationController.stop();
       }
@@ -61,20 +73,11 @@ class _SlidingSquareState extends State<SlidingSquare> with SingleTickerProvider
     _animationController.forward();
   }
 
-  Widget _buildAnimatedChild() {
+  Widget? _buildAnimatedChild() {
     if (widget.squareModel.isNullSquare) {
-      return Opacity(
-        opacity: 0,
-        child: widget.buildNumWidget?.call(widget.squareModel.id + 1) ?? Image.asset(widget.squareModel.squareImageAsset),
-      );
+      return null;
     } else {
-      return Opacity(
-        opacity: widget.squareModel.isNullSquare ? 0 : 1,
-        child: Container(
-          color: Colors.white,
-          child: widget.buildNumWidget?.call(widget.squareModel.id + 1) ?? Image.asset(widget.squareModel.squareImageAsset),
-        ),
-      );
+      return widget.buildSquareWidget(widget.squareModel.id);
     }
   }
 
@@ -84,8 +87,14 @@ class _SlidingSquareState extends State<SlidingSquare> with SingleTickerProvider
       onTapDown: widget.squareModel.isNullSquare ? null : _onTapDown,
       child: AnimatedBuilder(
         animation: _animation,
-        builder: (BuildContext context, Widget? child) => Transform.translate(offset: _animation.value, child: child),
-        child: SizedBox(height: widget.width, width: widget.width, child: _buildAnimatedChild()),
+        builder:
+            (BuildContext context, Widget? child) =>
+                Transform.translate(offset: _animation.value, child: child),
+        child: SizedBox(
+          height: widget.width,
+          width: widget.width,
+          child: _buildAnimatedChild(),
+        ),
       ),
     );
   }

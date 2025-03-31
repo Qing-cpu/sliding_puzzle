@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:sliding_puzzle/cus_widget/cus_widget.dart';
+import 'package:sliding_puzzle/cus_widget/float_widget.dart';
 import 'package:sliding_puzzle/tools/tools.dart';
 import 'package:sliding_puzzle/pages/speed_model/game_over_page.dart';
 
@@ -12,18 +13,27 @@ class SpeedModelPage extends StatefulWidget {
   State<SpeedModelPage> createState() => _SpeedModelPageState();
 }
 
-class _SpeedModelPageState extends State<SpeedModelPage> with SingleTickerProviderStateMixin {
+class _SpeedModelPageState extends State<SpeedModelPage>
+    with SingleTickerProviderStateMixin {
   int levelCount = 0;
   int? oldScore;
   int mil = 23000;
   OverlayEntry? overlayEntry;
   int score = 0;
 
-  late TimeProgressController _timeProgressController;
+  late final _timeProgressController = TimeProgressController(
+    _onGameOver,
+    vsync: this,
+  );
+  late final _slidingPuzzleController = SlidingPuzzleController(
+    onStart: _timeProgressController.start,
+    width: 288,
+    buildSquareWidget: buildNumWidget,
+    onCompletedCallback: _onCompletion,
+  );
 
   @override
   void initState() {
-    _timeProgressController = TimeProgressController(_onGameOver, vsync: this);
     DBTools.getSpeedModelScore().then((v) => oldScore = v);
     super.initState();
   }
@@ -32,6 +42,7 @@ class _SpeedModelPageState extends State<SpeedModelPage> with SingleTickerProvid
   void dispose() {
     overlayEntry?.remove();
     overlayEntry = null;
+    _slidingPuzzleController.dispose();
     _timeProgressController.dispose();
     super.dispose();
   }
@@ -50,6 +61,7 @@ class _SpeedModelPageState extends State<SpeedModelPage> with SingleTickerProvid
     } else {
       mil -= 10;
     }
+    _slidingPuzzleController.reSet();
   }
 
   void _onCompletion() {
@@ -57,7 +69,12 @@ class _SpeedModelPageState extends State<SpeedModelPage> with SingleTickerProvid
     if (_timeProgressController.status == AnimationStatus.completed) {
       return;
     }
-    setState(() => score += (1230 * ++levelCount * (1 - _timeProgressController.value)).toInt());
+    setState(
+      () =>
+          score +=
+              (1230 * ++levelCount * (1 - _timeProgressController.value))
+                  .toInt(),
+    );
     _next();
   }
 
@@ -76,7 +93,12 @@ class _SpeedModelPageState extends State<SpeedModelPage> with SingleTickerProvid
             playAgain: () {
               overlayEntry?.remove();
               overlayEntry = null;
-              Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => SpeedModelPage()));
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (BuildContext context) => SpeedModelPage(),
+                ),
+              );
             },
             exit: () {
               overlayEntry?.remove();
@@ -91,13 +113,20 @@ class _SpeedModelPageState extends State<SpeedModelPage> with SingleTickerProvid
   Widget buildNumWidget(int n) => TweenAnimationBuilder(
     key: Key('$n'),
     duration: Duration(seconds: 1),
-    tween: ColorTween(begin: Color(0xffffffff), end: _colors[levelCount % _colors.length]),
-    builder: (BuildContext context, Color? value, Widget? child) => Container(color: value, child: child),
+    tween: ColorTween(
+      begin: Color(0xffffffff),
+      end: _colors[levelCount % _colors.length],
+    ),
+    builder:
+        (BuildContext context, Color? value, Widget? child) =>
+            Container(color: value, child: child),
     child: Center(
       child: Text(
-        '$n',
+        '${n + 1}',
         style: TextStyle(
-          shadows: [Shadow(color: Colors.black87, offset: Offset(2, 4), blurRadius: 12)],
+          shadows: [
+            Shadow(color: Colors.black87, offset: Offset(2, 4), blurRadius: 12),
+          ],
           fontWeight: FontWeight.bold,
           fontSize: 52,
           color: Colors.white,
@@ -110,7 +139,12 @@ class _SpeedModelPageState extends State<SpeedModelPage> with SingleTickerProvid
   Widget build(BuildContext context) => Scaffold(
     backgroundColor: Color(0x00000000),
     body: Container(
-      decoration: BoxDecoration(image: DecorationImage(image: AssetImage('assets/images/bg3.png'), fit: BoxFit.cover)),
+      decoration: BoxDecoration(
+        image: DecorationImage(
+          image: AssetImage('assets/images/bg3.png'),
+          fit: BoxFit.cover,
+        ),
+      ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -133,7 +167,13 @@ class _SpeedModelPageState extends State<SpeedModelPage> with SingleTickerProvid
                         icon: Icon(
                           Icons.arrow_back,
                           color: Color(0xFFF8F3F3),
-                          shadows: [Shadow(color: Colors.black54, blurRadius: 3, offset: Offset(1.5, 1.5))],
+                          shadows: [
+                            Shadow(
+                              color: Colors.black54,
+                              blurRadius: 3,
+                              offset: Offset(1.5, 1.5),
+                            ),
+                          ],
                           size: 32,
                         ),
                       ),
@@ -143,7 +183,13 @@ class _SpeedModelPageState extends State<SpeedModelPage> with SingleTickerProvid
                           fontSize: 42 + levelCount * 2,
                           fontWeight: FontWeight.bold,
                           color: Colors.pinkAccent.shade200,
-                          shadows: [Shadow(color: Colors.black54, offset: Offset(2, 4), blurRadius: 10)],
+                          shadows: [
+                            Shadow(
+                              color: Colors.black54,
+                              offset: Offset(2, 4),
+                              blurRadius: 10,
+                            ),
+                          ],
                         ),
                       ),
                       Opacity(
@@ -152,7 +198,13 @@ class _SpeedModelPageState extends State<SpeedModelPage> with SingleTickerProvid
                           onPressed: null,
                           icon: Icon(
                             Icons.arrow_back,
-                            shadows: [Shadow(color: Colors.black54, blurRadius: 3, offset: Offset(1.5, 1.5))],
+                            shadows: [
+                              Shadow(
+                                color: Colors.black54,
+                                blurRadius: 3,
+                                offset: Offset(1.5, 1.5),
+                              ),
+                            ],
                             size: 32,
                           ),
                         ),
@@ -170,32 +222,27 @@ class _SpeedModelPageState extends State<SpeedModelPage> with SingleTickerProvid
             ),
           ),
 
-          Expanded(child: SizedBox(height:1)),
-          Container(
-            padding: EdgeInsets.all(12), // 内边距
-            decoration: BoxDecoration(
-              color: Color(0xFFF8F8F8),
-              borderRadius: BorderRadius.circular(16), // 圆角
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey, // 深棕色阴影
-                  blurRadius: 12, // 阴影模糊半径
-                  offset: Offset(4, 6), // 阴影偏移
-                ),
-              ],
-            ),
-            child: SlidingPuzzle(
-              reSetTag: levelCount,
-              width: 288,
-              size: 3,
-              imageAssetsList: Levels.levelInfos.first.squareImageAssets,
-              onCompletedCallback: _onCompletion,
-              buildNumWidget: buildNumWidget,
-              seconds: 3,
-              onStart: () => _timeProgressController.start(),
+          Expanded(child: SizedBox(height: 1)),
+          FloatWidget(
+            child: Container(
+              padding: EdgeInsets.all(12), // 内边距
+              decoration: BoxDecoration(
+                color: Color(0xFFF8F8F8),
+                borderRadius: BorderRadius.circular(16), // 圆角
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey, // 深棕色阴影
+                    blurRadius: 12, // 阴影模糊半径
+                    offset: Offset(4, 6), // 阴影偏移
+                  ),
+                ],
+              ),
+              child: SlidingPuzzle(
+                slidingPuzzleController: _slidingPuzzleController,
+              ),
             ),
           ),
-          Expanded(child: SizedBox(  height: 1)),
+          Expanded(child: SizedBox(height: 1)),
         ],
       ),
     ),

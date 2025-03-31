@@ -10,7 +10,7 @@ class SquareModel {
 
   static int nullSquareId = -1;
 
-  final String squareImageAsset;
+  final String? squareImageAsset;
   Offset? translateOffset;
   final int id;
 
