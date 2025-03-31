@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sliding_puzzle/cus_widget/float_widget.dart';
 import 'time_out_failure_page.dart';
 import 'package:sliding_puzzle/cus_widget/cus_widget.dart';
 import 'package:sliding_puzzle/tools/tools.dart';
@@ -162,9 +163,11 @@ class _GamePageState extends State<GamePage>
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             box8H,
-            Hero(
-              tag: _levelInfo.id,
-              child: PhotoFrame(image: Image.asset(_levelInfo.imageAssets)),
+            FloatWidget(
+              child: Hero(
+                tag: _levelInfo.id,
+                child: PhotoFrame(image: Image.asset(_levelInfo.imageAssets)),
+              ),
             ),
             Expanded(
               flex: 1,

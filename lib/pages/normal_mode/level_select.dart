@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:sliding_puzzle/cus_widget/float_widget.dart';
 import 'package:sliding_puzzle/tools/tools.dart';
 import 'package:sliding_puzzle/cus_widget/cus_widget.dart';
 import 'level_list_page.dart';
@@ -207,12 +208,14 @@ class _LevelSelectState extends State<LevelSelect> {
                                     onTap: () => _play(context, i),
                                     child: Hero(
                                       tag: levels[i].id,
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.all(Radius.circular(3)),
-                                          border: Border.all(color: Colors.white, width: 16),
-                                          image: DecorationImage(image: AssetImage(levels[i].imageAssets), fit: BoxFit.cover),
-                                          boxShadow: [BoxShadow(color: Colors.grey, offset: Offset(1, 1), blurRadius: 2)],
+                                      child: FloatWidget(
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.all(Radius.circular(3)),
+                                            border: Border.all(color: Colors.white, width: 16),
+                                            image: DecorationImage(image: AssetImage(levels[i].imageAssets), fit: BoxFit.cover),
+                                            boxShadow: [BoxShadow(color: Colors.grey, offset: Offset(1, 1), blurRadius: 2)],
+                                          ),
                                         ),
                                       ),
                                     ),

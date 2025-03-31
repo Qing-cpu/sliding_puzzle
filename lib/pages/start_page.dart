@@ -2,6 +2,8 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:sliding_puzzle/cus_widget/cus_widget.dart';
+import 'package:sliding_puzzle/cus_widget/float_widget.dart';
+import 'package:sliding_puzzle/pages/leaderboard/leaderboard_widget.dart';
 import 'package:sliding_puzzle/pages/speed_model/speed_model_page.dart';
 
 import 'normal_mode/level_select.dart';
@@ -28,6 +30,9 @@ class _StartPageState extends State<StartPage> {
     Navigator.of(context).push(MaterialPageRoute(builder: (context) => SpeedModelPage()));
   }
 
+  void _leaderboardWidget(BuildContext context) {
+    Navigator.of(context).push(MaterialPageRoute(builder: (context) => LeaderboardWidget()));
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -75,13 +80,15 @@ class _StartPageState extends State<StartPage> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
 
-                                  AButton(
-                                    onTap: () => _startModel1(context),
-                                    width: 318,
-                                    fontSize: 50,
-                                    text: '普通模式',
-                                    radius: Radius.circular(32),
-                                    sColor: Colors.pink,
+                                  FloatWidget(
+                                    child: AButton(
+                                      onTap: () => _startModel1(context),
+                                      width: 318,
+                                      fontSize: 50,
+                                      text: '普通模式',
+                                      radius: Radius.circular(32),
+                                      sColor: Colors.pink,
+                                    ),
                                   ),
                                   SizedBox(height: 50),
                                   AButton(
@@ -91,6 +98,16 @@ class _StartPageState extends State<StartPage> {
                                     fontSize: 50,
                                     fontColor: Colors.blueAccent.shade700,
                                     text: 'Speed\nModel',
+                                    radius: Radius.circular(32),
+
+                                  ),
+                                  AButton(
+                                    onTap: () => _leaderboardWidget(context),
+                                    sColor: Colors.orangeAccent,
+                                    width: 318,
+                                    fontSize: 50,
+                                    fontColor: Colors.blueAccent.shade700,
+                                    text: '排行榜',
                                     radius: Radius.circular(32),
 
                                   ),

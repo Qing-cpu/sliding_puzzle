@@ -23,6 +23,12 @@ class _FloatWidgetState extends State<FloatWidget>
     super.initState();
   }
 
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
+
   Offset rxy = Offset(0, 0);
 
   void onTap(d) {
@@ -43,7 +49,7 @@ class _FloatWidgetState extends State<FloatWidget>
   Widget build(BuildContext context) {
     return GestureDetector(
       key: _globalKey,
-      onTapDown: onTap,
+      onDoubleTapDown: onTap,
       child: TweenAnimationBuilder(
         curve: Curves.easeOutBack,
         tween: Tween<Offset>(begin: Offset.zero, end: rxy),
@@ -56,16 +62,16 @@ class _FloatWidgetState extends State<FloatWidget>
                 alignment: Alignment.center,
                 transform:
                     Matrix4.identity()
-                      ..setEntry(3, 2, 0.002)
+                      ..setEntry(3, 2, 0.001)
                       ..rotateX(
                         value.dx +
-                            Tween<double>(begin: 0.2, end: -0.2)
+                            Tween<double>(begin: 0.1, end: -0.1)
                                 .chain(CurveTween(curve: Curves.easeInOutCirc))
                                 .evaluate(_animationController),
                       )
                       ..rotateY(
                         value.dy +
-                            Tween<double>(begin: -0.2, end: 0.2)
+                            Tween<double>(begin: -0.1, end: 0.1)
                                 .chain(CurveTween(curve: Curves.easeInOut))
                                 .evaluate(_animationController),
                       )

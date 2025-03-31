@@ -1,6 +1,8 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import 'package:games_services/games_services.dart' as gs;
 import 'package:sliding_puzzle/cus_widget/cus_widget.dart';
 import 'package:sliding_puzzle/cus_widget/float_widget.dart';
 import 'package:sliding_puzzle/tools/tools.dart';
@@ -79,6 +81,15 @@ class _SpeedModelPageState extends State<SpeedModelPage>
   }
 
   void _onGameOver() {
+    () async {
+      await gs.Leaderboards.submitScore(
+        score: gs.Score(
+          androidLeaderboardID: '',
+          iOSLeaderboardID: 'speed_model',
+          value: score,
+        ),
+      );
+    }();
     if (score > (oldScore ?? 0)) {
       DBTools.setSpeedModelScore(score);
     }
@@ -111,7 +122,6 @@ class _SpeedModelPageState extends State<SpeedModelPage>
   }
 
   Widget buildNumWidget(int n) => TweenAnimationBuilder(
-    key: Key('$n'),
     duration: Duration(seconds: 1),
     tween: ColorTween(
       begin: Color(0xffffffff),
@@ -119,18 +129,17 @@ class _SpeedModelPageState extends State<SpeedModelPage>
     ),
     builder:
         (BuildContext context, Color? value, Widget? child) =>
-            Container(color: value, child: child),
-    child: Center(
-      child: Text(
-        '${n + 1}',
-        style: TextStyle(
-          shadows: [
-            Shadow(color: Colors.black87, offset: Offset(2, 4), blurRadius: 12),
-          ],
-          fontWeight: FontWeight.bold,
-          fontSize: 52,
-          color: Colors.white,
-        ),
+            Container(color: value, alignment: Alignment.center, child: child),
+    child: Text(
+      '${n + 1}',
+      textAlign: TextAlign.center,
+      style: TextStyle(
+        shadows: [
+          Shadow(color: Colors.black87, offset: Offset(1, 1), blurRadius: 12),
+        ],
+        fontWeight: FontWeight.bold,
+        fontSize: 52,
+        color: Colors.white,
       ),
     ),
   );
@@ -223,23 +232,21 @@ class _SpeedModelPageState extends State<SpeedModelPage>
           ),
 
           Expanded(child: SizedBox(height: 1)),
-          FloatWidget(
-            child: Container(
-              padding: EdgeInsets.all(12), // 内边距
-              decoration: BoxDecoration(
-                color: Color(0xFFF8F8F8),
-                borderRadius: BorderRadius.circular(16), // 圆角
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey, // 深棕色阴影
-                    blurRadius: 12, // 阴影模糊半径
-                    offset: Offset(4, 6), // 阴影偏移
-                  ),
-                ],
-              ),
-              child: SlidingPuzzle(
-                slidingPuzzleController: _slidingPuzzleController,
-              ),
+          Container(
+            padding: EdgeInsets.all(12), // 内边距
+            decoration: BoxDecoration(
+              color: Color(0xFFF8F8F8),
+              borderRadius: BorderRadius.circular(16), // 圆角
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey, // 深棕色阴影
+                  blurRadius: 12, // 阴影模糊半径
+                  offset: Offset(4, 6), // 阴影偏移
+                ),
+              ],
+            ),
+            child: SlidingPuzzle(
+              slidingPuzzleController: _slidingPuzzleController,
             ),
           ),
           Expanded(child: SizedBox(height: 1)),
@@ -259,3 +266,53 @@ const List<Color> _colors = [
   Color(0xFFC38400),
   Color(0xFFE1D815),
 ];
+
+class ShadowTextPainter extends CustomPainter {
+  final String text;
+  final TextStyle textStyle;
+
+  ShadowTextPainter({required this.text, required this.textStyle});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final textPainter = TextPainter(
+      text: TextSpan(
+        text: text,
+        style: textStyle.copyWith(
+          color: Colors.black87, // 阴影颜色
+        ),
+      ),
+      textDirection: TextDirection.ltr,
+    );
+    textPainter.layout();
+
+    // 先绘制阴影
+    canvas.save();
+    canvas.translate(4, 4); // 偏移阴影位置
+    textPainter.paint(canvas, Offset.zero);
+    canvas.restore();
+
+    // 再绘制正常文字
+    textPainter.text = TextSpan(text: text, style: textStyle);
+    textPainter.layout();
+    textPainter.paint(canvas, Offset.zero);
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+}
+
+class ShadowTextWidget extends StatelessWidget {
+  const ShadowTextWidget({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return CustomPaint(
+      size: Size(200, 50), // 设置绘制区域大小
+      painter: ShadowTextPainter(
+        text: 'Custom Shadow',
+        textStyle: TextStyle(fontSize: 40, fontWeight: FontWeight.bold),
+      ),
+    );
+  }
+}

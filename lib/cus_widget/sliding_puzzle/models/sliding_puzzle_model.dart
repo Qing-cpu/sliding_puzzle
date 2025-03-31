@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -18,6 +19,10 @@ class SlidingPuzzleController {
   final Widget Function(int) buildSquareWidget;
   final void Function()? onCompletedCallback;
   final VoidCallback onStart;
+
+  Timer? _timer;
+
+  ValueNotifier<int> s = ValueNotifier(3);
 
   LevelInfo? get levelInfo =>
       levelIndex == null ? null : Levels.levelInfos[levelIndex!];
@@ -206,6 +211,7 @@ class SlidingPuzzleController {
   }
 
   void dispose() {
+    _timer?.cancel();
     reSetTag.dispose(); // 记得在不再使用时释放资源
   }
 
@@ -213,6 +219,17 @@ class SlidingPuzzleController {
     shuffle();
     upSquareTranslateOffset();
     reSetTag.value++;
+    if (s.value > 0) {
+      _timer = Timer.periodic(Duration(seconds: 1), (timer) {
+        s.value = s.value - 1;
+        if (s.value <= 0) {
+          onStart();
+          timer.cancel();
+        }
+      });
+    }else{
+      onStart();
+    }
   }
 
   void next() {
