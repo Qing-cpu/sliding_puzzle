@@ -7,6 +7,7 @@ import 'package:sliding_puzzle/cus_widget/cus_widget.dart';
 import 'package:sliding_puzzle/cus_widget/float_widget.dart';
 import 'package:sliding_puzzle/cus_widget/float_widget_can_tap.dart';
 import 'package:sliding_puzzle/pages/speed_model/speed_model_page.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../cus_widget/glass_card.dart';
 import 'normal_mode/level_select.dart';
@@ -73,13 +74,6 @@ class _StartPageState extends State<StartPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton:
-          is1
-              ? null
-              : FloatingActionButton(
-                child: Icon(Icons.exit_to_app_rounded),
-                onPressed: () => setState(() => is1 = true),
-              ),
       body: Stack(
         children: [
           PageView.builder(
@@ -96,106 +90,124 @@ class _StartPageState extends State<StartPage> {
               );
             },
           ),
-          SafeArea(
-            child: AnimatedSwitcher(
-              duration: Duration(milliseconds: 160),
-              switchInCurve: Curves.ease,
-              switchOutCurve: Curves.ease,
-              transitionBuilder: (Widget child, Animation<double> animation) {
-                return ScaleTransition(scale: animation, child: child);
-              },
-              child:
-                  is1
-                      ? Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Center(
-                            child: FloatWidgetCanTap(
-                              child: Padding(
-                                padding: EdgeInsets.all(16),
-                                child: GlassCard(
-                                  radius: Radius.circular(30),
-                                  child: Image.asset(
-                                    'assets/images/game_name.webp',
+          AnimatedSwitcher(
+            duration: Duration(milliseconds: 160),
+            switchInCurve: Curves.ease,
+            switchOutCurve: Curves.ease,
+            transitionBuilder: (Widget child, Animation<double> animation) {
+              return ScaleTransition(scale: animation, child: child);
+            },
+            child:
+                is1
+                    ? Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        SizedBox(height: MediaQuery.of(context).padding.top),
+                        SizedBox(height: 16),
+                        Center(
+                          child: FloatWidgetCanTap(
+                            child: Padding(
+                              padding: EdgeInsets.all(16),
+                              child: GlassCard(
+                                radius: Radius.circular(30),
+                                child: Image.asset(
+                                  'assets/images/game_name.webp',
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        Expanded(child: SizedBox()),
+                        Center(
+                          child: SizedBox(
+                            height: 100,
+                            child: AButton(
+                              fontColor: Colors.white,
+                              sColor: Color(0x939CFFAC),
+                              onTap: _start,
+                              width: 300,
+                              fontSize: 62,
+                              text: AppLocalizations.of(context)!.start,
+                              radius: Radius.circular(32),
+                            ),
+                          ),
+                        ),
+                        Expanded(child: SizedBox()),
+                      ],
+                    )
+                    : Stack(
+                      children: [
+                        Positioned(
+                          top: 0,
+                          left: 0,
+                          bottom: 0,
+                          right: 0,
+                          child: Container(
+                            color: Colors.white38,
+                            child: BackdropFilter(
+                              filter: ImageFilter.blur(sigmaX: 60, sigmaY: 60),
+                              child: ListView(
+                                children: [
+                                  SizedBox(
+                                    height: MediaQuery.of(context).padding.top,
                                   ),
-                                ),
-                              ),
-                            ),
-                          ),
-                          Expanded(child: SizedBox()),
-                          Center(
-                            child: SizedBox(
-                              height: 100,
-                              child: AButton(
-                                fontColor: Colors.white,
-                                sColor: Color(0x939CFFAC),
-                                onTap: _start,
-                                width: 300,
-                                fontSize: 62,
-                                text: 'Start',
-                                radius: Radius.circular(32),
-                              ),
-                            ),
-                          ),
-                          Expanded(child: SizedBox()),
-                        ],
-                      )
-                      : Stack(
-                        children: [
-                          Positioned(
-                            top: 0,
-                            left: 0,
-                            bottom: 0,
-                            right: 0,
-                            child: Container(
-                              color: Colors.white38,
-                              child: BackdropFilter(
-                                filter: ImageFilter.blur(
-                                  sigmaX: 60,
-                                  sigmaY: 60,
-                                ),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    FloatWidget(
-                                      child: AButton(
-                                        onTap: () => _startModel1(context),
-                                        width: 318,
-                                        fontSize: 50,
-                                        text: '普通模式',
-                                        radius: Radius.circular(32),
-                                        sColor: Colors.pink,
-                                      ),
-                                    ),
-                                    SizedBox(height: 50),
-                                    AButton(
-                                      onTap: () => _startSpeedModel1(context),
-                                      sColor: Colors.orangeAccent,
+                                  SizedBox(height: 50),
+                                  FloatWidget(
+                                    child: AButton(
+                                      onTap: () => _startModel1(context),
                                       width: 318,
                                       fontSize: 50,
-                                      fontColor: Colors.blueAccent.shade700,
-                                      text: 'Speed\nModel',
+                                      text:
+                                          AppLocalizations.of(context)!.normal,
                                       radius: Radius.circular(32),
+                                      sColor: Colors.pink,
                                     ),
-                                    SizedBox(height: 50),
-                                    AButton(
-                                      onTap: () => _leaderboardWidget(context),
-                                      sColor: Colors.orangeAccent,
-                                      width: 318,
-                                      fontSize: 50,
-                                      fontColor: Colors.blueAccent.shade700,
-                                      text: '排行榜',
-                                      radius: Radius.circular(32),
-                                    ),
-                                  ],
-                                ),
+                                  ),
+                                  SizedBox(height: 50),
+                                  AButton(
+                                    onTap: () => _startSpeedModel1(context),
+                                    sColor: Colors.orangeAccent,
+                                    width: 318,
+                                    fontSize: 50,
+                                    fontColor: Colors.blueAccent.shade700,
+                                    text:
+                                        AppLocalizations.of(context)!.racing,
+                                    radius: Radius.circular(32),
+                                  ),
+                                  SizedBox(height: 50),
+                                  AButton(
+                                    onTap: () => setState(() => is1 = true),
+                                    sColor: Colors.red,
+                                    width: 120,
+                                    fontSize: 30,
+                                    fontColor: Colors.redAccent.shade700,
+                                    text: AppLocalizations.of(context)!.exit,
+                                    radius: Radius.circular(32),
+                                  ),
+                                  SizedBox(height: 50),
+                                  AButton(
+                                    onTap: () => _leaderboardWidget(context),
+                                    sColor: Colors.orangeAccent,
+                                    width: 318,
+                                    fontSize: 50,
+                                    fontColor: Colors.blueAccent.shade700,
+                                    text: AppLocalizations.of(context)!.leaderboard,
+                                    radius: Radius.circular(32),
+                                  ),
+                                  SizedBox(height: 50),
+
+                                  SizedBox(
+                                    height:
+                                        MediaQuery.of(context).padding.bottom,
+                                  ),
+                                ],
                               ),
                             ),
                           ),
-                        ],
-                      ),
-            ),
+                        ),
+                      ],
+                    ),
           ),
         ],
       ),

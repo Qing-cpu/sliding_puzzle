@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class FinalCompletionPage extends StatelessWidget {
   const FinalCompletionPage({super.key});
@@ -6,19 +7,17 @@ class FinalCompletionPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Completion'),
-      ),
+      appBar: AppBar(title: Text(AppLocalizations.of(context)!.complete)),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text('Congratulations! You have completed the game.'),
+            Text(AppLocalizations.of(context)!.congratulations_game_completed),
             ElevatedButton(
               onPressed: () {
                 Navigator.pop(context);
               },
-              child: Text('Back to Home'),
+              child: Text(AppLocalizations.of(context)!.exit),
             ),
           ],
         ),

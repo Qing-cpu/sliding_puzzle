@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:sliding_puzzle/cus_widget/cus_widget.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class TimeOutFailurePage extends StatelessWidget {
   final VoidCallback retry;
@@ -48,8 +49,7 @@ class TimeOutFailurePage extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   const SizedBox(height: 20),
-                  Text(
-                    'You Ran Time Of Out！',
+                  Text(AppLocalizations.of(context)!.you_ran_out_of_time,
                     style: TextStyle(
                       shadows: [
                         Shadow(color: Color(0xD31B1E55), offset: Offset(1, 1), blurRadius: 6),
@@ -63,11 +63,11 @@ class TimeOutFailurePage extends StatelessWidget {
                   const SizedBox(height: 8),
                   StarMax3(0),
                   const SizedBox(height: 8),
-                  Text('限时：${mil2TimeString(maxDMil)}', style: TextStyle(fontSize: 16, color: const Color(0xFF5B5B5B))),
+                  Text('${AppLocalizations.of(context)!}：${mil2TimeString(maxDMil)}', style: TextStyle(fontSize: 16, color: const Color(0xFF5B5B5B))),
                   SizedBox(height: 20),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [TextButton(onPressed: exit, child: Text('Exit')), TextButton(onPressed: retry, child: Text('Retry'))],
+                    children: [TextButton(onPressed: exit, child: Text(AppLocalizations.of(context)!.exit)), TextButton(onPressed: retry, child: Text(AppLocalizations.of(context)!.try_again))],
                   ),
                   SizedBox(height: 16),
                 ],

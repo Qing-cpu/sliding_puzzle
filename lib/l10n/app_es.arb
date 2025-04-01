@@ -1,0 +1,28 @@
+{
+  "leaderboard": "Tabla de clasificación",
+  "racing": "Carreras",
+  "normal": "Normal",
+  "casual": "Casual",
+  "mode": "Modo",
+  "start": "Empezar",
+  "exit": "Salir",
+  "setting": "Ajustes",
+  "complete": "Completado",
+  "clear": "Completar",
+  "congratulations": "Felicidades",
+  "fail": "Fallar",
+  "timeout": "Tiempo agotado",
+  "game_over": "Fin del juego",
+  "record": "Récord",
+  "new_record": "Nuevo récord",
+  "score": "Puntuación",
+  "result": "Resultado",
+  "ladder": "Clasificación",
+  "collected_treasures": "Tesoros recolectados",
+  "next_level": "Siguiente nivel",
+  "play_again": "Jugar de nuevo",
+  "try_again": "Intentar de nuevo",
+  "you_ran_out_of_time": "¡Se te acabó el tiempo!",
+  "congratulations_game_completed": "¡Felicidades! Has completado el juego."
+
+}

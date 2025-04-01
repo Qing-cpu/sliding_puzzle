@@ -1,6 +1,27 @@
 {
+  "leaderboard": "Leaderboard",
+  "racing": "Racing",
+  "normal": "Normal",
+  "casual": "Casual",
+  "mode": "Mode",
+  "start": "Start",
+  "exit": "Exit",
   "setting": "Setting",
-  "@setting": {
-    "description": "Setting"
-  }
+  "complete": "Complete",
+  "clear": "Clear",
+  "congratulations": "Congratulations",
+  "fail": "Fail",
+  "timeout": "Timeout",
+  "game_over": "Game Over",
+  "record": "Record",
+  "new_record": "New Record",
+  "score": "Score",
+  "result": "Result",
+  "ladder": "Ladder",
+  "collected_treasures": "Collected Treasures",
+  "next_level": "Next Level",
+  "play_again": "Play Again",
+  "try_again": "Try Again",
+  "you_ran_out_of_time": "You Ran Out Of Time!",
+  "congratulations_game_completed": "Congratulations! You have completed the game."
 }

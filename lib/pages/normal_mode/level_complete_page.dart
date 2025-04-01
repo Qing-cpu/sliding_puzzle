@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:sliding_puzzle/cus_widget/cus_widget.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class LevelCompletePage extends StatelessWidget {
   const LevelCompletePage({
@@ -55,22 +56,22 @@ class LevelCompletePage extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   const SizedBox(height: 20),
-                  Text('完成', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: const Color(0xFF262626))),
+                  Text(AppLocalizations.of(context)!.complete, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: const Color(0xFF262626))),
                   const SizedBox(height: 14),
                   StarMax3ForCompletion(starCount: starCount),
                   const SizedBox(height: 14),
-                  Text('耗时：${mil2TimeString(newDMil)}', style: TextStyle(fontSize: 16, color: const Color(0xFF5B5B5B))),
+                  Text('${AppLocalizations.of(context)!.result}：${mil2TimeString(newDMil)}', style: TextStyle(fontSize: 16, color: const Color(0xFF5B5B5B))),
                   const SizedBox(height: 12),
                   if (oldDMil == null || oldDMil! > newDMil)
-                    Text('新纪录!', style: TextStyle(fontSize: 16, color: const Color(0xFF4A7DFF), fontWeight: FontWeight.bold))
+                    Text('${AppLocalizations.of(context)!.new_record}!', style: TextStyle(fontSize: 16, color: const Color(0xFF4A7DFF), fontWeight: FontWeight.bold))
                   else
-                    Text('记录：${mil2TimeString(oldDMil!)}', style: TextStyle(fontSize: 12, color: const Color(0xFF9E9E9E))),
+                    Text('${AppLocalizations.of(context)!.record}：${mil2TimeString(oldDMil!)}', style: TextStyle(fontSize: 12, color: const Color(0xFF9E9E9E))),
                   SizedBox(height: 14),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      TextButton(onPressed: playAgain, child: Text('Play Again')),
-                      TextButton(onPressed: next, child: Text('Next')),
+                      TextButton(onPressed: playAgain, child: Text(AppLocalizations.of(context)!.play_again)),
+                      TextButton(onPressed: next, child: Text(AppLocalizations.of(context)!.next_level)),
                     ],
                   ),
                   SizedBox(height: 16),

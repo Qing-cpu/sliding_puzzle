@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:sliding_puzzle/cus_widget/float_widget.dart';
 import 'package:sliding_puzzle/cus_widget/float_widget_can_tap.dart';
 import 'time_out_failure_page.dart';
 import 'package:sliding_puzzle/cus_widget/cus_widget.dart';
 import 'package:sliding_puzzle/tools/tools.dart';
 import 'final_completion_page.dart';
 import 'level_complete_page.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 
 class GamePage extends StatefulWidget {
   const GamePage({

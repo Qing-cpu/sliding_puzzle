@@ -1,0 +1,28 @@
+{
+  "leaderboard": "Classement",
+  "racing": "Course",
+  "normal": "Normal",
+  "casual": "Décontracté",
+  "mode": "Mode",
+  "start": "Démarrer",
+  "exit": "Quitter",
+  "setting": "Paramètres",
+  "complete": "Terminer",
+  "clear": "Terminer",
+  "congratulations": "Félicitations",
+  "fail": "Échec",
+  "timeout": "Temps écoulé",
+  "game_over": "Fin de partie",
+  "record": "Record",
+  "new_record": "Nouveau record",
+  "score": "Score",
+  "result": "Résultat",
+  "ladder": "Classement",
+  "collected_treasures": "Trésors collectés",
+  "next_level": "Niveau suivant",
+  "play_again": "Rejouer",
+  "try_again": "Réessayer",
+  "you_ran_out_of_time": "Vous avez manqué de temps !",
+  "congratulations_game_completed": "Félicitations ! Vous avez terminé le jeu."
+
+}

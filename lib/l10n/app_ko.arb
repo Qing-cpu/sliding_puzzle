@@ -1,0 +1,28 @@
+{
+  "leaderboard": "리더보드",
+  "racing": "레이싱",
+  "normal": "일반",
+  "casual": "캐주얼",
+  "mode": "모드",
+  "start": "시작",
+  "exit": "나가기",
+  "setting": "설정",
+  "complete": "완료",
+  "clear": "클리어",
+  "congratulations": "축하합니다",
+  "fail": "실패",
+  "timeout": "시간 초과",
+  "game_over": "게임 오버",
+  "record": "기록",
+  "new_record": "새로운 기록",
+  "score": "점수",
+  "result": "결과",
+  "ladder": "래더",
+  "collected_treasures": "수집한 보물",
+  "next_level": "다음 레벨",
+  "play_again": "다시 플레이",
+  "try_again": "다시 시도",
+  "you_ran_out_of_time": "시간이 초과되었습니다!",
+  "congratulations_game_completed": "축하합니다! 게임을 완료했습니다."
+
+}

@@ -1,0 +1,28 @@
+{
+  "leaderboard": "Placar de líderes",
+  "racing": "Corrida",
+  "normal": "Normal",
+  "casual": "Casual",
+  "mode": "Modo",
+  "start": "Começar",
+  "exit": "Sair",
+  "setting": "Configurações",
+  "complete": "Concluído",
+  "clear": "Concluir",
+  "congratulations": "Parabéns",
+  "fail": "Falha",
+  "timeout": "Tempo esgotado",
+  "game_over": "Fim de jogo",
+  "record": "Recorde",
+  "new_record": "Novo recorde",
+  "score": "Pontuação",
+  "result": "Resultado",
+  "ladder": "Ranque",
+  "collected_treasures": "Tesouros coletados",
+  "next_level": "Próximo nível",
+  "play_again": "Jogar novamente",
+  "try_again": "Tentar novamente",
+  "you_ran_out_of_time": "Seu tempo acabou!",
+  "congratulations_game_completed": "Parabéns! Você completou o jogo."
+
+}

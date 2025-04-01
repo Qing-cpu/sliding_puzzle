@@ -1,0 +1,28 @@
+{
+  "leaderboard": "لوحة المتصدرين",
+  "racing": "سباق",
+  "normal": "عادي",
+  "casual": "عادي",
+  "mode": "نمط",
+  "start": "ابدأ",
+  "exit": "خروج",
+  "setting": "إعدادات",
+  "complete": "اكتمل",
+  "clear": "إكمال",
+  "congratulations": "تهانينا",
+  "fail": "فشل",
+  "timeout": "انتهى الوقت",
+  "game_over": "انتهاء اللعبة",
+  "record": "رقم قياسي",
+  "new_record": "رقم قياسي جديد",
+  "score": "نقاط",
+  "result": "نتيجة",
+  "ladder": "سلم الترتيب",
+  "collected_treasures": "كنوز تم جمعها",
+  "next_level": "المستوى التالي",
+  "play_again": "العب مرة أخرى",
+  "try_again": "حاول مرة أخرى",
+  "you_ran_out_of_time": "لقد نفد وقتك!",
+  "congratulations_game_completed": "تهانينا! لقد أكملت اللعبة."
+
+}

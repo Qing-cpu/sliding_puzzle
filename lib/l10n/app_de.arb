@@ -1,0 +1,28 @@
+{
+  "leaderboard": "Bestenliste",
+  "racing": "Rennen",
+  "normal": "Normal",
+  "casual": "Casual",
+  "mode": "Modus",
+  "start": "Start",
+  "exit": "Beenden",
+  "setting": "Einstellungen",
+  "complete": "Fertig",
+  "clear": "Abschließen",
+  "congratulations": "Herzlichen Glückwunsch",
+  "fail": "Fehlgeschlagen",
+  "timeout": "Zeitüberschreitung",
+  "game_over": "Spiel beendet",
+  "record": "Rekord",
+  "new_record": "Neuer Rekord",
+  "score": "Punktzahl",
+  "result": "Ergebnis",
+  "ladder": "Rangliste",
+  "collected_treasures": "Gesammelte Schätze",
+  "next_level": "Nächstes Level",
+  "play_again": "Nochmal spielen",
+  "try_again": "Nochmal versuchen",
+  "you_ran_out_of_time": "Die Zeit ist abgelaufen!",
+  "congratulations_game_completed": "Herzlichen Glückwunsch! Du hast das Spiel abgeschlossen."
+
+}

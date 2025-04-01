@@ -3,11 +3,12 @@ import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:sliding_puzzle/cus_widget/float_widget.dart';
-import 'package:sliding_puzzle/cus_widget/glass_card.dart';
 import 'package:sliding_puzzle/tools/tools.dart';
 import 'package:sliding_puzzle/cus_widget/cus_widget.dart';
 import 'level_list_page.dart';
 import 'game_page.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 
 class LevelSelect extends StatefulWidget {
   const LevelSelect({super.key});
@@ -357,7 +358,7 @@ class _LevelSelectState extends State<LevelSelect> {
                           // 记录
                           if (leveData != null)
                             Text(
-                              '记录：${mil2TimeString(leveData!.timeMil)}',
+                              '${AppLocalizations.of(context)!.record}：${mil2TimeString(leveData!.timeMil)}',
                               style: TextStyle(
                                 fontSize: 19,
                                 fontWeight: null,

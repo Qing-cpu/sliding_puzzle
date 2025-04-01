@@ -1,0 +1,28 @@
+{
+  "leaderboard": "ランキング",
+  "racing": "レース",
+  "normal": "ノーマル",
+  "casual": "カジュアル",
+  "mode": "モード",
+  "start": "開始",
+  "exit": "終了",
+  "setting": "設定",
+  "complete": "完了",
+  "clear": "クリア",
+  "congratulations": "おめでとうございます",
+  "fail": "失敗",
+  "timeout": "タイムアウト",
+  "game_over": "ゲームオーバー",
+  "record": "記録",
+  "new_record": "新記録",
+  "score": "スコア",
+  "result": "成績",
+  "ladder": "ラダー",
+  "collected_treasures": "集めた宝物",
+  "next_level": "次のレベル",
+  "play_again": "もう一度プレイ",
+  "try_again": "もう一度試す",
+  "you_ran_out_of_time": "時間切れです！",
+  "congratulations_game_completed": "おめでとうございます！ゲームをクリアしました。"
+
+}
