@@ -2,11 +2,13 @@ import 'dart:async';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:games_services/games_services.dart';
 import 'package:sliding_puzzle/cus_widget/cus_widget.dart';
 import 'package:sliding_puzzle/cus_widget/float_widget.dart';
-import 'package:sliding_puzzle/pages/leaderboard/leaderboard_widget.dart';
+import 'package:sliding_puzzle/cus_widget/float_widget_can_tap.dart';
 import 'package:sliding_puzzle/pages/speed_model/speed_model_page.dart';
 
+import '../cus_widget/glass_card.dart';
 import 'normal_mode/level_select.dart';
 
 class StartPage extends StatefulWidget {
@@ -26,7 +28,8 @@ class _StartPageState extends State<StartPage> {
 
   @override
   void initState() {
-    Future.delayed(Duration(microseconds: 320), () {
+    Future(() => GameAuth.signIn());
+    Future(() {
       _pageController.animateTo(
         50000,
         duration: Duration(seconds: 600),
@@ -53,9 +56,10 @@ class _StartPageState extends State<StartPage> {
   }
 
   void _leaderboardWidget(BuildContext context) {
-    Navigator.of(
-      context,
-    ).push(MaterialPageRoute(builder: (context) => LeaderboardWidget()));
+    Leaderboards.showLeaderboards(
+      androidLeaderboardID: '',
+      iOSLeaderboardID: 'speed_model',
+    );
   }
 
   @override
@@ -79,6 +83,7 @@ class _StartPageState extends State<StartPage> {
       body: Stack(
         children: [
           PageView.builder(
+            physics: NeverScrollableScrollPhysics(),
             controller: _pageController,
             itemBuilder: (BuildContext context, int index) {
               return SizedBox(
@@ -105,7 +110,19 @@ class _StartPageState extends State<StartPage> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          Center(child: FloatWidget(child: Image.asset('assets/images/game_name.webp'))),
+                          Center(
+                            child: FloatWidgetCanTap(
+                              child: Padding(
+                                padding: EdgeInsets.all(16),
+                                child: GlassCard(
+                                  radius: Radius.circular(30),
+                                  child: Image.asset(
+                                    'assets/images/game_name.webp',
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
                           Expanded(child: SizedBox()),
                           Center(
                             child: SizedBox(

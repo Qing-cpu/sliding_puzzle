@@ -9,6 +9,7 @@ import 'package:sliding_puzzle/tools/levels/levels.dart';
 class SlidingPuzzleController {
   SlidingPuzzleController({
     this.levelIndex,
+    this.size,
     required this.buildSquareWidget,
     required this.onCompletedCallback,
     required this.onStart,
@@ -19,6 +20,7 @@ class SlidingPuzzleController {
   final Widget Function(int) buildSquareWidget;
   final void Function()? onCompletedCallback;
   final VoidCallback onStart;
+  int? size;
 
   Timer? _timer;
 
@@ -29,12 +31,12 @@ class SlidingPuzzleController {
 
   List<String>? get imageAssetsList => levelInfo?.squareImageAssets;
 
-  int get size => levelIndex == null ? 3 : levelInfo!.size;
+  int get _size => size ?? levelInfo!.size;
 
   int? levelIndex;
   final ValueNotifier<int> reSetTag = ValueNotifier(0);
 
-  double get squareWidth => width / size;
+  double get squareWidth => width / _size;
 
   List<List<SquareModel>>? _squaresTwoDList;
 
@@ -42,12 +44,12 @@ class SlidingPuzzleController {
   List<List<SquareModel>> get squaresTwoDList {
     if (_squaresTwoDList == null) {
       _squaresTwoDList = List<List<SquareModel>>.generate(
-        size,
+        _size,
         (i) => List<SquareModel>.generate(
-          size,
+          _size,
           (j) => SquareModel(
-            squareImageAsset: imageAssetsList?[i * size + j],
-            id: i * size + j,
+            squareImageAsset: imageAssetsList?[i * _size + j],
+            id: i * _size + j,
           ),
         ),
       );
@@ -58,7 +60,7 @@ class SlidingPuzzleController {
   }
 
   bool _isInBounds((int, int) o) {
-    return o.$1 >= 0 && o.$1 < size && o.$2 >= 0 && o.$2 < size;
+    return o.$1 >= 0 && o.$1 < _size && o.$2 >= 0 && o.$2 < _size;
   }
 
   /// 返回空白 Square 的位置
@@ -94,7 +96,7 @@ class SlidingPuzzleController {
   bool isCompleted() => squaresTwoDList.indexed.every(
     (gridListIndexed) => gridListIndexed.$2.indexed.every(
       (gridIndexed) =>
-          gridIndexed.$2.id == gridListIndexed.$1 * size + gridIndexed.$1,
+          gridIndexed.$2.id == gridListIndexed.$1 * _size + gridIndexed.$1,
     ),
   );
 
@@ -105,7 +107,7 @@ class SlidingPuzzleController {
       }
     }
     bool isOk(int i) {
-      return i >= 0 && i < size;
+      return i >= 0 && i < _size;
     }
 
     Offset getTranslateOffset(int dy, int dx) =>
@@ -167,7 +169,7 @@ class SlidingPuzzleController {
   /// 洗牌
   shuffle() {
     final r = Random(DateTime.now().millisecond);
-    var yx = getNullSquareIndex() ?? (size - 1, size - 1);
+    var yx = getNullSquareIndex() ?? (_size - 1, _size - 1);
     (int, int) random() {
       late (int, int) res;
       switch (r.nextInt(4)) {
@@ -190,7 +192,7 @@ class SlidingPuzzleController {
       return res;
     }
 
-    for (int i = 0; i < size * size * 10; i++) {
+    for (int i = 0; i < _size * _size * 10; i++) {
       var newYX = random();
       var gridX = squaresTwoDList[newYX.$1][newYX.$2];
       squaresTwoDList[newYX.$1][newYX.$2] = squaresTwoDList[yx.$1][yx.$2];
@@ -205,7 +207,7 @@ class SlidingPuzzleController {
   void upDataSquareIndexIsProper() {
     for (var list in squaresTwoDList.indexed) {
       for (var qI in list.$2.indexed) {
-        qI.$2.squareIndexIsProper = qI.$2.id == list.$1 * size + qI.$1;
+        qI.$2.squareIndexIsProper = qI.$2.id == list.$1 * _size + qI.$1;
       }
     }
   }
@@ -216,6 +218,9 @@ class SlidingPuzzleController {
   }
 
   void reSet() {
+    if ((_squaresTwoDList?.length ?? 0) < _size * _size) {
+      _squaresTwoDList == null;
+    }
     shuffle();
     upSquareTranslateOffset();
     reSetTag.value++;
@@ -227,7 +232,7 @@ class SlidingPuzzleController {
           timer.cancel();
         }
       });
-    }else{
+    } else {
       onStart();
     }
   }
@@ -256,7 +261,7 @@ class SlidingPuzzleController {
     final yx = getNullSquareIndex()!;
     final ny = yx.$1;
     final nx = yx.$2 + 1;
-    if (nx < size) {
+    if (nx < _size) {
       tapSquare((ny, nx));
     }
   }
@@ -274,7 +279,7 @@ class SlidingPuzzleController {
     final yx = getNullSquareIndex()!;
     final ny = yx.$1 + 1;
     final nx = yx.$2;
-    if (ny < size) {
+    if (ny < _size) {
       tapSquare((ny, nx));
     }
   }

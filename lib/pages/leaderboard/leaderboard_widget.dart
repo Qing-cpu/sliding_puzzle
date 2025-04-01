@@ -93,7 +93,7 @@ class _LeaderboardWidgetState extends State<LeaderboardWidget> {
 
   void _showLeaderboards() async {
     final result = await Leaderboards.showLeaderboards(
-      androidLeaderboardID: 'android_leaderboard_id',
+      androidLeaderboardID: '',
       iOSLeaderboardID: 'speed_model',
     );
     print(result);

@@ -30,6 +30,7 @@ class _SpeedModelPageState extends State<SpeedModelPage>
     width: 288,
     buildSquareWidget: buildNumWidget,
     onCompletedCallback: _onCompletion,
+    size: 3,
   );
 
   @override
@@ -255,14 +256,21 @@ class _SpeedModelPageState extends State<SpeedModelPage>
 }
 
 const List<Color> _colors = [
-  Color(0xFF00C3BD),
+  Color(0xFF12B639),
+  Color(0xFF009513),
+  Color(0xFF008029),
+  Color(0xFF006A51),
+  Color(0xFF005A80),
+  Color(0xFFD69300),
+  Color(0xFFD67200),
+  Color(0xFFEC7513),
+  Color(0xFFFF0365),
+  Color(0xFFFF0365),
   Color(0xFFBC0000),
-  Color(0xFF4FDA70),
-  Color(0xFFC30074),
-  Color(0xFF8DCF26),
-  Color(0xFFD8710E),
-  Color(0xFFC38400),
-  Color(0xFFE1D815),
+  Color(0xFF470068),
+  Color(0xFF27004C),
+  Color(0xFF6E6E6E),
+  Color(0xFF000000),
 ];
 
 class ShadowTextPainter extends CustomPainter {

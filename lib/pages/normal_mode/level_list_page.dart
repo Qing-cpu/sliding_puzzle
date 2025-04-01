@@ -2,27 +2,60 @@ import 'package:flutter/material.dart';
 import 'package:sliding_puzzle/tools/tools.dart';
 import 'package:sliding_puzzle/cus_widget/cus_widget.dart';
 
-class LevelListPage extends StatelessWidget {
-  const LevelListPage({super.key, required this.pageController});
+class LevelListPage extends StatefulWidget {
+  const LevelListPage({
+    super.key,
+    required this.pageController,
+    required this.index,
+  });
 
   final PageController pageController;
+  final int index;
+
+  @override
+  State<LevelListPage> createState() => _LevelListPageState();
+}
+
+class _LevelListPageState extends State<LevelListPage> {
+  late final ScrollController _collection = ScrollController(
+    initialScrollOffset: widget.index * 128,
+  );
+
+  @override
+  void dispose() {
+    _collection.dispose();
+    super.dispose();
+  }
 
   void _onTap(BuildContext context, int index) {
-    Future(() => pageController.jumpToPage(index));
+    Future(() => widget.pageController.jumpToPage(index));
     Navigator.of(context).pop(index);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(toolbarHeight: 44, actions: [StarCount(count: DBTools.allStarCount)]),
+      appBar: AppBar(
+        toolbarHeight: 44,
+        actions: [StarCount(count: DBTools.allStarCount)],
+      ),
       body: ListView.builder(
-        itemCount: Levels.levelInfos.length,
+        itemCount: Levels.levelInfos.length + 5,
+        controller: _collection,
         itemBuilder: (BuildContext context, int index) {
-          return GestureDetector(
-            onTap: () => _onTap(context, index),
-            child: _ItemWidget(data: DBTools.getLevelDataByLeveId(Levels.levelInfos[index].id), levelInfo: Levels.levelInfos[index]),
-          );
+          if (index < Levels.levelInfos.length) {
+            return GestureDetector(
+              onTap: () => _onTap(context, index),
+              child: _ItemWidget(
+                data: DBTools.getLevelDataByLeveId(Levels.levelInfos[index].id),
+                levelInfo: Levels.levelInfos[index],
+              ),
+            );
+          } else {
+            return Container(
+              height: 128,
+            );
+          }
         },
       ),
     );
@@ -74,7 +107,11 @@ class _ItemWidget extends StatelessWidget {
                   child:
                       levelInfo.id <= DBTools.maxLevelId + 1
                           ? Image.asset(levelInfo.imageAssets)
-                          : Icon(Icons.image_rounded, size: 100, color: Colors.grey),
+                          : Icon(
+                            Icons.image_rounded,
+                            size: 100,
+                            color: Colors.grey,
+                          ),
                 ),
               ),
               Positioned(
@@ -88,11 +125,19 @@ class _ItemWidget extends StatelessWidget {
                     borderRadius: BorderRadius.all(Radius.circular(5)),
                     border: Border.all(width: 3, color: Colors.black12),
                     boxShadow: [
-                      BoxShadow(color: _c[levelInfo.size]!, offset: Offset(1, 2), blurRadius: 3),
-                      BoxShadow(color: Colors.white, offset: Offset(-1, -2), blurRadius: 1),
+                      BoxShadow(
+                        color: _c[levelInfo.size]!,
+                        offset: Offset(1, 2),
+                        blurRadius: 3,
+                      ),
+                      BoxShadow(
+                        color: Colors.white,
+                        offset: Offset(-1, -2),
+                        blurRadius: 1,
+                      ),
                     ],
                   ),
-                  child: Image.asset('assets/images/num${levelInfo.size}.png'),
+                  child: Image.asset('assets/images/num${levelInfo.size}.webp'),
                 ),
               ),
             ],
@@ -101,22 +146,28 @@ class _ItemWidget extends StatelessWidget {
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              SizedBox(height: 21,),
-              StarMax3(data?.starCount, maxCount: levelInfo.starsCount, size: 27),
-              SizedBox(height: 12,),
-              Text(levelInfo.name,
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: Color(0xFF000000),
-                shadows: [
-                  Shadow(
-                    color: Colors.grey,
-                    offset: Offset(1.5,1.0),
-                    blurRadius: 13
-                  )
-                ]
-              ),),
+              SizedBox(height: 21),
+              StarMax3(
+                data?.starCount,
+                maxCount: levelInfo.starsCount,
+                size: 27,
+              ),
+              SizedBox(height: 12),
+              Text(
+                levelInfo.name,
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFF000000),
+                  shadows: [
+                    Shadow(
+                      color: Colors.grey,
+                      offset: Offset(1.5, 1.0),
+                      blurRadius: 13,
+                    ),
+                  ],
+                ),
+              ),
             ],
           ),
           Expanded(child: SizedBox()),
@@ -126,4 +177,8 @@ class _ItemWidget extends StatelessWidget {
   }
 }
 
-final _c = {3: Colors.green.shade100, 4: Colors.blue.shade100, 5: Colors.red.shade100};
+final _c = {
+  3: Colors.green.shade100,
+  4: Colors.blue.shade100,
+  5: Colors.red.shade100,
+};
