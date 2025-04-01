@@ -1,10 +1,8 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:games_services/games_services.dart' as gs;
 import 'package:sliding_puzzle/cus_widget/cus_widget.dart';
-import 'package:sliding_puzzle/cus_widget/float_widget.dart';
 import 'package:sliding_puzzle/tools/tools.dart';
 import 'package:sliding_puzzle/pages/speed_model/game_over_page.dart';
 
@@ -150,7 +148,7 @@ class _SpeedModelPageState extends State<SpeedModelPage>
     body: Container(
       decoration: BoxDecoration(
         image: DecorationImage(
-          image: AssetImage('assets/images/bg3.png'),
+          image: AssetImage('assets/images/bg3.webp'),
           fit: BoxFit.cover,
         ),
       ),
