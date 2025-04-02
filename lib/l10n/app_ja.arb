@@ -23,6 +23,7 @@
   "play_again": "もう一度プレイ",
   "try_again": "もう一度試す",
   "you_ran_out_of_time": "時間切れです！",
+  "time_limit": "制限時間",
   "congratulations_game_completed": "おめでとうございます！ゲームをクリアしました。"
 
 }

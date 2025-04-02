@@ -3,6 +3,8 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:games_services/games_services.dart' as gs;
 import 'package:sliding_puzzle/cus_widget/cus_widget.dart';
+import 'package:sliding_puzzle/cus_widget/glass_card.dart';
+import 'package:sliding_puzzle/cus_widget/move2.dart';
 import 'package:sliding_puzzle/tools/tools.dart';
 import 'package:sliding_puzzle/pages/speed_model/game_over_page.dart';
 
@@ -143,69 +145,89 @@ class _SpeedModelPageState extends State<SpeedModelPage>
     ),
   );
 
+  int get _l {
+    // if (levelCount < 8) {
+    if (levelCount < 1) {
+      return 1;
+    }
+
+    // if (levelCount < 15) {
+    if (levelCount < 2) {
+      return 2;
+    }
+
+    return 3;
+  }
+
   @override
   Widget build(BuildContext context) => Scaffold(
     backgroundColor: Color(0x00000000),
-    body: Container(
-      decoration: BoxDecoration(
-        image: DecorationImage(
-          image: AssetImage('assets/images/bg3.webp'),
-          fit: BoxFit.cover,
+    body: Stack(
+      children: [
+        AnimatedSwitcher(
+          duration: const Duration(seconds: 1),
+          child: Container(
+            key: ValueKey(_l),
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height,
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage('assets/images/bg$_l.webp'),
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
         ),
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-            height: 200,
-            clipBehavior: Clip.hardEdge,
-            padding: EdgeInsets.only(top: MediaQuery.paddingOf(context).top),
-            decoration: BoxDecoration(color: Colors.white70),
-            child: BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 30, sigmaY: 30),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    // crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      IconButton(
-                        onPressed: () => Navigator.of(context).pop(),
-                        icon: Icon(
-                          Icons.arrow_back,
-                          color: Color(0xFFF8F3F3),
-                          shadows: [
-                            Shadow(
-                              color: Colors.black54,
-                              blurRadius: 3,
-                              offset: Offset(1.5, 1.5),
-                            ),
-                          ],
-                          size: 32,
-                        ),
-                      ),
-                      Score(
-                        score: score,
-                        textStyle: TextStyle(
-                          fontSize: 42 + levelCount * 2,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.pinkAccent.shade200,
-                          shadows: [
-                            Shadow(
-                              color: Colors.black54,
-                              offset: Offset(2, 4),
-                              blurRadius: 10,
-                            ),
-                          ],
-                        ),
-                      ),
-                      Opacity(
-                        opacity: 0,
-                        child: IconButton(
-                          onPressed: null,
+        Positioned(
+          top: 300,
+          left: -100,
+          child: Move2(
+            child: SizedBox(
+              width: 150,
+              height: 150,
+              child: Image.asset('assets/images/tree1.webp'),
+            ),
+          ),
+        ),
+        Positioned(
+          top: 100,
+          right: -80,
+          child: Move2(
+            child: SizedBox(
+              width: 200,
+              height: 200,
+              child: Transform.rotate(
+                angle: -1,
+                child: Transform.scale(
+                  scaleX: -1.0,
+                  child: Image.asset('assets/images/tree1.webp'),
+                ),
+              ),
+            ),
+          ),
+        ),
+        Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              height: 200,
+              clipBehavior: Clip.hardEdge,
+              padding: EdgeInsets.only(top: MediaQuery.paddingOf(context).top),
+              decoration: BoxDecoration(color: Colors.white70),
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 30, sigmaY: 30),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      // crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        IconButton(
+                          onPressed: () => Navigator.of(context).pop(),
                           icon: Icon(
                             Icons.arrow_back,
+                            color: Color(0xFFF8F3F3),
                             shadows: [
                               Shadow(
                                 color: Colors.black54,
@@ -216,41 +238,76 @@ class _SpeedModelPageState extends State<SpeedModelPage>
                             size: 32,
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                  TimeProgress(
-                    key: Key('tp$levelCount'),
-                    width: 288,
-                    times: [Duration(milliseconds: mil)],
-                    timeProgressController: _timeProgressController,
-                  ),
-                ],
+                        Score(
+                          score: score,
+                          textStyle: TextStyle(
+                            fontSize: 42 + levelCount * 2,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.pinkAccent.shade200,
+                            shadows: [
+                              Shadow(
+                                color: Colors.black54,
+                                offset: Offset(2, 4),
+                                blurRadius: 10,
+                              ),
+                            ],
+                          ),
+                        ),
+                        Opacity(
+                          opacity: 0,
+                          child: IconButton(
+                            onPressed: null,
+                            icon: Icon(
+                              Icons.arrow_back,
+                              shadows: [
+                                Shadow(
+                                  color: Colors.black54,
+                                  blurRadius: 3,
+                                  offset: Offset(1.5, 1.5),
+                                ),
+                              ],
+                              size: 32,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    TimeProgress(
+                      key: Key('tp$levelCount'),
+                      width: 288,
+                      times: [Duration(milliseconds: mil)],
+                      timeProgressController: _timeProgressController,
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
 
-          Expanded(child: SizedBox(height: 1)),
-          Container(
-            padding: EdgeInsets.all(12), // 内边距
-            decoration: BoxDecoration(
-              color: Color(0xFFF8F8F8),
-              borderRadius: BorderRadius.circular(16), // 圆角
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey, // 深棕色阴影
-                  blurRadius: 12, // 阴影模糊半径
-                  offset: Offset(4, 6), // 阴影偏移
+            Expanded(child: SizedBox(height: 1)),
+            GlassCard(
+              radius: Radius.circular(16),
+              child: Container(
+                padding: EdgeInsets.all(12), // 内边距
+                // decoration: BoxDecoration(
+                //   // color: Color(0xFFF8F8F8),
+                //   // borderRadius: BorderRadius.circular(16), // 圆角
+                //   boxShadow: [
+                //     // BoxShadow(
+                //     //   color: Colors.grey, // 深棕色阴影
+                //     //   blurRadius: 12, // 阴影模糊半径
+                //     //   offset: Offset(4, 6), // 阴影偏移
+                //     // ),
+                //   ],
+                // ),
+                child: SlidingPuzzle(
+                  slidingPuzzleController: _slidingPuzzleController,
                 ),
-              ],
+              ),
             ),
-            child: SlidingPuzzle(
-              slidingPuzzleController: _slidingPuzzleController,
-            ),
-          ),
-          Expanded(child: SizedBox(height: 1)),
-        ],
-      ),
+            Expanded(child: SizedBox(height: 1)),
+          ],
+        ),
+      ],
     ),
   );
 }

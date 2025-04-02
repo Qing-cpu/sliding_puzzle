@@ -23,6 +23,7 @@
   "play_again": "다시 플레이",
   "try_again": "다시 시도",
   "you_ran_out_of_time": "시간이 초과되었습니다!",
+  "time_limit": "제한 시간",
   "congratulations_game_completed": "축하합니다! 게임을 완료했습니다."
 
 }

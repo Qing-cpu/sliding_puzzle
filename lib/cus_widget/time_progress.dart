@@ -73,7 +73,7 @@ class _TimeProgressState extends State<TimeProgress> {
         ...widget.times.skip(1).map((t) {
           return Positioned(
             top: 8,
-            left: t.inMilliseconds / widget.times.first.inMilliseconds * widget.width + 4,
+            right: t.inMilliseconds / widget.times.first.inMilliseconds * widget.width + 4,
             child: _Point(color: Colors.black38, size: 4),
           );
         }),

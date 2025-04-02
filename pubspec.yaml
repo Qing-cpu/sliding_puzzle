@@ -9,7 +9,6 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-
   cupertino_icons: ^1.0.8
   shared_preferences: ^2.5.2
   json_serializable: ^6.9.4
@@ -20,6 +19,12 @@ dependencies:
     sdk: flutter
   intl: any
   games_services: ^4.1.0
+  flutter_launcher_icons: ^0.14.3
+
+flutter_launcher_icons:
+  ios: true # 设置为 true 以生成 iOS 图标
+  image_path: "assets/icon/ic_launcher.png"
+  remove_alpha_ios: true
 
 dev_dependencies:
   flutter_test:
@@ -31,6 +36,16 @@ flutter:
   assets:
     - assets/sounds/music/mixkit-goin-back-to-alabama-830.mp3
     - assets/sounds/tap/mixkit-modern-click-box-check-1120.wav
+    - assets/sounds/tap/happy-pop2.mp3
+    - assets/sounds/tap/happy-pop-3-185288.mp3
+    - assets/sounds/tap/ui-pop-sound-316482.mp3
+    - assets/sounds/tap/808-deep-kick-87379.mp3
+    - assets/sounds/tap/smooth-completed.mp3
+    - assets/sounds/tap/n.mp3
+    - assets/icon/ic_launcher.png
+    - assets/images/tree1.webp
+    - assets/images/bb1.webp
+    - assets/images/bb2.webp
     - assets/images/b/b1.png
     - assets/images/game_name.webp
     - assets/images/b/b2.png
@@ -41,10 +56,10 @@ flutter:
     - assets/images/b/b7.png
     - assets/images/b/b8.png
     - assets/images/b/b9.png
+    - assets/images/bg1.webp
     - assets/images/bg2.webp
-    - assets/images/star.png
-    - assets/images/bg.webp
     - assets/images/bg3.webp
+    - assets/images/star.png
     - assets/images/num3.webp
     - assets/images/num4.webp
     - assets/images/num5.webp

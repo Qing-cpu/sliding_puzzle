@@ -23,5 +23,6 @@
   "play_again": "Play Again",
   "try_again": "Try Again",
   "you_ran_out_of_time": "You Ran Out Of Time!",
+  "time_limit": "Time Limit",
   "congratulations_game_completed": "Congratulations! You have completed the game."
 }

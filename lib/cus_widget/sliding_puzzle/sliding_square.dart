@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sliding_puzzle/cus_widget/cus_widget.dart';
+import '../../tools/sound/sound_tools.dart';
 import 'models/square_model.dart';
 
 class SlidingSquare extends StatefulWidget {
@@ -56,6 +57,7 @@ class _SlidingSquareState extends State<SlidingSquare>
 
   _onTapDown(d) {
     if (SquareModel.hasMoving || widget.squareModel.translateOffset == null) {
+      SoundTools.playDeep();
       return;
     }
 
@@ -71,6 +73,7 @@ class _SlidingSquareState extends State<SlidingSquare>
     });
     SquareModel.hasMoving = true;
     _animationController.forward();
+    SoundTools.playPop2();
   }
 
   Widget? _buildAnimatedChild() {

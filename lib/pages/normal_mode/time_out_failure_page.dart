@@ -63,7 +63,7 @@ class TimeOutFailurePage extends StatelessWidget {
                   const SizedBox(height: 8),
                   StarMax3(0),
                   const SizedBox(height: 8),
-                  Text('${AppLocalizations.of(context)!}：${mil2TimeString(maxDMil)}', style: TextStyle(fontSize: 16, color: const Color(0xFF5B5B5B))),
+                  Text('${AppLocalizations.of(context)!.time_limit}：${mil2TimeString(maxDMil)}', style: TextStyle(fontSize: 16, color: const Color(0xFF5B5B5B))),
                   SizedBox(height: 20),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,

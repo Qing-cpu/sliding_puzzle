@@ -24,9 +24,9 @@ class SquareModel {
     if (_squareIndexIsProper == b) {
       return;
     }
-    if (b == true) {
-      SoundTools.playCheck();
-    }
     _squareIndexIsProper = b;
+    if (b == true && id != nullSquareId) {
+      SoundTools.playN();
+    }
   }
 }

@@ -10,6 +10,7 @@ import 'package:sliding_puzzle/pages/speed_model/speed_model_page.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../cus_widget/glass_card.dart';
+import '../cus_widget/move.dart';
 import 'normal_mode/level_select.dart';
 
 class StartPage extends StatefulWidget {
@@ -22,21 +23,21 @@ class StartPage extends StatefulWidget {
 class _StartPageState extends State<StartPage> {
   bool is1 = true;
 
-  int dIndex = 0;
-  Timer? timer;
+  // int dIndex = 0;
+  // Timer? timer;
 
-  late final PageController _pageController = PageController();
+  // late final PageController _pageController = PageController();
 
   @override
   void initState() {
     Future(() => GameAuth.signIn());
-    Future(() {
-      _pageController.animateTo(
-        50000,
-        duration: Duration(seconds: 600),
-        curve: Curves.linear,
-      );
-    });
+    // Future(() {
+    //   _pageController.animateTo(
+    //     50000,
+    //     duration: Duration(seconds: 600),
+    //     curve: Curves.linear,
+    //   );
+    // });
     super.initState();
   }
 
@@ -65,9 +66,9 @@ class _StartPageState extends State<StartPage> {
 
   @override
   void dispose() {
-    timer?.cancel();
-    timer = null;
-    _pageController.dispose();
+    // timer?.cancel();
+    // timer = null;
+    // _pageController.dispose();
     super.dispose();
   }
 
@@ -76,19 +77,13 @@ class _StartPageState extends State<StartPage> {
     return Scaffold(
       body: Stack(
         children: [
-          PageView.builder(
-            physics: NeverScrollableScrollPhysics(),
-            controller: _pageController,
-            itemBuilder: (BuildContext context, int index) {
-              return SizedBox(
-                width: double.infinity,
-                height: double.infinity,
-                child: Image.asset(
-                  'assets/images/b/b${index % 9 + 1}.png',
-                  fit: BoxFit.cover,
-                ),
-              );
-            },
+          SizedBox(
+            width: MediaQuery.of(context).size.width,
+            height:  MediaQuery.of(context).size.height,
+            child: Image.asset(
+              'assets/images/bb${DateTime.now().hour > 22 ? 1 : 2}.webp',
+              fit: BoxFit.cover,
+            ),
           ),
           AnimatedSwitcher(
             duration: Duration(milliseconds: 160),
@@ -144,7 +139,6 @@ class _StartPageState extends State<StartPage> {
                           bottom: 0,
                           right: 0,
                           child: Container(
-                            color: Colors.white38,
                             child: BackdropFilter(
                               filter: ImageFilter.blur(sigmaX: 60, sigmaY: 60),
                               child: ListView(
@@ -156,7 +150,7 @@ class _StartPageState extends State<StartPage> {
                                   FloatWidget(
                                     child: AButton(
                                       onTap: () => _startModel1(context),
-                                      width: 318,
+                                      width: 280,
                                       fontSize: 50,
                                       text:
                                           AppLocalizations.of(context)!.normal,
@@ -167,22 +161,11 @@ class _StartPageState extends State<StartPage> {
                                   SizedBox(height: 50),
                                   AButton(
                                     onTap: () => _startSpeedModel1(context),
-                                    sColor: Colors.orangeAccent,
-                                    width: 318,
+                                    sColor: Colors.orange,
+                                    width: 290,
                                     fontSize: 50,
-                                    fontColor: Colors.blueAccent.shade700,
-                                    text:
-                                        AppLocalizations.of(context)!.racing,
-                                    radius: Radius.circular(32),
-                                  ),
-                                  SizedBox(height: 50),
-                                  AButton(
-                                    onTap: () => setState(() => is1 = true),
-                                    sColor: Colors.red,
-                                    width: 120,
-                                    fontSize: 30,
-                                    fontColor: Colors.redAccent.shade700,
-                                    text: AppLocalizations.of(context)!.exit,
+                                    fontColor: Colors.pinkAccent.shade200,
+                                    text: AppLocalizations.of(context)!.racing,
                                     radius: Radius.circular(32),
                                   ),
                                   SizedBox(height: 50),
@@ -192,7 +175,10 @@ class _StartPageState extends State<StartPage> {
                                     width: 318,
                                     fontSize: 50,
                                     fontColor: Colors.blueAccent.shade700,
-                                    text: AppLocalizations.of(context)!.leaderboard,
+                                    text:
+                                        AppLocalizations.of(
+                                          context,
+                                        )!.leaderboard,
                                     radius: Radius.circular(32),
                                   ),
                                   SizedBox(height: 50),
@@ -209,6 +195,74 @@ class _StartPageState extends State<StartPage> {
                       ],
                     ),
           ),
+          if (is1 == false)
+            Positioned(
+              bottom: MediaQuery.of(context).padding.bottom + 12,
+              left: 50,
+              child: SizedBox(
+                width: 80,
+                height: 80,
+                child: Center(
+                  child: FloatWidget(
+                    child: GlassCard(
+                      colorB1: Colors.white12,
+                      colorT1: Colors.white24,
+                      lightColor: Colors.green,
+                      radius: Radius.circular(50),
+                      child: SizedBox(
+                        width: 100,
+                        child: Padding(
+                          padding: EdgeInsets.all(6),
+                          child: IconButton(
+                            onPressed: () => setState(() => is1 = true),
+                            icon: Icon(
+                              Icons.exit_to_app,
+                              size: 41,
+                              color: Color(0xE2FFF5B7),
+                              shadows: [
+                                Shadow(
+                                  color: Colors.black26,
+                                  blurRadius: 6,
+                                  offset: Offset(1, 3),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          if (is1 == false)
+            Positioned(
+              bottom: MediaQuery.of(context).padding.bottom + 12,
+              right: 50,
+              child: SizedBox(
+                width: 100,
+                height: 100,
+                child: FloatWidget(
+                  rotateX: Tween<double>(begin: 0.1, end: -0.1),
+                  rotateY: Tween<double>(begin: -0.1, end: 0.1),
+                  child: GlassCard(
+                    colorB1: Colors.white12,
+                    colorT1: Colors.white24,
+                    lightColor: Colors.yellowAccent,
+                    radius: Radius.circular(50),
+                    child: Padding(
+                      padding: EdgeInsets.all(10),
+                      child: Center(
+                        child: TextButton(
+                          onPressed: () => setState(() => is1 = true),
+                          child: Image.asset('assets/images/chest_l.png'),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
         ],
       ),
     );

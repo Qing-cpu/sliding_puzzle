@@ -1,6 +1,5 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
+import 'package:sliding_puzzle/cus_widget/countdown.dart';
 import 'models/sliding_puzzle_model.dart';
 import 'sliding_square.dart';
 
@@ -20,16 +19,37 @@ class SlidingPuzzle extends StatefulWidget {
 class _SlidingPuzzleState extends State<SlidingPuzzle> {
   SlidingPuzzleController get slidingPuzzleController =>
       widget.slidingPuzzleController;
+  OverlayEntry? _overlayEntry;
 
   @override
   void initState() {
     super.initState();
     slidingPuzzleController.reSet();
+    slidingPuzzleController.s.addListener(_handleReSetTagChange);
+    if (slidingPuzzleController.s.value > 0) {
+      WidgetsBinding.instance.addPostFrameCallback((_) => _showCountdown());
+    }
+  }
+
+  void _removeOverlayEntry() {
+    if (_overlayEntry != null && _overlayEntry!.mounted) {
+      _overlayEntry!.remove();
+      _overlayEntry = null;
+    }
   }
 
   @override
   void dispose() {
+    _removeOverlayEntry();
+    slidingPuzzleController.s.removeListener(_handleReSetTagChange);
     super.dispose();
+  }
+
+  void _handleReSetTagChange() {
+    // 当 reSetTag 的值变化时，在下一帧显示倒计时
+    if (slidingPuzzleController.s.value > 0) {
+      WidgetsBinding.instance.addPostFrameCallback((_) => _showCountdown());
+    }
   }
 
   _onTapCallBack(int id) {
@@ -37,6 +57,24 @@ class _SlidingPuzzleState extends State<SlidingPuzzle> {
       slidingPuzzleController.getSquareIndex(id),
     );
     setState(() {});
+  }
+
+  _showCountdown() {
+    _removeOverlayEntry();
+    if (slidingPuzzleController.s.value > 0) {
+      final overlay = Overlay.of(context);
+      _overlayEntry = OverlayEntry(
+        builder:
+            (BuildContext context) => Countdown(
+              count: slidingPuzzleController.s.value,
+              overCallback: () {
+                _removeOverlayEntry();
+                slidingPuzzleController.s.value = 0;
+              },
+            ),
+      );
+      overlay.insert(_overlayEntry!);
+    }
   }
 
   @override
@@ -51,7 +89,6 @@ class _SlidingPuzzleState extends State<SlidingPuzzle> {
             valueListenable: slidingPuzzleController.s,
             builder: (BuildContext context, int s, Widget? child) {
               return Stack(
-                clipBehavior: Clip.none,
                 children: [
                   child!,
                   if (s > 0)
@@ -66,62 +103,6 @@ class _SlidingPuzzleState extends State<SlidingPuzzle> {
                           alignment: Alignment.center,
                           width: double.infinity,
                           height: double.infinity,
-                        ),
-                      ),
-                    ),
-
-                  if (s > 0)
-                    Positioned(
-                      left: 0,
-                      right: 0,
-                      top: -72,
-                      child: Center(
-                        child: Container(
-                          clipBehavior: Clip.hardEdge,
-                          height: 80,
-                          width: 80,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.all(Radius.circular(17)),
-                          ),
-                          child: BackdropFilter(
-                            filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
-                            child: Container(color: Colors.black12),
-                          ),
-                        ),
-                      ),
-                    ),
-                  if (s > 0)
-                    Positioned(
-                      left: 0,
-                      right: 0,
-                      top: -72,
-                      child: Center(
-                        child: Container(
-                          alignment: Alignment.center,
-                          height: 80,
-                          width: 80,
-                          decoration: BoxDecoration(
-                            border: Border.all(
-                              color: Colors.white54,
-                              width: 0.72,
-                            ),
-                            borderRadius: BorderRadius.all(Radius.circular(17)),
-                          ),
-                          child: Text(
-                            '$s',
-                            style: TextStyle(
-                              color: Color(0xfffffffa),
-                              fontSize: 50,
-                              fontWeight: FontWeight.bold,
-                              shadows: [
-                                Shadow(
-                                  color: Colors.black,
-                                  blurRadius: 3,
-                                  offset: Offset.zero,
-                                ),
-                              ],
-                            ),
-                          ),
                         ),
                       ),
                     ),

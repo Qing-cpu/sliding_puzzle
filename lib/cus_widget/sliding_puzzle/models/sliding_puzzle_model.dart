@@ -6,6 +6,8 @@ import 'package:sliding_puzzle/cus_widget/sliding_puzzle/models/square_model.dar
 import 'package:sliding_puzzle/tools/levels/level_info.dart';
 import 'package:sliding_puzzle/tools/levels/levels.dart';
 
+import '../../../tools/sound/sound_tools.dart';
+
 class SlidingPuzzleController {
   SlidingPuzzleController({
     this.levelIndex,
@@ -225,13 +227,7 @@ class SlidingPuzzleController {
     upSquareTranslateOffset();
     reSetTag.value++;
     if (s.value > 0) {
-      _timer = Timer.periodic(Duration(seconds: 1), (timer) {
-        s.value = s.value - 1;
-        if (s.value <= 0) {
-          onStart();
-          timer.cancel();
-        }
-      });
+      Future.delayed(Duration(seconds: s.value)).then((_) => onStart());
     } else {
       onStart();
     }
@@ -253,6 +249,7 @@ class SlidingPuzzleController {
     upSquareTranslateOffset();
     upDataSquareIndexIsProper();
     if (isCompleted()) {
+      SoundTools.playCompleted();
       onCompletedCallback?.call();
     }
   }

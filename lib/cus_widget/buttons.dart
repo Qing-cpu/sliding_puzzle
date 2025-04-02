@@ -2,6 +2,8 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 
+import '../tools/sound/sound_tools.dart';
+
 class AButton extends StatefulWidget {
   const AButton({
     super.key,
@@ -31,7 +33,10 @@ class _AButtonState extends State<AButton> with SingleTickerProviderStateMixin {
 
   @override
   void initState() {
-    _controller = AnimationController(vsync: this, duration: Duration(seconds: 3))..repeat(reverse: true);
+    _controller = AnimationController(
+      vsync: this,
+      duration: Duration(seconds: 3),
+    )..repeat(reverse: true);
     super.initState();
   }
 
@@ -51,7 +56,10 @@ class _AButtonState extends State<AButton> with SingleTickerProviderStateMixin {
       shadows: [
         Shadow(
           color: Colors.black87,
-          offset: Tween<Offset>(begin: Offset(-3, 6), end: Offset(3, 6)).chain(CurveTween(curve: Curves.easeInOut)).evaluate(_controller),
+          offset: Tween<Offset>(
+            begin: Offset(-3, 6),
+            end: Offset(3, 6),
+          ).chain(CurveTween(curve: Curves.easeInOut)).evaluate(_controller),
           blurRadius: 12,
         ),
         Shadow(color: Colors.black54, offset: Offset(3, 6), blurRadius: 24),
@@ -61,7 +69,10 @@ class _AButtonState extends State<AButton> with SingleTickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) => InkWell(
-    onTap: widget.onTap,
+    onTap: () {
+      widget.onTap();
+      SoundTools.playButtonTap();
+    },
     child: Center(
       child: AnimatedBuilder(
         animation: _controller,
@@ -78,16 +89,29 @@ class _AButtonState extends State<AButton> with SingleTickerProviderStateMixin {
                   width: widget.width,
                   decoration: BoxDecoration(
                     border: Border.all(color: Colors.black54, width: 1.5),
-                    borderRadius: BorderRadius.all(Radius.elliptical(widget.radius.x + 1, widget.radius.y + 1)),
+                    borderRadius: BorderRadius.all(
+                      Radius.elliptical(
+                        widget.radius.x + 1,
+                        widget.radius.y + 1,
+                      ),
+                    ),
                   ),
-                  child: BackdropFilter(filter: ImageFilter.blur(sigmaX: 30, sigmaY: 30), child: Container(color: Colors.black12)),
+                  child: BackdropFilter(
+                    filter: ImageFilter.blur(sigmaX: 30, sigmaY: 30),
+                    child: Container(color: Colors.black12),
+                  ),
                 ),
               ),
               Container(
                 alignment: Alignment.center,
                 width: widget.width,
                 margin: EdgeInsets.all(1.3),
-                padding: EdgeInsets.only(left: 16, right: 16, top: 4, bottom: 4),
+                padding: EdgeInsets.only(
+                  left: 16,
+                  right: 16,
+                  top: 4,
+                  bottom: 4,
+                ),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.all(widget.radius),
                   color: Colors.white12,
@@ -97,20 +121,28 @@ class _AButtonState extends State<AButton> with SingleTickerProviderStateMixin {
                       BoxShadow(
                         color: widget.sColor!,
                         offset: Tween<Offset>(
-                          begin: Offset(1.5, 1.5),
-                          end: Offset(-1.5, -3),
-                        ).chain(CurveTween(curve: Curves.easeInOut)).evaluate(_controller),
-                        blurRadius: Tween<double>(begin: 32, end: 36).chain(CurveTween(curve: Curves.easeInOutBack)).evaluate(_controller),
+                              begin: Offset(1.5, 1.5),
+                              end: Offset(-1.5, -3),
+                            )
+                            .chain(CurveTween(curve: Curves.easeInOut))
+                            .evaluate(_controller),
+                        blurRadius: Tween<double>(begin: 32, end: 36)
+                            .chain(CurveTween(curve: Curves.easeInOutBack))
+                            .evaluate(_controller),
                       ),
                   ],
                 ),
                 child: Transform.translate(
                   offset: Tween<Offset>(
-                    begin: Offset(0.5, 1),
-                    end: Offset(-0.5, -1),
-                  ).chain(CurveTween(curve: Curves.easeInOutBack)).evaluate(_controller),
+                        begin: Offset(0.5, 1),
+                        end: Offset(-0.5, -1),
+                      )
+                      .chain(CurveTween(curve: Curves.easeInOutBack))
+                      .evaluate(_controller),
                   child: Transform.rotate(
-                    angle: Tween<double>(begin: -0.1, end: 0.1).chain(CurveTween(curve: Curves.easeInOut)).evaluate(_controller),
+                    angle: Tween<double>(begin: -0.1, end: 0.1)
+                        .chain(CurveTween(curve: Curves.easeInOut))
+                        .evaluate(_controller),
                     child: _text,
                   ),
                 ),

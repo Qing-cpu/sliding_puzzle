@@ -23,6 +23,7 @@
   "play_again": "Jugar de nuevo",
   "try_again": "Intentar de nuevo",
   "you_ran_out_of_time": "¡Se te acabó el tiempo!",
+  "time_limit": "Tiempo limitado",
   "congratulations_game_completed": "¡Felicidades! Has completado el juego."
 
 }

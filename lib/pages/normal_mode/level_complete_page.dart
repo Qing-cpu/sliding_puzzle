@@ -32,50 +32,89 @@ class LevelCompletePage extends StatelessWidget {
       body: Center(
         child: Stack(
           children: [
-            Positioned(
-              top: 0,
-              left: 0,
-              bottom: 0,
-              right: 0,
-              child: BackdropFilter(filter: ImageFilter.blur(sigmaX: 30, sigmaY: 30), child: Container(color: Colors.white54)),
-            ),
-            Container(
-              width: double.infinity,
-              margin: EdgeInsets.only(
-                left: 21,
-                right: 21
+            BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 60, sigmaY: 60),
+              child: Container(
+                height: double.infinity,
+                width: double.infinity,
+                color: Colors.black12,
               ),
-              height: 256.8,
-              decoration: BoxDecoration(
-                  border: Border.all(
-                    color: Colors.black54,
-                    width: 0.1,
-                  ),
-                  color: Colors.white54, borderRadius: BorderRadius.circular(16)),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const SizedBox(height: 20),
-                  Text(AppLocalizations.of(context)!.complete, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: const Color(0xFF262626))),
-                  const SizedBox(height: 14),
-                  StarMax3ForCompletion(starCount: starCount),
-                  const SizedBox(height: 14),
-                  Text('${AppLocalizations.of(context)!.result}：${mil2TimeString(newDMil)}', style: TextStyle(fontSize: 16, color: const Color(0xFF5B5B5B))),
-                  const SizedBox(height: 12),
-                  if (oldDMil == null || oldDMil! > newDMil)
-                    Text('${AppLocalizations.of(context)!.new_record}!', style: TextStyle(fontSize: 16, color: const Color(0xFF4A7DFF), fontWeight: FontWeight.bold))
-                  else
-                    Text('${AppLocalizations.of(context)!.record}：${mil2TimeString(oldDMil!)}', style: TextStyle(fontSize: 12, color: const Color(0xFF9E9E9E))),
-                  SizedBox(height: 14),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      TextButton(onPressed: playAgain, child: Text(AppLocalizations.of(context)!.play_again)),
-                      TextButton(onPressed: next, child: Text(AppLocalizations.of(context)!.next_level)),
-                    ],
-                  ),
-                  SizedBox(height: 16),
-                ],
+            ),
+            Center(
+              child: Container(
+                width: double.infinity,
+                margin: EdgeInsets.only(left: 21, right: 21),
+                height: 256.8,
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.white, width: 0.1),
+                  color: Colors.white70,
+                  borderRadius: BorderRadius.circular(16),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black12,
+                      blurRadius: 12,
+                      offset: Offset(1, 2),
+                      // c
+                    )
+                  ]
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const SizedBox(height: 20),
+                    Text(
+                      AppLocalizations.of(context)!.complete,
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: const Color(0xFF262626),
+                      ),
+                    ),
+                    const SizedBox(height: 14),
+                    StarMax3ForCompletion(starCount: starCount),
+                    const SizedBox(height: 14),
+                    Text(
+                      '${AppLocalizations.of(context)!.result}：${mil2TimeString(newDMil)}',
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: const Color(0xFF5B5B5B),
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    if (oldDMil == null || oldDMil! > newDMil)
+                      Text(
+                        '${AppLocalizations.of(context)!.new_record}!',
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: const Color(0xFF4A7DFF),
+                          fontWeight: FontWeight.bold,
+                        ),
+                      )
+                    else
+                      Text(
+                        '${AppLocalizations.of(context)!.record}：${mil2TimeString(oldDMil!)}',
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: const Color(0xFF9E9E9E),
+                        ),
+                      ),
+                    SizedBox(height: 14),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        TextButton(
+                          onPressed: playAgain,
+                          child: Text(AppLocalizations.of(context)!.play_again),
+                        ),
+                        TextButton(
+                          onPressed: next,
+                          child: Text(AppLocalizations.of(context)!.next_level),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 16),
+                  ],
+                ),
               ),
             ),
           ],
