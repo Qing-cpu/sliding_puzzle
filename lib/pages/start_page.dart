@@ -81,7 +81,7 @@ class _StartPageState extends State<StartPage> {
             width: MediaQuery.of(context).size.width,
             height:  MediaQuery.of(context).size.height,
             child: Image.asset(
-              'assets/images/bb${DateTime.now().hour > 22 ? 1 : 2}.webp',
+              'assets/images/bb${DateTime.now().hour > 19 ? 1 : 2}.webp',
               fit: BoxFit.cover,
             ),
           ),
@@ -235,7 +235,8 @@ class _StartPageState extends State<StartPage> {
                 ),
               ),
             ),
-          if (is1 == false)
+          // if (is1 == false)
+          if ( false)
             Positioned(
               bottom: MediaQuery.of(context).padding.bottom + 12,
               right: 50,
