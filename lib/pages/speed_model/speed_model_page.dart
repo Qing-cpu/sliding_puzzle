@@ -147,6 +147,8 @@ class _SpeedModelPageState extends State<SpeedModelPage>
 
   int get _hour => DateTime.now().hour;
 
+  // int get _hour => 1;
+
   int get l {
     if (_hour > 19) {
       return 3;
@@ -160,21 +162,21 @@ class _SpeedModelPageState extends State<SpeedModelPage>
   List<Color> get _colors =>
       _hour < 19
           ? [
-            Color(0xFF12B639),
-            Color(0xFF009513),
-            Color(0xFF008029),
-            Color(0xFF006A51),
-            Color(0xFF005A80),
-            Color(0xFFD69300),
-            Color(0xFFD67200),
-            Color(0xFFEC7513),
-            Color(0xFFFF0365),
-            Color(0xFFFF0365),
-            Color(0xFFBC0000),
-            Color(0xFF470068),
-            Color(0xFF27004C),
-            Color(0xFF6E6E6E),
-            Color(0xFF000000),
+            Color(0x3D12B639),
+            Color(0x3D009513),
+            Color(0x3D008029),
+            Color(0x3D006A51),
+            Color(0x3D005A80),
+            Color(0x3DD69300),
+            Color(0x3DD67200),
+            Color(0x3DEC7513),
+            Color(0x3DFF0365),
+            Color(0x3DFF0365),
+            Color(0x3DBC0000),
+            Color(0x3D470068),
+            Color(0x3D27004C),
+            Color(0x3D6E6E6E),
+            Color(0x3D000000),
           ]
           : [
             Color(0x3DFF0365),
@@ -221,36 +223,6 @@ class _SpeedModelPageState extends State<SpeedModelPage>
               ),
             ),
           ),
-          if (l == 2)
-            Positioned(
-              top: 300,
-              left: -100,
-              child: Move2(
-                child: SizedBox(
-                  width: 150,
-                  height: 150,
-                  child: Image.asset('assets/images/tree1.webp'),
-                ),
-              ),
-            ),
-          if (l == 2)
-            Positioned(
-              top: 100,
-              right: -80,
-              child: Move2(
-                child: SizedBox(
-                  width: 200,
-                  height: 200,
-                  child: Transform.rotate(
-                    angle: -1,
-                    child: Transform.scale(
-                      scaleX: -1.0,
-                      child: Image.asset('assets/images/tree1.webp'),
-                    ),
-                  ),
-                ),
-              ),
-            ),
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
