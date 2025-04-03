@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:sliding_puzzle/cus_widget/float_widget_can_tap.dart';
+import 'package:sliding_puzzle/cus_widget/glass_card.dart';
 import 'time_out_failure_page.dart';
 import 'package:sliding_puzzle/cus_widget/cus_widget.dart';
 import 'package:sliding_puzzle/tools/tools.dart';
 import 'final_completion_page.dart';
 import 'level_complete_page.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-
 
 class GamePage extends StatefulWidget {
   const GamePage({
@@ -44,7 +43,8 @@ class _GamePageState extends State<GamePage>
 
   LevelInfo get _levelInfo => Levels.levelInfos[_levelInfoIndex];
 
-  Widget _buildSquareWidget(int index) => Image.asset(_levelInfo.squareImageAssets[index]);
+  Widget _buildSquareWidget(int index) =>
+      Image.asset(_levelInfo.squareImageAssets[index]);
 
   @override
   void initState() {
@@ -92,17 +92,21 @@ class _GamePageState extends State<GamePage>
   void _back() {
     overlayEntry?.remove();
     overlayEntry = null;
+    _slidingPuzzleController.s.value = 0;
     Navigator.pop(context);
   }
 
   void _next() {
     overlayEntry?.remove();
     overlayEntry = null;
+    _timeProgressController.value = 0;
     if (_levelInfoIndex + 1 < Levels.levelInfos.length) {
-      _timeProgressController.value = 0;
       setState(() {
         _levelInfoIndex++;
       });
+      _slidingPuzzleController.s.value = 0;
+      _slidingPuzzleController.s.value = 3;
+      _timeProgressController.duration = _levelInfo.starCountTimes.first;
       _slidingPuzzleController.next();
       Future(() => widget.pageController.jumpToPage(_levelInfoIndex));
     } else {
@@ -119,6 +123,7 @@ class _GamePageState extends State<GamePage>
     overlayEntry?.remove();
     overlayEntry = null;
     _timeProgressController.value = 0;
+    _slidingPuzzleController.s.value = 3;
     _slidingPuzzleController.reSet();
   }
 
@@ -144,69 +149,84 @@ class _GamePageState extends State<GamePage>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        actions: [
-          PopupMenuButton(
-            itemBuilder: (BuildContext context) {
-              return [
-                if (_levelInfoIndex != Levels.levelInfos.length - 1 &&
-                    _levelInfo.id <= DBTools.maxLevelId)
-                  PopupMenuItem(onTap: _next, child: Text('Next')),
-                PopupMenuItem(onTap: _playAgain, child: Text('Restart')),
-              ];
-            },
-          ),
-        ],
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            box8H,
-            FloatWidgetCanTap(
-              child: Hero(
-                tag: _levelInfo.id,
-                child: PhotoFrame(image: Image.asset(_levelInfo.imageAssets)),
-              ),
-            ),
-            Expanded(
-              flex: 1,
-              child: Center(child: SizedBox(width: 1, height: 1)),
-            ),
-            TimeProgress(
-              key: Key(_levelInfo.imageAssets),
-              width: 288,
-              times: _levelInfo.starCountTimes,
-              timeProgressController: _timeProgressController,
-            ),
-            box8H,
-            Container(
-              padding: EdgeInsets.all(12), // 内边距
-              decoration: BoxDecoration(
-                color: Color(0xFFF8F8F8),
-                borderRadius: BorderRadius.circular(16), // 圆角
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey, // 深棕色阴影
-                    blurRadius: 12, // 阴影模糊半径
-                    offset: Offset(4, 6), // 阴影偏移
-                  ),
-                ],
-              ),
-              child: SlidingPuzzle(
-                slidingPuzzleController: _slidingPuzzleController,
-              ),
-            ),
-            Expanded(
-              flex: 3,
-              child: Center(child: SizedBox(width: 1, height: 1)),
+    return PopScope(
+      onPopInvokedWithResult: (_, _) {
+        _slidingPuzzleController.s.value = 0;
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          actions: [
+            PopupMenuButton(
+              itemBuilder: (BuildContext context) {
+                return [
+                  if (_levelInfoIndex != Levels.levelInfos.length - 1 &&
+                      _levelInfo.id <= DBTools.maxLevelId)
+                    PopupMenuItem(onTap: _next, child: Text('Next')),
+                  PopupMenuItem(onTap: _playAgain, child: Text('Restart')),
+                ];
+              },
             ),
           ],
+        ),
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              box8H,
+              FloatWidgetCanTap(
+                child: Hero(
+                  tag: _levelInfo.id,
+                  child: PhotoFrame(image: Image.asset(_levelInfo.imageAssets)),
+                ),
+              ),
+              Expanded(
+                flex: 1,
+                child: Center(child: SizedBox(width: 1, height: 1)),
+              ),
+              TimeProgress(
+                key: Key(_levelInfo.imageAssets),
+                width: 288,
+                times: _levelInfo.starCountTimes,
+                timeProgressController: _timeProgressController,
+              ),
+              box8H,
+              Container(
+                width: 291,
+                height: 291,
+                clipBehavior: Clip.hardEdge,
+
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage(_levelInfo.imageAssets),
+                  ),
+                  borderRadius: BorderRadius.circular(16), // 圆角
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black54, // 深棕色阴影
+                      blurRadius: 12, // 阴影模糊半径
+                      offset: Offset(1, 1), // 阴影偏移
+                    ),
+                  ],
+                ),
+                child: GlassCard(
+                  // colorB1: Color(0x4D000000),
+                  // colorT1: Color(0x00000000),
+                  sigma: 30,
+                  radius: Radius.circular(16),
+                  child: SlidingPuzzle(
+                    slidingPuzzleController: _slidingPuzzleController,
+                  ),
+                ),
+              ),
+              Expanded(
+                flex: 3,
+                child: Center(child: SizedBox(width: 1, height: 1)),
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
-
 }

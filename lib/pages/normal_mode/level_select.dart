@@ -9,7 +9,6 @@ import 'level_list_page.dart';
 import 'game_page.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-
 class LevelSelect extends StatefulWidget {
   const LevelSelect({super.key});
 
@@ -35,10 +34,13 @@ class _LevelSelectState extends State<LevelSelect> {
   void initState() {
     super.initState();
     final maxId = DBTools.maxLevelId;
-    _index = Levels.levelInfos.indexWhere((i) => i.id == maxId);
-    if (++_index == Levels.levelInfos.length) {
-      _index--;
+    if (maxId != -1) {
+      _index = Levels.levelInfos.indexWhere((i) => i.id == maxId);
+      if (++_index == Levels.levelInfos.length) {
+        _index--;
+      }
     }
+
     _pageController = PageController(
       initialPage: _index,
       viewportFraction: 0.8,
@@ -73,7 +75,7 @@ class _LevelSelectState extends State<LevelSelect> {
     CupertinoPageRoute(
       builder:
           (BuildContext context) =>
-              LevelListPage(pageController: _pageController, index: _index,),
+              LevelListPage(pageController: _pageController, index: _index),
     ),
   );
 
@@ -212,7 +214,7 @@ class _LevelSelectState extends State<LevelSelect> {
                           child: Center(
                             child: Text(
                               '${_index + 1} / ${Levels.levelInfos.length}',
-                          
+
                               style: TextStyle(
                                 color: const Color(0xFF7D8285),
                                 fontSize: 19,

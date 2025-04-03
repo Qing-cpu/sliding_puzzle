@@ -71,7 +71,7 @@ class _AButtonState extends State<AButton> with SingleTickerProviderStateMixin {
   Widget build(BuildContext context) => InkWell(
     onTap: () {
       widget.onTap();
-      SoundTools.playButtonTap();
+      SoundTools.playButtonTap(1.0);
     },
     child: Center(
       child: AnimatedBuilder(

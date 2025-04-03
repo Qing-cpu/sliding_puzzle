@@ -1,12 +1,14 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:sliding_puzzle/cus_widget/glass_card.dart';
+import 'package:sliding_puzzle/tools/sound/sound_tools.dart';
 
 class Countdown extends StatefulWidget {
-  const Countdown({super.key, required this.count, this.overCallback});
+  const Countdown({super.key, required this.count, required this.overCallback});
 
   final int count;
 
-  final void Function()? overCallback;
+  final void Function() overCallback;
 
   @override
   State<Countdown> createState() => _CountdownState();
@@ -14,37 +16,46 @@ class Countdown extends StatefulWidget {
 
 class _CountdownState extends State<Countdown> {
   late int count = widget.count;
-
-  _setCount() async {
-    if (count > 0) {
-      await Future.delayed(Duration(seconds: 1));
-      setState(() {
-        --count;
-      });
-      if (count == 0) {
-        widget.overCallback?.call();
-        return;
-      }
-      _setCount();
-    }
-  }
+  Timer? _timer;
+  double end = 1;
 
   @override
   void initState() {
     super.initState();
-    _setCount();
+    assert(count > 0);
+    SoundTools.playCountd();
+    _timer = Timer.periodic(Duration(seconds: 1), (_) {
+      if (--count == 0) {
+        end = 0;
+      }
+      setState(() {});
+    });
+  }
+
+  @override
+  void dispose() {
+    SoundTools.stop();
+    _timer?.cancel();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: const Color(0x00000000),
+    return TweenAnimationBuilder(
+      onEnd: () {
+        widget.overCallback();
+      },
+      tween: Tween<double>(begin: 1, end: end),
+      duration: const Duration(milliseconds: 320),
+      curve: Curves.fastOutSlowIn,
+      builder: (BuildContext context, double value, Widget? child) {
+        return Transform.scale(scale: value, child: child);
+      },
       child: GlassCard(
         radius: Radius.circular(17),
-        child: SizedBox(
-          width: 80,
-          height: 80,
-          child: Center(
+        child: Center(
+          child: Material(
+            type: MaterialType.transparency,
             child: Text(
               '$count',
               style: TextStyle(

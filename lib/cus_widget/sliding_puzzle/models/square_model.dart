@@ -16,17 +16,17 @@ class SquareModel {
 
   bool get isNullSquare => nullSquareId == id;
 
-  bool _squareIndexIsProper = false;
+  bool? _squareIndexIsProper;
 
-  bool get squareIndexIsProper => _squareIndexIsProper;
+  // bool get squareIndexIsProper => _squareIndexIsProper ?? false;
 
   set squareIndexIsProper(bool b) {
     if (_squareIndexIsProper == b) {
       return;
     }
-    _squareIndexIsProper = b;
-    if (b == true && id != nullSquareId) {
+    if (_squareIndexIsProper != null && b == true && id != nullSquareId) {
       SoundTools.playN();
     }
+    _squareIndexIsProper = b;
   }
 }

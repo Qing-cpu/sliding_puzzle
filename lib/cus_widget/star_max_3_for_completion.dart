@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:sliding_puzzle/tools/sound/sound_tools.dart';
 
 class StarMax3ForCompletion extends StatefulWidget {
-  const StarMax3ForCompletion({super.key, required this.starCount,  this.size = 46.0});
+  const StarMax3ForCompletion({
+    super.key,
+    required this.starCount,
+    this.size = 46.0,
+  });
 
   final int starCount;
   final double size;
@@ -12,6 +17,7 @@ class StarMax3ForCompletion extends StatefulWidget {
 
 class _StarMax3ForCompletionState extends State<StarMax3ForCompletion> {
   int i = 0;
+  double v = 0.3;
 
   @override
   void initState() {
@@ -20,10 +26,18 @@ class _StarMax3ForCompletionState extends State<StarMax3ForCompletion> {
   }
 
   void _next() async {
+    SoundTools.playButtonTap(v);
+    v += 0.3;
     await Future.delayed(Duration(milliseconds: 400));
     setState(() => i += 1);
     if (i < widget.starCount) {
       _next();
+    } else {
+      SoundTools.playButtonTap(v);
+      if (widget.starCount == 3) {
+        await Future.delayed(Duration(milliseconds: 300));
+        SoundTools.playSuccess();
+      }
     }
   }
 
@@ -36,7 +50,11 @@ class _StarMax3ForCompletionState extends State<StarMax3ForCompletion> {
       children: [
         Transform.rotate(
           angle: 1,
-          child: Image.asset(height: widget.size, width: widget.size, i > 0 ? 'assets/images/star_s.png' : 'assets/images/star_d.png'),
+          child: Image.asset(
+            height: widget.size,
+            width: widget.size,
+            i > 0 ? 'assets/images/star_s.png' : 'assets/images/star_d.png',
+          ),
         ),
 
         Transform.translate(
@@ -47,10 +65,19 @@ class _StarMax3ForCompletionState extends State<StarMax3ForCompletion> {
                     tween: Tween<double>(begin: 0.5, end: 1.0),
                     duration: Duration(milliseconds: 300),
                     curve: Curves.easeOutBack,
-                    builder: (BuildContext context, double? value, Widget? child) => Transform.scale(scale: value, child: child!),
-                    child: Image.asset(height: widget.size, width: widget.size, 'assets/images/star_s.png'),
+                    builder:
+                        (BuildContext context, double? value, Widget? child) =>
+                            Transform.scale(scale: value, child: child!),
+                    child: Image.asset(
+                      height: widget.size,
+                      width: widget.size,
+                      'assets/images/star_s.png',
+                    ),
                   )
-                  : Image.asset(height: widget.size, 'assets/images/star_d.png'),
+                  : Image.asset(
+                    height: widget.size,
+                    'assets/images/star_d.png',
+                  ),
         ),
 
         Transform.rotate(
@@ -61,15 +88,25 @@ class _StarMax3ForCompletionState extends State<StarMax3ForCompletion> {
                     tween: Tween<double>(begin: 0.5, end: 1.0),
                     duration: Duration(milliseconds: 500),
                     curve: Curves.easeInOutBack,
-                    builder: (BuildContext context, double? value, Widget? child) => Transform.scale(scale: value, child: child!),
-                    child: Image.asset(height: widget.size, width: widget.size, 'assets/images/star_s.png'),
+                    builder:
+                        (BuildContext context, double? value, Widget? child) =>
+                            Transform.scale(scale: value, child: child!),
+                    child: Image.asset(
+                      height: widget.size,
+                      width: widget.size,
+                      'assets/images/star_s.png',
+                    ),
                   )
-                  : Image.asset(height: widget.size, 'assets/images/star_d.png'),
+                  : Image.asset(
+                    height: widget.size,
+                    'assets/images/star_d.png',
+                  ),
         ),
       ],
     );
   }
 }
+
 //
 // void main() {
 //   runApp(MaterialApp(home: HomePage()));

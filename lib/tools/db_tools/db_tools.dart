@@ -10,13 +10,19 @@ class DBTools {
   static const String _levelDataListKey = '_levelDataListKey';
   static const String _speedModelScoreKey = '_speedModelScoreKey';
   static late final List<LevelData> _levelDataList;
-  static int _maxLevelId = 0;
+  static int _maxLevelId = -1;
 
-  static int get allStarCount => _levelDataList.fold(0, (previousValue, element) => previousValue + element.starCount);
+  static int get allStarCount => _levelDataList.fold(
+    0,
+    (previousValue, element) => previousValue + element.starCount,
+  );
 
   static int get maxLevelId {
-    if (_maxLevelId == 0) {
-      _maxLevelId = _levelDataList.fold(0, (p, d) => d.levelId > p ? d.levelId : p);
+    if (_maxLevelId == -1) {
+      _maxLevelId = _levelDataList.fold(
+        -1,
+        (p, d) => d.levelId > p ? d.levelId : p,
+      );
     }
     return _maxLevelId;
   }
@@ -38,18 +44,26 @@ class DBTools {
     }
     if (Platform.isAndroid) {
       _sharedPreferences = SharedPreferencesAsync();
-      _sharedPreferences!
-          .getStringList(_levelDataListKey)
-          .then((List<String>? levelDataJsonStringList) => _levelDataList = jsonStringListToLeveDataList(levelDataJsonStringList));
+      final List<String>? levelDataJsonStringList = await _sharedPreferences!
+          .getStringList(_levelDataListKey);
+      _levelDataList = jsonStringListToLeveDataList(levelDataJsonStringList);
     } else {
       _sharedPreferences = await SharedPreferences.getInstance();
-      final List<String>? levelDataJsonStringList = _sharedPreferences.getStringList(_levelDataListKey);
+      final List<String>? levelDataJsonStringList = _sharedPreferences
+          .getStringList(_levelDataListKey);
       _levelDataList = jsonStringListToLeveDataList(levelDataJsonStringList);
     }
   }
 
-  static List<LevelData> jsonStringListToLeveDataList(List<String>? jsonString) {
-    return jsonString?.map<LevelData>((jsonString) => LevelData.fromJson(jsonDecode(jsonString))).toList() ?? [];
+  static List<LevelData> jsonStringListToLeveDataList(
+    List<String>? jsonString,
+  ) {
+    return jsonString
+            ?.map<LevelData>(
+              (jsonString) => LevelData.fromJson(jsonDecode(jsonString)),
+            )
+            .toList() ??
+        [];
   }
 
   static get sharedPreferences {
@@ -61,13 +75,16 @@ class DBTools {
   }
 
   static upData() {
-    final List<String> jsonStringList = _levelDataList.map((data) => jsonEncode(data.toJson())).toList();
+    final List<String> jsonStringList =
+        _levelDataList.map((data) => jsonEncode(data.toJson())).toList();
     sharedPreferences!.setStringList(_levelDataListKey, jsonStringList);
   }
 
   static void setLevelDataByLeveData(LevelData data) {
     upMaxLevelId(data);
-    final int dataIndex = _levelDataList.indexWhere((d) => d.levelId == data.levelId);
+    final int dataIndex = _levelDataList.indexWhere(
+      (d) => d.levelId == data.levelId,
+    );
     if (dataIndex == -1) {
       _levelDataList.add(data);
       upData();
@@ -86,7 +103,8 @@ class DBTools {
   }
 
   // 设置 SpeedModel 成绩
-  static void setSpeedModelScore(int score) => sharedPreferences.setInt(_speedModelScoreKey, score);
+  static void setSpeedModelScore(int score) =>
+      sharedPreferences.setInt(_speedModelScoreKey, score);
 
   // 获取 SpeedModel 成绩
   static Future<int?> getSpeedModelScore() async {

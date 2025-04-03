@@ -145,120 +145,138 @@ class _SpeedModelPageState extends State<SpeedModelPage>
     ),
   );
 
-  int get _l {
-    if (levelCount < 6) {
-      // if (levelCount < 1) {
+  int get _hour => DateTime.now().hour;
+
+  int get l {
+    if (_hour > 19) {
+      return 3;
+    } else if (_hour > 11) {
+      return 2;
+    } else {
       return 1;
     }
-
-    if (levelCount < 11) {
-      // if (levelCount < 2) {
-      return 2;
-    }
-
-    return 3;
   }
 
+  List<Color> get _colors =>
+      _hour < 19
+          ? [
+            Color(0xFF12B639),
+            Color(0xFF009513),
+            Color(0xFF008029),
+            Color(0xFF006A51),
+            Color(0xFF005A80),
+            Color(0xFFD69300),
+            Color(0xFFD67200),
+            Color(0xFFEC7513),
+            Color(0xFFFF0365),
+            Color(0xFFFF0365),
+            Color(0xFFBC0000),
+            Color(0xFF470068),
+            Color(0xFF27004C),
+            Color(0xFF6E6E6E),
+            Color(0xFF000000),
+          ]
+          : [
+            Color(0x3DFF0365),
+            Color(0x66672B00),
+            Color(0x1B00FFEE),
+            Color(0x3C00FFEA),
+            Color(0x52FF00C2),
+            Color(0x529900FF),
+            Color(0x3DFF004D),
+            Color(0x520800FF),
+            Color(0x3D005A80),
+            Color(0x3DD69300),
+            Color(0x3DD67200),
+            Color(0x3DEC7513),
+            Color(0x3DFF0365),
+            Color(0x3DFF0365),
+            Color(0x3DBC0000),
+            Color(0x3D470068),
+            Color(0x3D27004C),
+            Color(0x3D6E6E6E),
+            Color(0xFF000000),
+          ];
+
   @override
-  Widget build(BuildContext context) => Scaffold(
-    backgroundColor: Color(0x00000000),
-    body: Stack(
-      children: [
-        AnimatedSwitcher(
-          duration: const Duration(seconds: 1),
-          child: Container(
-            key: ValueKey(_l),
-            width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height,
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage('assets/images/bg$_l.webp'),
-                fit: BoxFit.cover,
-              ),
-            ),
-          ),
-        ),
-        Positioned(
-          top: 300,
-          left: -100,
-          child: Move2(
-            child: SizedBox(
-              width: 150,
-              height: 150,
-              child: Image.asset('assets/images/tree1.webp'),
-            ),
-          ),
-        ),
-        Positioned(
-          top: 100,
-          right: -80,
-          child: Move2(
-            child: SizedBox(
-              width: 200,
-              height: 200,
-              child: Transform.rotate(
-                angle: -1,
-                child: Transform.scale(
-                  scaleX: -1.0,
-                  child: Image.asset('assets/images/tree1.webp'),
+  Widget build(BuildContext context) => PopScope(
+    canPop: true,
+    onPopInvokedWithResult: (_, _) {
+      _slidingPuzzleController.s.value = 0;
+    },
+    child: Material(
+      type: MaterialType.transparency,
+      child: Stack(
+        children: [
+          AnimatedSwitcher(
+            duration: const Duration(seconds: 1),
+            child: Container(
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height,
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage('assets/images/bg$l.webp'),
+                  fit: BoxFit.cover,
                 ),
               ),
             ),
           ),
-        ),
-        Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              height: 200,
-              clipBehavior: Clip.hardEdge,
-              padding: EdgeInsets.only(top: MediaQuery.paddingOf(context).top),
-              decoration: BoxDecoration(color: Colors.white70),
-              child: BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 30, sigmaY: 30),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      // crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        IconButton(
-                          onPressed: () => Navigator.of(context).pop(),
-                          icon: Icon(
-                            Icons.arrow_back,
-                            color: Color(0xFFF8F3F3),
-                            shadows: [
-                              Shadow(
-                                color: Colors.black54,
-                                blurRadius: 3,
-                                offset: Offset(1.5, 1.5),
-                              ),
-                            ],
-                            size: 32,
-                          ),
-                        ),
-                        Score(
-                          score: score,
-                          textStyle: TextStyle(
-                            fontSize: 42 + levelCount * 2,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.pinkAccent.shade200,
-                            shadows: [
-                              Shadow(
-                                color: Colors.black54,
-                                offset: Offset(2, 4),
-                                blurRadius: 10,
-                              ),
-                            ],
-                          ),
-                        ),
-                        Opacity(
-                          opacity: 0,
-                          child: IconButton(
-                            onPressed: null,
+          if (l == 2)
+            Positioned(
+              top: 300,
+              left: -100,
+              child: Move2(
+                child: SizedBox(
+                  width: 150,
+                  height: 150,
+                  child: Image.asset('assets/images/tree1.webp'),
+                ),
+              ),
+            ),
+          if (l == 2)
+            Positioned(
+              top: 100,
+              right: -80,
+              child: Move2(
+                child: SizedBox(
+                  width: 200,
+                  height: 200,
+                  child: Transform.rotate(
+                    angle: -1,
+                    child: Transform.scale(
+                      scaleX: -1.0,
+                      child: Image.asset('assets/images/tree1.webp'),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                height: 200,
+                clipBehavior: Clip.hardEdge,
+                padding: EdgeInsets.only(
+                  top: MediaQuery.paddingOf(context).top,
+                ),
+                decoration: BoxDecoration(
+                  color: _hour < 19 ? Colors.white70 : Colors.black12,
+                ),
+                child: BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: 30, sigmaY: 30),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        // crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          IconButton(
+                            onPressed: () => Navigator.of(context).pop(),
                             icon: Icon(
                               Icons.arrow_back,
+                              color: Color(0xFFF8F3F3),
                               shadows: [
                                 Shadow(
                                   color: Colors.black54,
@@ -269,66 +287,71 @@ class _SpeedModelPageState extends State<SpeedModelPage>
                               size: 32,
                             ),
                           ),
-                        ),
-                      ],
-                    ),
-                    TimeProgress(
-                      key: Key('tp$levelCount'),
-                      width: 288,
-                      times: [Duration(milliseconds: mil)],
-                      timeProgressController: _timeProgressController,
-                    ),
-                  ],
+                          Score(
+                            score: score,
+                            textStyle: TextStyle(
+                              fontSize: 42 + levelCount * 2,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.pinkAccent.shade200,
+                              shadows: [
+                                Shadow(
+                                  color: Colors.black54,
+                                  offset: Offset(2, 4),
+                                  blurRadius: 10,
+                                ),
+                              ],
+                            ),
+                          ),
+                          Opacity(
+                            opacity: 0,
+                            child: IconButton(
+                              onPressed: null,
+                              icon: Icon(
+                                Icons.arrow_back,
+                                shadows: [
+                                  Shadow(
+                                    color: Colors.black54,
+                                    blurRadius: 3,
+                                    offset: Offset(1.5, 1.5),
+                                  ),
+                                ],
+                                size: 32,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      TimeProgress(
+                        key: Key('tp$levelCount'),
+                        width: 288,
+                        times: [Duration(milliseconds: mil)],
+                        timeProgressController: _timeProgressController,
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
 
-            Expanded(child: SizedBox(height: 1)),
-            GlassCard(
-              radius: Radius.circular(16),
-              child: Container(
-                padding: EdgeInsets.all(12), // 内边距
-                // decoration: BoxDecoration(
-                //   // color: Color(0xFFF8F8F8),
-                //   // borderRadius: BorderRadius.circular(16), // 圆角
-                //   boxShadow: [
-                //     // BoxShadow(
-                //     //   color: Colors.grey, // 深棕色阴影
-                //     //   blurRadius: 12, // 阴影模糊半径
-                //     //   offset: Offset(4, 6), // 阴影偏移
-                //     // ),
-                //   ],
-                // ),
-                child: SlidingPuzzle(
-                  slidingPuzzleController: _slidingPuzzleController,
+              Expanded(child: SizedBox(height: 1)),
+              GlassCard(
+                colorB1: _hour < 19 ? Colors.white12 : Color(0x00000000),
+                colorT1: _hour < 19 ? Colors.white12 : Color(0x00000000),
+                radius: Radius.circular(16),
+                child: Container(
+                  padding: EdgeInsets.all(12), // 内边距
+                  child: SlidingPuzzle(
+                    slidingPuzzleController: _slidingPuzzleController,
+                  ),
                 ),
               ),
-            ),
-            Expanded(child: SizedBox(height: 1)),
-          ],
-        ),
-      ],
+              Expanded(child: SizedBox(height: 1)),
+            ],
+          ),
+        ],
+      ),
     ),
   );
 }
-
-const List<Color> _colors = [
-  Color(0xFF12B639),
-  Color(0xFF009513),
-  Color(0xFF008029),
-  Color(0xFF006A51),
-  Color(0xFF005A80),
-  Color(0xFFD69300),
-  Color(0xFFD67200),
-  Color(0xFFEC7513),
-  Color(0xFFFF0365),
-  Color(0xFFFF0365),
-  Color(0xFFBC0000),
-  Color(0xFF470068),
-  Color(0xFF27004C),
-  Color(0xFF6E6E6E),
-  Color(0xFF000000),
-];
 
 class ShadowTextPainter extends CustomPainter {
   final String text;

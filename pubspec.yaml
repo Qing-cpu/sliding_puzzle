@@ -34,6 +34,8 @@ dev_dependencies:
 flutter:
   generate: true
   assets:
+    - assets/sounds/music/countd.mp3
+    - assets/sounds/music/success.mp3
     - assets/sounds/music/mixkit-goin-back-to-alabama-830.mp3
     - assets/sounds/tap/mixkit-modern-click-box-check-1120.wav
     - assets/sounds/tap/happy-pop2.mp3

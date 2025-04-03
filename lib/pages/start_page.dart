@@ -8,9 +8,9 @@ import 'package:sliding_puzzle/cus_widget/float_widget.dart';
 import 'package:sliding_puzzle/cus_widget/float_widget_can_tap.dart';
 import 'package:sliding_puzzle/pages/speed_model/speed_model_page.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:sliding_puzzle/tools/sound/sound_tools.dart';
 
 import '../cus_widget/glass_card.dart';
-import '../cus_widget/move.dart';
 import 'normal_mode/level_select.dart';
 
 class StartPage extends StatefulWidget {
@@ -20,25 +20,32 @@ class StartPage extends StatefulWidget {
   State<StartPage> createState() => _StartPageState();
 }
 
-class _StartPageState extends State<StartPage> {
+class _StartPageState extends State<StartPage> with WidgetsBindingObserver {
   bool is1 = true;
-
-  // int dIndex = 0;
-  // Timer? timer;
-
-  // late final PageController _pageController = PageController();
+  ImageProvider? backgroundImage;
 
   @override
   void initState() {
-    Future(() => GameAuth.signIn());
-    // Future(() {
-    //   _pageController.animateTo(
-    //     50000,
-    //     duration: Duration(seconds: 600),
-    //     curve: Curves.linear,
-    //   );
-    // });
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      SoundTools.init();
+    }
   }
 
   void _start() {
@@ -64,25 +71,22 @@ class _StartPageState extends State<StartPage> {
     );
   }
 
-  @override
-  void dispose() {
-    // timer?.cancel();
-    // timer = null;
-    // _pageController.dispose();
-    super.dispose();
-  }
+  int get _hour => DateTime.now().hour;
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Stack(
+    return Material(
+      type: MaterialType.transparency,
+      child: Stack(
         children: [
-          SizedBox(
+          Container(
             width: MediaQuery.of(context).size.width,
-            height:  MediaQuery.of(context).size.height,
-            child: Image.asset(
-              'assets/images/bb${DateTime.now().hour > 19 ? 1 : 2}.webp',
-              fit: BoxFit.cover,
+            height: MediaQuery.of(context).size.height,
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage('assets/images/bb${_hour > 19 ? 1 : 2}.webp'),
+                fit: BoxFit.cover,
+              ),
             ),
           ),
           AnimatedSwitcher(
@@ -133,64 +137,64 @@ class _StartPageState extends State<StartPage> {
                     )
                     : Stack(
                       children: [
-                        Positioned(
-                          top: 0,
-                          left: 0,
-                          bottom: 0,
-                          right: 0,
-                          child: Container(
-                            child: BackdropFilter(
-                              filter: ImageFilter.blur(sigmaX: 60, sigmaY: 60),
-                              child: ListView(
-                                children: [
-                                  SizedBox(
-                                    height: MediaQuery.of(context).padding.top,
-                                  ),
-                                  SizedBox(height: 50),
-                                  FloatWidget(
-                                    child: AButton(
-                                      onTap: () => _startModel1(context),
-                                      width: 280,
-                                      fontSize: 50,
-                                      text:
-                                          AppLocalizations.of(context)!.normal,
-                                      radius: Radius.circular(32),
-                                      sColor: Colors.pink,
-                                    ),
-                                  ),
-                                  SizedBox(height: 50),
-                                  AButton(
-                                    onTap: () => _startSpeedModel1(context),
-                                    sColor: Colors.orange,
-                                    width: 290,
-                                    fontSize: 50,
-                                    fontColor: Colors.pinkAccent.shade200,
-                                    text: AppLocalizations.of(context)!.racing,
-                                    radius: Radius.circular(32),
-                                  ),
-                                  SizedBox(height: 50),
-                                  AButton(
-                                    onTap: () => _leaderboardWidget(context),
-                                    sColor: Colors.orangeAccent,
-                                    width: 318,
-                                    fontSize: 50,
-                                    fontColor: Colors.blueAccent.shade700,
-                                    text:
-                                        AppLocalizations.of(
-                                          context,
-                                        )!.leaderboard,
-                                    radius: Radius.circular(32),
-                                  ),
-                                  SizedBox(height: 50),
-
-                                  SizedBox(
-                                    height:
-                                        MediaQuery.of(context).padding.bottom,
-                                  ),
-                                ],
+                        BackdropFilter(
+                          filter: ImageFilter.blur(sigmaX: 30, sigmaY: 30),
+                          child: SizedBox(),
+                        ),
+                        ListView(
+                          children: [
+                            SizedBox(
+                              height: MediaQuery.of(context).padding.top,
+                            ),
+                            SizedBox(height: 50),
+                            FloatWidget(
+                              child: AButton(
+                                onTap: () => _startModel1(context),
+                                width: 280,
+                                fontSize: 50,
+                                text: AppLocalizations.of(context)!.normal,
+                                radius: Radius.circular(32),
+                                sColor:
+                                    _hour < 19
+                                        ? Colors.pink
+                                        : Color(0xE000FF15),
                               ),
                             ),
-                          ),
+                            SizedBox(height: 50),
+                            AButton(
+                              onTap: () => _startSpeedModel1(context),
+                              sColor:
+                                  _hour < 19
+                                      ? Colors.orange
+                                      : Color(0xB8FF0000),
+                              width: 290,
+                              fontSize: 50,
+                              fontColor: Colors.pinkAccent.shade200,
+                              text: AppLocalizations.of(context)!.racing,
+                              radius: Radius.circular(32),
+                            ),
+                            SizedBox(height: 50),
+                            AButton(
+                              onTap: () => _leaderboardWidget(context),
+                              sColor:
+                                  _hour < 19
+                                      ? Colors.orangeAccent
+                                      : Colors.cyanAccent,
+                              width: 300,
+                              fontSize: 50,
+                              fontColor:
+                                  _hour < 19
+                                      ? Colors.blueAccent.shade700
+                                      : Color(0xF43804DD),
+                              text: AppLocalizations.of(context)!.leaderboard,
+                              radius: Radius.circular(32),
+                            ),
+                            SizedBox(height: 50),
+
+                            SizedBox(
+                              height: MediaQuery.of(context).padding.bottom,
+                            ),
+                          ],
                         ),
                       ],
                     ),
@@ -236,7 +240,7 @@ class _StartPageState extends State<StartPage> {
               ),
             ),
           // if (is1 == false)
-          if ( false)
+          if (false)
             Positioned(
               bottom: MediaQuery.of(context).padding.bottom + 12,
               right: 50,

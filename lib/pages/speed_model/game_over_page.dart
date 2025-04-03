@@ -1,7 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:sliding_puzzle/cus_widget/glass_card.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class GameOverPage extends StatelessWidget {
-  const GameOverPage({super.key, this.oldScore, required this.newScore, required this.playAgain, required this.exit});
+  const GameOverPage({
+    super.key,
+    this.oldScore,
+    required this.newScore,
+    required this.playAgain,
+    required this.exit,
+  });
 
   final int? oldScore;
   final int newScore;
@@ -10,30 +18,67 @@ class GameOverPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final hour = DateTime.now().hour;
     return Scaffold(
-      backgroundColor: Colors.black38,
+      backgroundColor: hour <19 ? Colors.white12 : Color(0x00000000),
       body: Center(
         child: Container(
-          decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(16)),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const SizedBox(height: 20),
-              Text('Game Over', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: const Color(0xFF262626))),
-              const SizedBox(height: 8),
-              Text('成绩：$newScore', style: TextStyle(fontSize: 16, color: const Color(0xFF5B5B5B))),
-              const SizedBox(height: 4),
-              Text(
-                oldScore == null || newScore > oldScore! ? '新纪录' : '记录：$oldScore',
-                style: TextStyle(fontSize: 10, color: const Color(0xFF9E9E9E)),
-              ),
-              SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [TextButton(onPressed: playAgain, child: Text('Play Again')), TextButton(onPressed: exit, child: Text('Exit'))],
-              ),
-              SizedBox(height: 16),
-            ],
+          padding: EdgeInsets.all(16),
+          width: 500,
+          child: GlassCard(
+            colorT1: Color(0x244A0000),
+            colorB1: hour <19 ?  Colors.white12 : Color(0xB6000000),
+            radius: Radius.circular(16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const SizedBox(height: 24),
+                Text(
+                  AppLocalizations.of(context)!.game_over,
+                  style: TextStyle(
+                    fontSize: 26,
+                    fontWeight: FontWeight.bold,
+                    color: hour <19 ?  const Color(0xF4142163) : Colors.white38,
+                    shadows: [
+                      Shadow(
+                        color: Colors.white12,
+                        blurRadius: 6,
+                        offset: Offset(0.5, 0.5)
+                      )
+                    ]
+                  ),
+                ),
+                const SizedBox(height: 24),
+                Text(
+                  '${AppLocalizations.of(context)!.score}：$newScore',
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 25, color: hour <19 ?  const Color(0xFA08A35D) : Colors.red),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  oldScore == null || newScore > oldScore!
+                      ? AppLocalizations.of(context)!.new_record
+                      : '${AppLocalizations.of(context)!.record}：$oldScore',
+                  style: TextStyle(fontSize: 20, color: const Color(0xFF606060)),
+                ),
+                SizedBox(height:56),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    TextButton(
+                      onPressed: playAgain,
+                      child: Text(AppLocalizations.of(context)!.play_again),
+                    ),
+                    TextButton(
+                      onPressed: exit,
+                      child: Text(AppLocalizations.of(context)!.exit),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 17),
+              ],
+            ),
           ),
         ),
       ),

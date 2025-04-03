@@ -10,9 +10,12 @@ class GlassCard extends StatelessWidget {
     this.lightColor,
     this.colorB1 = Colors.white12,
     this.colorT1 = Colors.white12,
+    this.sigma = 30,
   });
 
   final Radius radius;
+
+  final double sigma;
 
   final Widget child;
   final Color? lightColor;
@@ -40,7 +43,7 @@ class GlassCard extends StatelessWidget {
                 ),
               ),
               child: BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 30, sigmaY: 30),
+                filter: ImageFilter.blur(sigmaX: sigma, sigmaY: sigma),
                 child: Container(color: colorB1),
               ),
             ),

@@ -215,6 +215,7 @@ class SlidingPuzzleController {
   }
 
   void dispose() {
+    s.value = 0;
     _timer?.cancel();
     reSetTag.dispose(); // 记得在不再使用时释放资源
   }
@@ -226,9 +227,7 @@ class SlidingPuzzleController {
     shuffle();
     upSquareTranslateOffset();
     reSetTag.value++;
-    if (s.value > 0) {
-      Future.delayed(Duration(seconds: s.value)).then((_) => onStart());
-    } else {
+    if (s.value <= 0) {
       onStart();
     }
   }

@@ -33,7 +33,7 @@ class _SlidingPuzzleState extends State<SlidingPuzzle> {
 
   void _removeOverlayEntry() {
     if (_overlayEntry != null && _overlayEntry!.mounted) {
-      _overlayEntry!.remove();
+      _overlayEntry?.remove();
       _overlayEntry = null;
     }
   }
@@ -46,7 +46,9 @@ class _SlidingPuzzleState extends State<SlidingPuzzle> {
   }
 
   void _handleReSetTagChange() {
-    // 当 reSetTag 的值变化时，在下一帧显示倒计时
+    if (slidingPuzzleController.s.value == 0) {
+      _removeOverlayEntry();
+    }
     if (slidingPuzzleController.s.value > 0) {
       WidgetsBinding.instance.addPostFrameCallback((_) => _showCountdown());
     }
@@ -65,12 +67,20 @@ class _SlidingPuzzleState extends State<SlidingPuzzle> {
       final overlay = Overlay.of(context);
       _overlayEntry = OverlayEntry(
         builder:
-            (BuildContext context) => Countdown(
-              count: slidingPuzzleController.s.value,
-              overCallback: () {
-                _removeOverlayEntry();
-                slidingPuzzleController.s.value = 0;
-              },
+            (BuildContext context) => Container(
+              alignment: Alignment(0,-0.19),
+              child: SizedBox(
+                width: 80,
+                height: 80,
+                child: Countdown(
+                  count: slidingPuzzleController.s.value,
+                  overCallback: () {
+                    _removeOverlayEntry();
+                    slidingPuzzleController.s.value = 0;
+                    slidingPuzzleController.onStart();
+                  },
+                ),
+              ),
             ),
       );
       overlay.insert(_overlayEntry!);
