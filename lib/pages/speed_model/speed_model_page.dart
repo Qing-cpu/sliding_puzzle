@@ -28,7 +28,7 @@ class _SpeedModelPageState extends State<SpeedModelPage>
   );
   late final _slidingPuzzleController = SlidingPuzzleController(
     onStart: _timeProgressController.start,
-    width: 288,
+    width: MediaQuery.of(context).size.width > 600 ? 600 : 288,
     buildSquareWidget: buildNumWidget,
     onCompletedCallback: _onCompletion,
     size: 3,
@@ -138,7 +138,7 @@ class _SpeedModelPageState extends State<SpeedModelPage>
           Shadow(color: Colors.black87, offset: Offset(1, 1), blurRadius: 12),
         ],
         fontWeight: FontWeight.bold,
-        fontSize: 52,
+        fontSize: MediaQuery.of(context).size.width > 600 ? 100 : 50,
         color: Colors.white,
       ),
     ),
@@ -198,6 +198,7 @@ class _SpeedModelPageState extends State<SpeedModelPage>
             Color(0x3D6E6E6E),
             Color(0xFF000000),
           ];
+  late double fontSizeS = MediaQuery.of(context).size.width > 600 ? 84 : 42;
 
   @override
   Widget build(BuildContext context) => PopScope(
@@ -226,7 +227,7 @@ class _SpeedModelPageState extends State<SpeedModelPage>
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
-                height: 200,
+                height: MediaQuery.of(context).size.width > 600 ? 300 : 200,
                 clipBehavior: Clip.hardEdge,
                 padding: EdgeInsets.only(
                   top: MediaQuery.paddingOf(context).top,
@@ -261,7 +262,7 @@ class _SpeedModelPageState extends State<SpeedModelPage>
                           Score(
                             score: score,
                             textStyle: TextStyle(
-                              fontSize: 42 + levelCount * 2,
+                              fontSize: fontSizeS + levelCount * 2,
                               fontWeight: FontWeight.bold,
                               color: Colors.pinkAccent.shade200,
                               shadows: [
@@ -294,7 +295,8 @@ class _SpeedModelPageState extends State<SpeedModelPage>
                       ),
                       TimeProgress(
                         key: Key('tp$levelCount'),
-                        width: 288,
+                        width:
+                            MediaQuery.of(context).size.width > 600 ? 600 : 288,
                         times: [Duration(milliseconds: mil)],
                         timeProgressController: _timeProgressController,
                       ),
