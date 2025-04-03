@@ -6,6 +6,7 @@ import 'package:games_services/games_services.dart';
 import 'package:sliding_puzzle/cus_widget/cus_widget.dart';
 import 'package:sliding_puzzle/cus_widget/float_widget.dart';
 import 'package:sliding_puzzle/cus_widget/float_widget_can_tap.dart';
+import 'package:sliding_puzzle/pages/copyright_notice_page.dart';
 import 'package:sliding_puzzle/pages/speed_model/speed_model_page.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:sliding_puzzle/tools/sound/sound_tools.dart';
@@ -68,6 +69,16 @@ class _StartPageState extends State<StartPage> with WidgetsBindingObserver {
     Leaderboards.showLeaderboards(
       androidLeaderboardID: '',
       iOSLeaderboardID: 'speed_model',
+    );
+  }
+
+  void _openCopyrightNoticePage() {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (BuildContext context) {
+          return CopyrightNoticePage();
+        },
+      ),
     );
   }
 
@@ -268,6 +279,29 @@ class _StartPageState extends State<StartPage> with WidgetsBindingObserver {
                 ),
               ),
             ),
+
+         if(is1) Positioned(
+            bottom: MediaQuery.of(context).padding.bottom + 16,
+            right: 16,
+            child: SizedBox(
+              width: 43,
+              height: 43,
+              child: FloatWidget(
+                rotateX: Tween<double>(begin: 0.1, end: -0.1),
+                rotateY: Tween<double>(begin: -0.1, end: 0.1),
+                child: GlassCard(
+                  colorB1: Colors.white12,
+                  colorT1: Colors.white24,
+                  lightColor: Colors.blue,
+                  radius: Radius.circular(50),
+                  child: IconButton(
+                    onPressed: _openCopyrightNoticePage,
+                    icon: Icon(Icons.info_outline),
+                  ),
+                ),
+              ),
+            ),
+          ),
         ],
       ),
     );

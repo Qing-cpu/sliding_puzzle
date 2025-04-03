@@ -23,7 +23,7 @@ class _CountdownState extends State<Countdown> {
   void initState() {
     super.initState();
     assert(count > 0);
-    SoundTools.playCountd();
+    SoundTools.playCountdown();
     _timer = Timer.periodic(Duration(seconds: 1), (_) {
       if (--count == 0) {
         end = 0;

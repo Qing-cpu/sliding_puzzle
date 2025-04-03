@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:games_services/games_services.dart' as gs;
 import 'package:sliding_puzzle/cus_widget/cus_widget.dart';
 import 'package:sliding_puzzle/cus_widget/glass_card.dart';
-import 'package:sliding_puzzle/cus_widget/move2.dart';
 import 'package:sliding_puzzle/tools/tools.dart';
 import 'package:sliding_puzzle/pages/speed_model/game_over_page.dart';
 

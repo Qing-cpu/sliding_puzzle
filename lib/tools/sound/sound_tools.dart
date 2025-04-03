@@ -1,25 +1,22 @@
 import 'package:flutter_soloud/flutter_soloud.dart';
 
-// const _check = 'assets/sounds/tap/mixkit-modern-click-box-check-1120.wav';
-const happy_pop_2 = 'assets/sounds/tap/happy-pop2.mp3';
-const happy_pop_3 = 'assets/sounds/tap/happy-pop-3-185288.mp3';
-const pop_sound = 'assets/sounds/tap/ui-pop-sound-316482.mp3';
+const happyPop = 'assets/sounds/tap/happy-pop2.mp3';
+const pop4 = 'assets/sounds/tap/ui-pop-sound-316482.mp3';
 const deep = 'assets/sounds/tap/808-deep-kick-87379.mp3';
 const n = 'assets/sounds/tap/n.mp3';
 const completed = 'assets/sounds/tap/smooth-completed.mp3';
-const countd = 'assets/sounds/music/countd.mp3';
+const countdown = 'assets/sounds/music/countdown.mp3';
 const success = 'assets/sounds/music/success.mp3';
 
 class SoundTools {
   static Future<SoundHandle>? countPlay;
   static SoLoud? _soLoud;
   static AudioSource? _p2;
-  static AudioSource? _p3;
   static AudioSource? _p4;
   static AudioSource? _deep;
   static AudioSource? _n;
   static AudioSource? _completed;
-  static AudioSource? _countd;
+  static AudioSource? _countdown;
   static AudioSource? _success;
   static bool _isInit = false;
 
@@ -30,10 +27,9 @@ class SoundTools {
     _soLoud = SoLoud.instance;
     await _soLoud!.init();
     _isInit = true;
-    _p2 = await _soLoud!.loadAsset(happy_pop_2);
-    _p3 = await _soLoud!.loadAsset(happy_pop_3);
-    _p4 = await _soLoud!.loadAsset(pop_sound);
-    _countd = await _soLoud!.loadAsset(countd);
+    _p2 = await _soLoud!.loadAsset(happyPop);
+    _p4 = await _soLoud!.loadAsset(pop4);
+    _countdown = await _soLoud!.loadAsset(countdown);
     _deep = await _soLoud!.loadAsset(deep);
     _n = await _soLoud!.loadAsset(n);
     _completed = await _soLoud!.loadAsset(completed);
@@ -43,12 +39,6 @@ class SoundTools {
   static void playPop2() async {
     init();
     _soLoud!.play(_p2!, volume: 0.3);
-  }
-
-  static void playPop3() async {
-    init();
-
-    _soLoud!.play(_p3!, volume: 0.3);
   }
 
   static void playButtonTap(double? v) async {
@@ -78,9 +68,9 @@ class SoundTools {
     _soLoud!.play(_success!, volume: 1.0);
   }
 
-  static void playCountd() async {
+  static void playCountdown() async {
     init();
-    countPlay = _soLoud!.play(_countd!, volume: 0.5);
+    countPlay = _soLoud!.play(_countdown!, volume: 0.5);
   }
 
   static void stop() async {
