@@ -4,9 +4,15 @@ import 'package:sliding_puzzle/cus_widget/glass_card.dart';
 import 'package:sliding_puzzle/tools/sound/sound_tools.dart';
 
 class Countdown extends StatefulWidget {
-  const Countdown({super.key, required this.count, required this.overCallback});
+  const Countdown({
+    super.key,
+    required this.count,
+    required this.overCallback,
+    required this.fontSize,
+  });
 
   final int count;
+  final double fontSize;
 
   final void Function() overCallback;
 

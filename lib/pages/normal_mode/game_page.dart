@@ -34,7 +34,7 @@ class _GamePageState extends State<GamePage>
       SlidingPuzzleController(
         buildSquareWidget: _buildSquareWidget,
         onStart: _timeProgressController.start,
-        width: 288.0,
+        width: MediaQuery.of(context).size.width > 600 ? 600 : 288,
         levelIndex: _levelInfoIndex,
         onCompletedCallback: _onCompletedCallback,
       );
@@ -186,38 +186,45 @@ class _GamePageState extends State<GamePage>
               ),
               TimeProgress(
                 key: Key(_levelInfo.imageAssets),
-                width: 288,
+                width: MediaQuery.of(context).size.width > 600 ? 600 : 288,
                 times: _levelInfo.starCountTimes,
                 timeProgressController: _timeProgressController,
               ),
               box8H,
-              Container(
-                width: 291,
-                height: 291,
-                clipBehavior: Clip.hardEdge,
-
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: AssetImage(_levelInfo.imageAssets),
-                  ),
-                  borderRadius: BorderRadius.circular(16), // 圆角
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black54, // 深棕色阴影
-                      blurRadius: 12, // 阴影模糊半径
-                      offset: Offset(1, 1), // 阴影偏移
+              LayoutBuilder(
+                builder: (context, c) {
+                  double size = 291;
+                  if(c.maxWidth > 600){
+                    size = 603;
+                  }
+                  return Container(
+                    width: size,
+                    height: size,
+                    clipBehavior: Clip.hardEdge,
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image: AssetImage(_levelInfo.imageAssets),
+                      ),
+                      borderRadius: BorderRadius.circular(16), // 圆角
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black54, // 深棕色阴影
+                          blurRadius: 12, // 阴影模糊半径
+                          offset: Offset(1, 1), // 阴影偏移
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-                child: GlassCard(
-                  // colorB1: Color(0x4D000000),
-                  // colorT1: Color(0x00000000),
-                  sigma: 30,
-                  radius: Radius.circular(16),
-                  child: SlidingPuzzle(
-                    slidingPuzzleController: _slidingPuzzleController,
-                  ),
-                ),
+                    child: GlassCard(
+                      // colorB1: Color(0x4D000000),
+                      // colorT1: Color(0x00000000),
+                      sigma: 30,
+                      radius: Radius.circular(16),
+                      child: SlidingPuzzle(
+                        slidingPuzzleController: _slidingPuzzleController,
+                      ),
+                    ),
+                  );
+                },
               ),
               Expanded(
                 flex: 3,

@@ -237,83 +237,96 @@ class _LevelSelectState extends State<LevelSelect> {
                   ),
                 ),
                 // level page view
-                SizedBox(
-                  height: 330,
-                  child: PageView.builder(
-                    controller: _pageController,
-                    itemCount: levels.length,
-                    itemBuilder: (BuildContext context, int i) {
-                      return Center(
-                        child:
-                            i <= DBTools.maxLevelId + 1
-                                ? Container(
-                                  width: 288,
-                                  height: 288,
-                                  padding: EdgeInsets.all(23),
-                                  margin: EdgeInsets.only(top: 5, bottom: 10),
-                                  decoration: BoxDecoration(
-                                    color: Color(0xFBFFFAFA),
-                                    borderRadius: BorderRadius.all(
-                                      Radius.circular(21),
-                                    ),
-                                    border: Border.all(
-                                      color: Colors.black,
-                                      width: 0.3,
-                                    ),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.black54,
-                                        offset: Offset(2, 2),
-                                        blurRadius: 6,
+                LayoutBuilder(
+                  builder: (BuildContext context, BoxConstraints constraints) {
+                    double height = 330;
+                    double size = 288;
+                    if(constraints.maxWidth > 600){
+                      height = 660;
+                      size = 500;
+                    }
+                  return  SizedBox(
+                      height: height,
+                      child: PageView.builder(
+                        controller: _pageController,
+                        itemCount: levels.length,
+                        itemBuilder: (BuildContext context, int i) {
+                          return Center(
+                            child:
+                                i <= DBTools.maxLevelId + 1
+                                    ? Container(
+                                      width: size,
+                                      height: size,
+                                      padding: EdgeInsets.all(23),
+                                      margin: EdgeInsets.only(
+                                        top: 5,
+                                        bottom: 10,
                                       ),
-                                      // BoxShadow(color: Colors.grey, offset: Offset(5, 5), blurRadius: 10),
-                                    ],
-                                  ),
-                                  child: InkWell(
-                                    onTap: () => _play(context, i),
-                                    child: Hero(
-                                      tag: levels[i].id,
-                                      child: FloatWidget(
-                                        rotateZ: Tween<double>(
-                                          begin: -0.02,
-                                          end: 0.02,
+                                      decoration: BoxDecoration(
+                                        color: Color(0xFBFFFAFA),
+                                        borderRadius: BorderRadius.all(
+                                          Radius.circular(21),
                                         ),
-                                        child: Container(
-                                          decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.all(
-                                              Radius.circular(3),
+                                        border: Border.all(
+                                          color: Colors.black,
+                                          width: 0.3,
+                                        ),
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: Colors.black54,
+                                            offset: Offset(2, 2),
+                                            blurRadius: 6,
+                                          ),
+                                          // BoxShadow(color: Colors.grey, offset: Offset(5, 5), blurRadius: 10),
+                                        ],
+                                      ),
+                                      child: InkWell(
+                                        onTap: () => _play(context, i),
+                                        child: Hero(
+                                          tag: levels[i].id,
+                                          child: FloatWidget(
+                                            rotateZ: Tween<double>(
+                                              begin: -0.02,
+                                              end: 0.02,
                                             ),
-                                            border: Border.all(
-                                              color: Colors.white,
-                                              width: 16,
-                                            ),
-                                            image: DecorationImage(
-                                              image: AssetImage(
-                                                levels[i].imageAssets,
+                                            child: Container(
+                                              decoration: BoxDecoration(
+                                                borderRadius: BorderRadius.all(
+                                                  Radius.circular(3),
+                                                ),
+                                                border: Border.all(
+                                                  color: Colors.white,
+                                                  width: 16,
+                                                ),
+                                                image: DecorationImage(
+                                                  image: AssetImage(
+                                                    levels[i].imageAssets,
+                                                  ),
+                                                  fit: BoxFit.cover,
+                                                ),
+                                                boxShadow: [
+                                                  BoxShadow(
+                                                    color: Colors.grey,
+                                                    offset: Offset(1, 1),
+                                                    blurRadius: 2,
+                                                  ),
+                                                ],
                                               ),
-                                              fit: BoxFit.cover,
                                             ),
-                                            boxShadow: [
-                                              BoxShadow(
-                                                color: Colors.grey,
-                                                offset: Offset(1, 1),
-                                                blurRadius: 2,
-                                              ),
-                                            ],
                                           ),
                                         ),
                                       ),
+                                    )
+                                    : Icon(
+                                      Icons.image_rounded,
+                                      size: 288,
+                                      color: Colors.grey,
                                     ),
-                                  ),
-                                )
-                                : Icon(
-                                  Icons.image_rounded,
-                                  size: 288,
-                                  color: Colors.grey,
-                                ),
-                      );
-                    },
-                  ),
+                          );
+                        },
+                      ),
+                    );
+                  },
                 ),
                 SizedBox(height: 16),
                 Expanded(

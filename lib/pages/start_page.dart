@@ -115,99 +115,156 @@ class _StartPageState extends State<StartPage> with WidgetsBindingObserver {
                       children: [
                         SizedBox(height: MediaQuery.of(context).padding.top),
                         SizedBox(height: 16),
-                        Center(
-                          child: FloatWidgetCanTap(
-                            child: Padding(
-                              padding: EdgeInsets.all(16),
-                              child: GlassCard(
-                                radius: Radius.circular(30),
-                                child: Image.asset(
-                                  'assets/images/game_name.webp',
-                                ),
+                        FloatWidgetCanTap(
+                          child: Padding(
+                            padding: EdgeInsets.all(16),
+                            child: GlassCard(
+                              radius: Radius.circular(30),
+                              child: LayoutBuilder(
+                                builder: (
+                                  BuildContext context,
+                                  BoxConstraints constraints,
+                                ) {
+                                  double size = 0;
+                                  if (constraints.maxWidth > 650) {
+                                    size = 600;
+                                  } else if (constraints.maxWidth > 450) {
+                                    size = 400;
+                                  } else if (constraints.maxWidth > 320) {
+                                    size = 300;
+                                  } else {
+                                    return Image.asset(
+                                      'assets/images/game_name.webp',
+                                      fit: BoxFit.cover,
+                                    );
+                                  }
+                                  return SizedBox(
+                                    width: size,
+                                    height: size,
+                                    child: Image.asset(
+                                      'assets/images/game_name.webp',
+                                      fit: BoxFit.cover,
+                                    ),
+                                  );
+                                },
                               ),
                             ),
                           ),
                         ),
                         Expanded(child: SizedBox()),
-                        Center(
-                          child: SizedBox(
-                            height: 100,
-                            child: AButton(
-                              fontColor: Colors.white,
-                              sColor: Color(0x939CFFAC),
-                              onTap: _start,
-                              width: 300,
-                              fontSize: 62,
-                              text: AppLocalizations.of(context)!.start,
-                              radius: Radius.circular(32),
-                            ),
-                          ),
+                        LayoutBuilder(
+                          builder: (
+                            BuildContext context,
+                            BoxConstraints constraints,
+                          ) {
+                            double fontSize = 62;
+                            double width = 300;
+                            double height = 100;
+                            Radius radius = Radius.circular(32);
+                            if (constraints.maxWidth > 600) {
+                              fontSize = 80;
+                              width = 450;
+                              height = 140;
+                              radius =  Radius.circular(40);
+                            }
+                            return Center(
+                              child: SizedBox(
+                                height: height,
+                                child: AButton(
+                                  fontColor: Colors.white,
+                                  sColor: Color(0x939CFFAC),
+                                  onTap: _start,
+                                  width: width,
+                                  fontSize: fontSize,
+                                  text: AppLocalizations.of(context)!.start,
+                                  radius: radius,
+                                ),
+                              ),
+                            );
+                          },
                         ),
                         Expanded(child: SizedBox()),
                       ],
                     )
-                    : Stack(
-                      children: [
-                        BackdropFilter(
-                          filter: ImageFilter.blur(sigmaX: 30, sigmaY: 30),
-                          child: SizedBox(),
-                        ),
-                        ListView(
+                    : LayoutBuilder(
+                      builder: (
+                        BuildContext context,
+                        BoxConstraints constraints,
+                      ) {
+                        SizedBox sizedBoxH = SizedBox(height: 50);
+                        double fontSize = 50;
+                        double width = 300;
+                        if (constraints.maxWidth > 600) {
+                          sizedBoxH = SizedBox(height: 120);
+                          fontSize = 80;
+                          width = 550;
+                        }
+                        return Stack(
                           children: [
-                            SizedBox(
-                              height: MediaQuery.of(context).padding.top,
+                            BackdropFilter(
+                              filter: ImageFilter.blur(sigmaX: 30, sigmaY: 30),
+                              child: SizedBox(),
                             ),
-                            SizedBox(height: 50),
-                            FloatWidget(
-                              child: AButton(
-                                onTap: () => _startModel1(context),
-                                width: 280,
-                                fontSize: 50,
-                                text: AppLocalizations.of(context)!.normal,
-                                radius: Radius.circular(32),
-                                sColor:
-                                    _hour < 19
-                                        ? Colors.pink
-                                        : Color(0xE000FF15),
-                              ),
-                            ),
-                            SizedBox(height: 50),
-                            AButton(
-                              onTap: () => _startSpeedModel1(context),
-                              sColor:
-                                  _hour < 19
-                                      ? Colors.orange
-                                      : Color(0xB8FF0000),
-                              width: 290,
-                              fontSize: 50,
-                              fontColor: Colors.pinkAccent.shade200,
-                              text: AppLocalizations.of(context)!.racing,
-                              radius: Radius.circular(32),
-                            ),
-                            SizedBox(height: 50),
-                            AButton(
-                              onTap: () => _leaderboardWidget(context),
-                              sColor:
-                                  _hour < 19
-                                      ? Colors.orangeAccent
-                                      : Colors.cyanAccent,
-                              width: 300,
-                              fontSize: 50,
-                              fontColor:
-                                  _hour < 19
-                                      ? Colors.blueAccent.shade700
-                                      : Color(0xF43804DD),
-                              text: AppLocalizations.of(context)!.leaderboard,
-                              radius: Radius.circular(32),
-                            ),
-                            SizedBox(height: 50),
+                            ListView(
+                              children: [
+                                SizedBox(
+                                  height: MediaQuery.of(context).padding.top,
+                                ),
+                                sizedBoxH,
 
-                            SizedBox(
-                              height: MediaQuery.of(context).padding.bottom,
+                                FloatWidget(
+                                  child: AButton(
+                                    onTap: () => _startModel1(context),
+                                    width: width,
+                                    fontSize: fontSize,
+                                    text: AppLocalizations.of(context)!.normal,
+                                    radius: Radius.circular(32),
+                                    sColor:
+                                        _hour < 19
+                                            ? Colors.pink
+                                            : Color(0xE000FF15),
+                                  ),
+                                ),
+                                sizedBoxH,
+                                AButton(
+                                  onTap: () => _startSpeedModel1(context),
+                                  sColor:
+                                      _hour < 19
+                                          ? Colors.orange
+                                          : Color(0xB8FF0000),
+                                  width: width,
+                                  fontSize: fontSize,
+                                  fontColor: Colors.pinkAccent.shade200,
+                                  text: AppLocalizations.of(context)!.racing,
+                                  radius: Radius.circular(32),
+                                ),
+                                SizedBox(height: fontSize),
+                                AButton(
+                                  onTap: () => _leaderboardWidget(context),
+                                  sColor:
+                                      _hour < 19
+                                          ? Colors.orangeAccent
+                                          : Colors.cyanAccent,
+                                  width: width,
+                                  fontSize: fontSize > 50 ? fontSize : 40,
+                                  fontColor:
+                                      _hour < 19
+                                          ? Colors.blueAccent.shade700
+                                          : Color(0xF43804DD),
+                                  text:
+                                      AppLocalizations.of(context)!.leaderboard,
+                                  radius: Radius.circular(32),
+                                ),
+                                sizedBoxH,
+
+                                SizedBox(
+                                  height: MediaQuery.of(context).padding.bottom,
+                                ),
+                              ],
                             ),
                           ],
-                        ),
-                      ],
+                        );
+                      },
                     ),
           ),
           if (is1 == false)
@@ -280,28 +337,29 @@ class _StartPageState extends State<StartPage> with WidgetsBindingObserver {
               ),
             ),
 
-         if(is1) Positioned(
-            bottom: MediaQuery.of(context).padding.bottom + 16,
-            right: 16,
-            child: SizedBox(
-              width: 43,
-              height: 43,
-              child: FloatWidget(
-                rotateX: Tween<double>(begin: 0.1, end: -0.1),
-                rotateY: Tween<double>(begin: -0.1, end: 0.1),
-                child: GlassCard(
-                  colorB1: Colors.white12,
-                  colorT1: Colors.white24,
-                  lightColor: Colors.blue,
-                  radius: Radius.circular(50),
-                  child: IconButton(
-                    onPressed: _openCopyrightNoticePage,
-                    icon: Icon(Icons.info_outline),
+          if (is1)
+            Positioned(
+              bottom: MediaQuery.of(context).padding.bottom + 16,
+              right: 16,
+              child: SizedBox(
+                width: 43,
+                height: 43,
+                child: FloatWidget(
+                  rotateX: Tween<double>(begin: 0.1, end: -0.1),
+                  rotateY: Tween<double>(begin: -0.1, end: 0.1),
+                  child: GlassCard(
+                    colorB1: Colors.white12,
+                    colorT1: Colors.white24,
+                    lightColor: Colors.blue,
+                    radius: Radius.circular(50),
+                    child: IconButton(
+                      onPressed: _openCopyrightNoticePage,
+                      icon: Icon(Icons.info_outline),
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
         ],
       ),
     );

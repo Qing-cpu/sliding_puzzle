@@ -20,6 +20,7 @@ class _SlidingPuzzleState extends State<SlidingPuzzle> {
   SlidingPuzzleController get slidingPuzzleController =>
       widget.slidingPuzzleController;
   OverlayEntry? _overlayEntry;
+  double fontSize = 50;
 
   @override
   void initState() {
@@ -27,7 +28,17 @@ class _SlidingPuzzleState extends State<SlidingPuzzle> {
     slidingPuzzleController.reSet();
     slidingPuzzleController.s.addListener(_handleReSetTagChange);
     if (slidingPuzzleController.s.value > 0) {
-      WidgetsBinding.instance.addPostFrameCallback((_) => _showCountdown());
+      WidgetsBinding.instance.addPostFrameCallback(
+        (_) => _showCountdown(fontSize),
+      );
+    }
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (MediaQuery.of(context).size.width > 600) {
+      fontSize = 100;
     }
   }
 
@@ -50,7 +61,9 @@ class _SlidingPuzzleState extends State<SlidingPuzzle> {
       _removeOverlayEntry();
     }
     if (slidingPuzzleController.s.value > 0) {
-      WidgetsBinding.instance.addPostFrameCallback((_) => _showCountdown());
+      WidgetsBinding.instance.addPostFrameCallback(
+        (_) => _showCountdown(fontSize),
+      );
     }
   }
 
@@ -61,25 +74,34 @@ class _SlidingPuzzleState extends State<SlidingPuzzle> {
     setState(() {});
   }
 
-  _showCountdown() {
+  _showCountdown(double fontSize) {
     _removeOverlayEntry();
     if (slidingPuzzleController.s.value > 0) {
       final overlay = Overlay.of(context);
       _overlayEntry = OverlayEntry(
         builder:
             (BuildContext context) => Container(
-              alignment: Alignment(0,-0.19),
-              child: SizedBox(
-                width: 80,
-                height: 80,
-                child: Countdown(
-                  count: slidingPuzzleController.s.value,
-                  overCallback: () {
-                    _removeOverlayEntry();
-                    slidingPuzzleController.s.value = 0;
-                    slidingPuzzleController.onStart();
-                  },
-                ),
+              alignment: Alignment(0, -0.19),
+              child: LayoutBuilder(
+                builder: (context, c) {
+                  double size = 80;
+                  if (c.maxWidth > 600) {
+                    size = 160;
+                  }
+                  return SizedBox(
+                    width: size,
+                    height: size,
+                    child: Countdown(
+                      fontSize: fontSize,
+                      count: slidingPuzzleController.s.value,
+                      overCallback: () {
+                        _removeOverlayEntry();
+                        slidingPuzzleController.s.value = 0;
+                        slidingPuzzleController.onStart();
+                      },
+                    ),
+                  );
+                },
               ),
             ),
       );
