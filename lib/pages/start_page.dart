@@ -66,9 +66,6 @@ class _StartPageState extends State<StartPage> with WidgetsBindingObserver {
   }
 
   void _leaderboardWidget(BuildContext context) {
-    if (Platform.isMacOS) {
-      return;
-    }
     Leaderboards.showLeaderboards(
       androidLeaderboardID: '',
       iOSLeaderboardID: 'speed_model',
