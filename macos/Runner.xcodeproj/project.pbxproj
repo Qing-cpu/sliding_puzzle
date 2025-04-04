@@ -587,7 +587,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 11.5;
-				PRODUCT_BUNDLE_IDENTIFIER = com.qingcoo.games.slidingpuzzle.slidingPuzzle;
+				PRODUCT_BUNDLE_IDENTIFIER = com.zhangqing.games.slidingpuzzle;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;
 			};
@@ -726,7 +726,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 11.5;
-				PRODUCT_BUNDLE_IDENTIFIER = com.qingcoo.games.slidingpuzzle.slidingPuzzle;
+				PRODUCT_BUNDLE_IDENTIFIER = com.zhangqing.games.slidingpuzzle;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -753,7 +753,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 11.5;
-				PRODUCT_BUNDLE_IDENTIFIER = com.qingcoo.games.slidingpuzzle.slidingPuzzle;
+				PRODUCT_BUNDLE_IDENTIFIER = com.zhangqing.games.slidingpuzzle;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;
 			};
