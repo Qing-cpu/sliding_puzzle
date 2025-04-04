@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 
 import 'level_info.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -16,78 +17,81 @@ const d10 = [Duration(minutes: 10), Duration(minutes: 5), Duration(minutes: 3)];
 const d11 = [Duration(minutes: 5), Duration(minutes: 4), Duration(minutes: 1)];
 
 class Levels {
-  static BuildContext? _context;
-
-  static BuildContext get context {
-    return _context!;
+  static void init(BuildContext context) {
+    if (_levelInfos != null) {
+      return;
+    }
+    _levelInfos = [
+      LevelInfo(
+        imageAssets: 'assets/images/level/1.png',
+        name: AppLocalizations.of(context)!.autumn_scarlet,
+        size: 3,
+        starCountTimes: d1,
+      ),
+      LevelInfo(
+        imageAssets: 'assets/images/level/2.png',
+        name: AppLocalizations.of(context)!.floating_islands,
+        size: 3,
+        starCountTimes: d2,
+      ),
+      LevelInfo(
+        imageAssets: 'assets/images/level/3.png',
+        name: AppLocalizations.of(context)!.emoji,
+        size: 3,
+        starCountTimes: d3,
+      ),
+      LevelInfo(
+        imageAssets: 'assets/images/level/4.png',
+        name: AppLocalizations.of(context)!.friends_gathering,
+        size: 3,
+        starCountTimes: d4,
+      ),
+      LevelInfo(
+        imageAssets: 'assets/images/level/5.png',
+        name: AppLocalizations.of(context)!.floral_bloom,
+        size: 3,
+        starCountTimes: d5,
+      ),
+      LevelInfo(
+        imageAssets: 'assets/images/level/6.png',
+        name: AppLocalizations.of(context)!.twilight_hues,
+        size: 3,
+        starCountTimes: d6,
+      ),
+      LevelInfo(
+        imageAssets: 'assets/images/level/7.png',
+        name: AppLocalizations.of(context)!.emerald_city,
+        size: 4,
+        starCountTimes: d7,
+      ),
+      LevelInfo(
+        imageAssets: 'assets/images/level/8.png',
+        name: AppLocalizations.of(context)!.cat_scroll,
+        size: 4,
+        starCountTimes: d8,
+      ),
+      LevelInfo(
+        imageAssets: 'assets/images/level/9.png',
+        name: AppLocalizations.of(context)!.x_impression,
+        size: 4,
+        starCountTimes: d9,
+      ),
+      LevelInfo(
+        imageAssets: 'assets/images/level/10.png',
+        name: AppLocalizations.of(context)!.m_impression,
+        size: 5,
+        starCountTimes: d10,
+      ),
+      LevelInfo(
+        imageAssets: 'assets/images/level/11.png',
+        name: AppLocalizations.of(context)!.rooster_doodle,
+        size: 5,
+        starCountTimes: d11,
+      ),
+    ];
   }
 
-  static final List<LevelInfo> levelInfos = [
-    LevelInfo(
-      imageAssets: 'assets/images/level/1.png',
-      name: AppLocalizations.of(context)!.autumn_scarlet,
-      size: 3,
-      starCountTimes: d1,
-    ),
-    LevelInfo(
-      imageAssets: 'assets/images/level/2.png',
-      name: AppLocalizations.of(context)!.floating_islands,
-      size: 3,
-      starCountTimes: d2,
-    ),
-    LevelInfo(
-      imageAssets: 'assets/images/level/3.png',
-      name: AppLocalizations.of(context)!.emoji,
-      size: 3,
-      starCountTimes: d3,
-    ),
-    LevelInfo(
-      imageAssets: 'assets/images/level/4.png',
-      name: AppLocalizations.of(context)!.friends_gathering,
-      size: 3,
-      starCountTimes: d4,
-    ),
-    LevelInfo(
-      imageAssets: 'assets/images/level/5.png',
-      name: AppLocalizations.of(context)!.floral_bloom,
-      size: 3,
-      starCountTimes: d5,
-    ),
-    LevelInfo(
-      imageAssets: 'assets/images/level/6.png',
-      name: AppLocalizations.of(context)!.twilight_hues,
-      size: 3,
-      starCountTimes: d6,
-    ),
-    LevelInfo(
-      imageAssets: 'assets/images/level/7.png',
-      name: AppLocalizations.of(context)!.emerald_city,
-      size: 4,
-      starCountTimes: d7,
-    ),
-    LevelInfo(
-      imageAssets: 'assets/images/level/8.png',
-      name: AppLocalizations.of(context)!.cat_scroll,
-      size: 4,
-      starCountTimes: d8,
-    ),
-    LevelInfo(
-      imageAssets: 'assets/images/level/9.png',
-      name: AppLocalizations.of(context)!.x_impression,
-      size: 4,
-      starCountTimes: d9,
-    ),
-    LevelInfo(
-      imageAssets: 'assets/images/level/10.png',
-      name: AppLocalizations.of(context)!.m_impression,
-      size: 5,
-      starCountTimes: d10,
-    ),
-    LevelInfo(
-      imageAssets: 'assets/images/level/11.png',
-      name: AppLocalizations.of(context)!.rooster_doodle,
-      size: 5,
-      starCountTimes: d11,
-    ),
-  ];
+  static List<LevelInfo>? _levelInfos;
+
+  static List<LevelInfo> get levelInfos => _levelInfos!;
 }

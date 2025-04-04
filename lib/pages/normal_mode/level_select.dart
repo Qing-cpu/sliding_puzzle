@@ -30,10 +30,23 @@ class _LevelSelectState extends State<LevelSelect> {
     }
   }
 
+  int get maxId => DBTools.maxLevelId;
+
+  int get canPlayLevelCount {
+    if (maxId != -1) {
+      int count = Levels.levelInfos.indexWhere((i) => i.id == maxId) + 2;
+      if (count > Levels.levelInfos.length) {
+        count--;
+      }
+      return count;
+    } else {
+      return 1;
+    }
+  }
+
   @override
   void initState() {
     super.initState();
-    final maxId = DBTools.maxLevelId;
     if (maxId != -1) {
       _index = Levels.levelInfos.indexWhere((i) => i.id == maxId);
       if (++_index == Levels.levelInfos.length) {
@@ -41,10 +54,7 @@ class _LevelSelectState extends State<LevelSelect> {
       }
     }
 
-    _pageController = PageController(
-      initialPage: _index,
-      viewportFraction: 0.8,
-    );
+    _pageController = PageController(initialPage: _index, viewportFraction: 0.8);
     _pageController.addListener(_listener);
   }
 
@@ -59,10 +69,8 @@ class _LevelSelectState extends State<LevelSelect> {
       context,
       PageRouteBuilder(
         pageBuilder:
-            (context, animation, secondaryAnimation) => GamePage(
-              levelInfoIndex: levelInfoIndex,
-              pageController: _pageController,
-            ),
+            (context, animation, secondaryAnimation) =>
+                GamePage(levelInfoIndex: levelInfoIndex, pageController: _pageController),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           return FadeTransition(opacity: animation, child: child);
         },
@@ -74,8 +82,11 @@ class _LevelSelectState extends State<LevelSelect> {
   void _openLevelListPage() => Navigator.of(context).push(
     CupertinoPageRoute(
       builder:
-          (BuildContext context) =>
-              LevelListPage(pageController: _pageController, index: _index),
+          (BuildContext context) => LevelListPage(
+            pageController: _pageController,
+            index: _index,
+            itemCount: canPlayLevelCount,
+          ),
     ),
   );
 
@@ -151,9 +162,7 @@ class _LevelSelectState extends State<LevelSelect> {
                     // 定义渐变颜色列表
                     colors: [Color(0x00FFFFFF), Color(0xEFFFFFFF)],
                   ),
-                  border: Border(
-                    bottom: BorderSide(color: Colors.black54, width: 0.2),
-                  ),
+                  border: Border(bottom: BorderSide(color: Colors.black54, width: 0.2)),
                   // boxShadow: [
                   //   BoxShadow(color: Colors.black12, offset: Offset(2, 2)),
                   //   BoxShadow(color: Colors.grey, offset: Offset(5, 5), blurRadius: 10),
@@ -169,11 +178,7 @@ class _LevelSelectState extends State<LevelSelect> {
                         Icons.arrow_back_ios,
                         color: Colors.white,
                         shadows: [
-                          Shadow(
-                            color: Colors.black,
-                            offset: Offset(1.5, 1),
-                            blurRadius: 5,
-                          ),
+                          Shadow(color: Colors.black, offset: Offset(1.5, 1), blurRadius: 5),
                         ],
                       ),
                     ),
@@ -202,10 +207,7 @@ class _LevelSelectState extends State<LevelSelect> {
                       Expanded(
                         child: IconButton(
                           onPressed: _onPressedLeftIcon,
-                          icon: Icon(
-                            Icons.chevron_left,
-                            color: const Color(0xFF1D2129),
-                          ),
+                          icon: Icon(Icons.chevron_left, color: const Color(0xFF1D2129)),
                         ),
                       ),
                       Expanded(
@@ -227,10 +229,7 @@ class _LevelSelectState extends State<LevelSelect> {
                       Expanded(
                         child: IconButton(
                           onPressed: _onPressedRightIcon,
-                          icon: Icon(
-                            color: const Color(0xFF1D2129),
-                            Icons.chevron_right,
-                          ),
+                          icon: Icon(color: const Color(0xFF1D2129), Icons.chevron_right),
                         ),
                       ),
                     ],
@@ -256,7 +255,7 @@ class _LevelSelectState extends State<LevelSelect> {
                       height: size + 20,
                       child: PageView.builder(
                         controller: _pageController,
-                        itemCount: levels.length,
+                        itemCount: canPlayLevelCount,
                         itemBuilder: (BuildContext context, int i) {
                           return Center(
                             child:
@@ -267,19 +266,11 @@ class _LevelSelectState extends State<LevelSelect> {
                                       width: size,
                                       height: size,
                                       padding: EdgeInsets.all(23),
-                                      margin: EdgeInsets.only(
-                                        top: 5,
-                                        bottom: 10,
-                                      ),
+                                      margin: EdgeInsets.only(top: 5, bottom: 10),
                                       decoration: BoxDecoration(
                                         color: Color(0xFBFFFAFA),
-                                        borderRadius: BorderRadius.all(
-                                          Radius.circular(21),
-                                        ),
-                                        border: Border.all(
-                                          color: Colors.black,
-                                          width: 0.3,
-                                        ),
+                                        borderRadius: BorderRadius.all(Radius.circular(21)),
+                                        border: Border.all(color: Colors.black, width: 0.3),
                                         boxShadow: [
                                           BoxShadow(
                                             color: Colors.black54,
@@ -295,23 +286,13 @@ class _LevelSelectState extends State<LevelSelect> {
                                         child: Hero(
                                           tag: levels[i].id,
                                           child: FloatWidget(
-                                            rotateZ: Tween<double>(
-                                              begin: -0.02,
-                                              end: 0.02,
-                                            ),
+                                            rotateZ: Tween<double>(begin: -0.02, end: 0.02),
                                             child: Container(
                                               decoration: BoxDecoration(
-                                                borderRadius: BorderRadius.all(
-                                                  Radius.circular(3),
-                                                ),
-                                                border: Border.all(
-                                                  color: Colors.white,
-                                                  width: 16,
-                                                ),
+                                                borderRadius: BorderRadius.all(Radius.circular(3)),
+                                                border: Border.all(color: Colors.white, width: 16),
                                                 image: DecorationImage(
-                                                  image: AssetImage(
-                                                    levels[i].imageAssets,
-                                                  ),
+                                                  image: AssetImage(levels[i].imageAssets),
                                                   fit: BoxFit.cover,
                                                 ),
                                                 boxShadow: [
@@ -327,11 +308,7 @@ class _LevelSelectState extends State<LevelSelect> {
                                         ),
                                       ),
                                     )
-                                    : Icon(
-                                      Icons.image_rounded,
-                                      size: 288,
-                                      color: Colors.grey,
-                                    ),
+                                    : Icon(Icons.image_rounded, size: 288, color: Colors.grey),
                           );
                         },
                       ),
@@ -350,11 +327,7 @@ class _LevelSelectState extends State<LevelSelect> {
                         // 渐变结束点（右下角）
                         end: Alignment.bottomCenter,
                         // 定义渐变颜色列表
-                        colors: [
-                          Color(0x00FFFFFF),
-                          Color(0x88FFFFFF),
-                          Color(0x00FFFFFF),
-                        ],
+                        colors: [Color(0x00FFFFFF), Color(0x88FFFFFF), Color(0x00FFFFFF)],
                       ),
                       // border: Border(top: BorderSide(color: Colors.black54, width: 0.2)),
                     ),
@@ -380,15 +353,19 @@ class _LevelSelectState extends State<LevelSelect> {
                           // 星星
                           StarMax3(leveData?.starCount, size: 72),
                           // 记录
-                          if (leveData != null)
-                            Text(
-                              '${AppLocalizations.of(context)!.record}：${mil2TimeString(leveData!.timeMil)}',
+                          Opacity(
+                            opacity: leveData != null ? 1 : 0,
+                            child: Text(
+                              leveData != null
+                                  ? '${AppLocalizations.of(context)!.record}：${mil2TimeString(leveData!.timeMil)}'
+                                  : 'Null',
                               style: TextStyle(
                                 fontSize: 19,
                                 fontWeight: null,
                                 color: Color(0xd5445468),
                               ),
                             ),
+                          ),
 
                           // Expanded(child: SizedBox(height: 8,)),
                         ],

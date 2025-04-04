@@ -250,7 +250,7 @@ class _StartPageState extends State<StartPage> with WidgetsBindingObserver {
                           children: [
                             BackdropFilter(
                               filter: ImageFilter.blur(sigmaX: 30, sigmaY: 30),
-                              child: SizedBox(),
+                              child: _hour < 19 ? SizedBox() : Container(color: Colors.black38,),
                             ),
                             ListView(
                               children: [
@@ -285,7 +285,7 @@ class _StartPageState extends State<StartPage> with WidgetsBindingObserver {
                                     sColor:
                                         _hour < 19
                                             ? Colors.orange
-                                            : Color(0xB8FF0000),
+                                            : Color(0xFFFFD23E),
                                     width: width,
                                     fontSize: fontSize,
                                     fontColor: Colors.pinkAccent.shade200,
@@ -302,13 +302,13 @@ class _StartPageState extends State<StartPage> with WidgetsBindingObserver {
                                     sColor:
                                         _hour < 19
                                             ? Colors.orangeAccent
-                                            : Colors.cyanAccent,
+                                            : Color(0xFFE8FF83),
                                     width: width,
                                     fontSize: fontSize > 50 ? fontSize : 40,
                                     fontColor:
                                         _hour < 19
                                             ? Colors.blueAccent.shade700
-                                            : Color(0xF43804DD),
+                                            : Color(0xF41AFFF5),
                                     text:
                                         AppLocalizations.of(
                                           context,

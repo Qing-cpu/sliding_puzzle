@@ -17,12 +17,12 @@ class _InitPageState extends State<InitPage> {
   @override
   void initState() {
     super.initState();
-    // Future.delayed(Duration(seconds: 1), () => _toStartPage());
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+    Levels.init(context);
     _initImage();
   }
 

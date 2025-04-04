@@ -11,7 +11,7 @@ void main() async {
 
   if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
     setWindowTitle('Tap Pin Pin');
-    setWindowMinSize(const Size(360,744));
+    setWindowMinSize(const Size(360, 744));
   }
 
   await DBTools.init(null);

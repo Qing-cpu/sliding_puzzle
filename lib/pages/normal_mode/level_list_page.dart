@@ -7,10 +7,12 @@ class LevelListPage extends StatefulWidget {
     super.key,
     required this.pageController,
     required this.index,
+    required this.itemCount,
   });
 
   final PageController pageController;
   final int index;
+  final int itemCount;
 
   @override
   State<LevelListPage> createState() => _LevelListPageState();
@@ -35,15 +37,12 @@ class _LevelListPageState extends State<LevelListPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        toolbarHeight: 44,
-        actions: [StarCount(count: DBTools.allStarCount)],
-      ),
+      appBar: AppBar(toolbarHeight: 44, actions: [StarCount(count: DBTools.allStarCount)]),
       body: ListView.builder(
-        itemCount: Levels.levelInfos.length + 5,
+        itemCount: widget.itemCount + 5,
         controller: _collection,
         itemBuilder: (BuildContext context, int index) {
-          if (index < Levels.levelInfos.length) {
+          if (index < widget.itemCount) {
             return GestureDetector(
               onTap: () => _onTap(context, index),
               child: _ItemWidget(
@@ -52,9 +51,7 @@ class _LevelListPageState extends State<LevelListPage> {
               ),
             );
           } else {
-            return Container(
-              height: 128,
-            );
+            return Container(height: 128);
           }
         },
       ),
@@ -107,11 +104,7 @@ class _ItemWidget extends StatelessWidget {
                   child:
                       levelInfo.id <= DBTools.maxLevelId + 1
                           ? Image.asset(levelInfo.imageAssets)
-                          : Icon(
-                            Icons.image_rounded,
-                            size: 100,
-                            color: Colors.grey,
-                          ),
+                          : Icon(Icons.image_rounded, size: 100, color: Colors.grey),
                 ),
               ),
               Positioned(
@@ -125,16 +118,8 @@ class _ItemWidget extends StatelessWidget {
                     borderRadius: BorderRadius.all(Radius.circular(5)),
                     border: Border.all(width: 3, color: Colors.black12),
                     boxShadow: [
-                      BoxShadow(
-                        color: _c[levelInfo.size]!,
-                        offset: Offset(1, 2),
-                        blurRadius: 3,
-                      ),
-                      BoxShadow(
-                        color: Colors.white,
-                        offset: Offset(-1, -2),
-                        blurRadius: 1,
-                      ),
+                      BoxShadow(color: _c[levelInfo.size]!, offset: Offset(1, 2), blurRadius: 3),
+                      BoxShadow(color: Colors.white, offset: Offset(-1, -2), blurRadius: 1),
                     ],
                   ),
                   child: Image.asset('assets/images/num${levelInfo.size}.webp'),
@@ -147,11 +132,7 @@ class _ItemWidget extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               SizedBox(height: 21),
-              StarMax3(
-                data?.starCount,
-                maxCount: levelInfo.starsCount,
-                size: 27,
-              ),
+              StarMax3(data?.starCount, maxCount: levelInfo.starsCount, size: 27),
               SizedBox(height: 12),
               Text(
                 levelInfo.name,
@@ -159,13 +140,7 @@ class _ItemWidget extends StatelessWidget {
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
                   color: Color(0xFF000000),
-                  shadows: [
-                    Shadow(
-                      color: Colors.grey,
-                      offset: Offset(1.5, 1.0),
-                      blurRadius: 13,
-                    ),
-                  ],
+                  shadows: [Shadow(color: Colors.grey, offset: Offset(1.5, 1.0), blurRadius: 13)],
                 ),
               ),
             ],
@@ -177,8 +152,4 @@ class _ItemWidget extends StatelessWidget {
   }
 }
 
-final _c = {
-  3: Colors.green.shade100,
-  4: Colors.blue.shade100,
-  5: Colors.red.shade100,
-};
+final _c = {3: Colors.green.shade100, 4: Colors.blue.shade100, 5: Colors.red.shade100};
