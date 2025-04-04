@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
@@ -65,6 +66,9 @@ class _StartPageState extends State<StartPage> with WidgetsBindingObserver {
   }
 
   void _leaderboardWidget(BuildContext context) {
+    if (Platform.isMacOS) {
+      return;
+    }
     Leaderboards.showLeaderboards(
       androidLeaderboardID: '',
       iOSLeaderboardID: 'speed_model',
@@ -82,6 +86,18 @@ class _StartPageState extends State<StartPage> with WidgetsBindingObserver {
   }
 
   int get _hour => DateTime.now().hour;
+
+  Widget animatedContainer({double? width, double? height, Widget? child}) {
+    return Center(
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 320),
+        curve: Curves.easeInOut,
+        width: width,
+        height: height,
+        child: child,
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -120,16 +136,19 @@ class _StartPageState extends State<StartPage> with WidgetsBindingObserver {
                             child: GlassCard(
                               radius: Radius.circular(30),
                               child: LayoutBuilder(
-                                builder: (
-                                  BuildContext context,
-                                  BoxConstraints constraints,
-                                ) {
+                                builder: (BuildContext context, _) {
+                                  final dSize = MediaQuery.of(context).size;
                                   double size = 0;
-                                  if (constraints.maxWidth > 650) {
-                                    size = 600;
-                                  } else if (constraints.maxWidth > 450) {
+                                  if (dSize.width > 650) {
+                                    if (dSize.height > 860) {
+                                      print(dSize);
+                                      size = 600;
+                                    } else {
+                                      size = 400;
+                                    }
+                                  } else if (dSize.width > 450) {
                                     size = 400;
-                                  } else if (constraints.maxWidth > 320) {
+                                  } else if (dSize.width > 320) {
                                     size = 300;
                                   } else {
                                     return Image.asset(
@@ -137,12 +156,27 @@ class _StartPageState extends State<StartPage> with WidgetsBindingObserver {
                                       fit: BoxFit.cover,
                                     );
                                   }
-                                  return SizedBox(
-                                    width: size,
-                                    height: size,
-                                    child: Image.asset(
-                                      'assets/images/game_name.webp',
-                                      fit: BoxFit.cover,
+                                  return TweenAnimationBuilder(
+                                    tween: Tween(begin: size, end: size),
+                                    duration: Duration(milliseconds: 320),
+                                    builder: (
+                                      BuildContext context,
+                                      double value,
+                                      Widget? child,
+                                    ) {
+                                      return SizedBox(
+                                        width: value,
+                                        height: value,
+                                        child: child,
+                                      );
+                                    },
+                                    child: SizedBox(
+                                      width: size,
+                                      height: size,
+                                      child: Image.asset(
+                                        'assets/images/game_name.webp',
+                                        fit: BoxFit.cover,
+                                      ),
                                     ),
                                   );
                                 },
@@ -164,11 +198,12 @@ class _StartPageState extends State<StartPage> with WidgetsBindingObserver {
                               fontSize = 80;
                               width = 450;
                               height = 140;
-                              radius =  Radius.circular(40);
+                              radius = Radius.circular(40);
                             }
                             return Center(
-                              child: SizedBox(
+                              child: animatedContainer(
                                 height: height,
+                                width: width,
                                 child: AButton(
                                   fontColor: Colors.white,
                                   sColor: Color(0x939CFFAC),
@@ -190,13 +225,26 @@ class _StartPageState extends State<StartPage> with WidgetsBindingObserver {
                         BuildContext context,
                         BoxConstraints constraints,
                       ) {
-                        SizedBox sizedBoxH = SizedBox(height: 50);
+                        var sizedBoxH = animatedContainer(height: 50);
                         double fontSize = 50;
                         double width = 300;
-                        if (constraints.maxWidth > 600) {
-                          sizedBoxH = SizedBox(height: 120);
+                        double height = 90;
+                        final dw = MediaQuery.of(context).size.width;
+                        final dh = MediaQuery.of(context).size.height;
+                        if (dw > 800) {
                           fontSize = 80;
                           width = 550;
+                          height = 150;
+                          if (dh > 800) {
+                            sizedBoxH = animatedContainer(height: 120);
+                          } else {
+                            sizedBoxH = animatedContainer(height: 90);
+                          }
+                        } else if (dw > 600) {
+                          sizedBoxH = animatedContainer(height: 60);
+                          fontSize = 60;
+                          width = 500;
+                          height = 120;
                         }
                         return Stack(
                           children: [
@@ -210,52 +258,65 @@ class _StartPageState extends State<StartPage> with WidgetsBindingObserver {
                                   height: MediaQuery.of(context).padding.top,
                                 ),
                                 sizedBoxH,
-
-                                FloatWidget(
-                                  child: AButton(
-                                    onTap: () => _startModel1(context),
-                                    width: width,
-                                    fontSize: fontSize,
-                                    text: AppLocalizations.of(context)!.normal,
-                                    radius: Radius.circular(32),
-                                    sColor:
-                                        _hour < 19
-                                            ? Colors.pink
-                                            : Color(0xE000FF15),
+                                animatedContainer(
+                                  width: width,
+                                  height: height,
+                                  child: FloatWidget(
+                                    child: AButton(
+                                      onTap: () => _startModel1(context),
+                                      width: width,
+                                      fontSize: fontSize,
+                                      text:
+                                          AppLocalizations.of(context)!.normal,
+                                      radius: Radius.circular(32),
+                                      sColor:
+                                          _hour < 19
+                                              ? Colors.pink
+                                              : Color(0xE000FF15),
+                                    ),
                                   ),
                                 ),
                                 sizedBoxH,
-                                AButton(
-                                  onTap: () => _startSpeedModel1(context),
-                                  sColor:
-                                      _hour < 19
-                                          ? Colors.orange
-                                          : Color(0xB8FF0000),
+                                animatedContainer(
                                   width: width,
-                                  fontSize: fontSize,
-                                  fontColor: Colors.pinkAccent.shade200,
-                                  text: AppLocalizations.of(context)!.racing,
-                                  radius: Radius.circular(32),
+                                  height: height,
+                                  child: AButton(
+                                    onTap: () => _startSpeedModel1(context),
+                                    sColor:
+                                        _hour < 19
+                                            ? Colors.orange
+                                            : Color(0xB8FF0000),
+                                    width: width,
+                                    fontSize: fontSize,
+                                    fontColor: Colors.pinkAccent.shade200,
+                                    text: AppLocalizations.of(context)!.racing,
+                                    radius: Radius.circular(32),
+                                  ),
                                 ),
                                 SizedBox(height: fontSize),
-                                AButton(
-                                  onTap: () => _leaderboardWidget(context),
-                                  sColor:
-                                      _hour < 19
-                                          ? Colors.orangeAccent
-                                          : Colors.cyanAccent,
+                                animatedContainer(
                                   width: width,
-                                  fontSize: fontSize > 50 ? fontSize : 40,
-                                  fontColor:
-                                      _hour < 19
-                                          ? Colors.blueAccent.shade700
-                                          : Color(0xF43804DD),
-                                  text:
-                                      AppLocalizations.of(context)!.leaderboard,
-                                  radius: Radius.circular(32),
+                                  height: height,
+                                  child: AButton(
+                                    onTap: () => _leaderboardWidget(context),
+                                    sColor:
+                                        _hour < 19
+                                            ? Colors.orangeAccent
+                                            : Colors.cyanAccent,
+                                    width: width,
+                                    fontSize: fontSize > 50 ? fontSize : 40,
+                                    fontColor:
+                                        _hour < 19
+                                            ? Colors.blueAccent.shade700
+                                            : Color(0xF43804DD),
+                                    text:
+                                        AppLocalizations.of(
+                                          context,
+                                        )!.leaderboard,
+                                    radius: Radius.circular(32),
+                                  ),
                                 ),
                                 sizedBoxH,
-
                                 SizedBox(
                                   height: MediaQuery.of(context).padding.bottom,
                                 ),

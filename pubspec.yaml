@@ -20,6 +20,7 @@ dependencies:
   intl: any
   games_services: ^4.1.0
   flutter_launcher_icons: ^0.14.3
+  window_size: ^0.1.0
 
 flutter_launcher_icons:
   ios: true # 设置为 true 以生成 iOS 图标

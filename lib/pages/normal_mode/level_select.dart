@@ -239,14 +239,21 @@ class _LevelSelectState extends State<LevelSelect> {
                 // level page view
                 LayoutBuilder(
                   builder: (BuildContext context, BoxConstraints constraints) {
-                    double height = 330;
                     double size = 288;
-                    if(constraints.maxWidth > 600){
-                      height = 660;
+                    final dw = MediaQuery.of(context).size.width;
+                    final dh = MediaQuery.of(context).size.height;
+                    if (dw > 600) {
                       size = 500;
+                      if (dh > 930) {
+                        size = 500;
+                      } else {
+                        size = 400;
+                      }
                     }
-                  return  SizedBox(
-                      height: height,
+                    return AnimatedContainer(
+                      duration: Duration(milliseconds: 320),
+                      curve: Curves.easeInOut,
+                      height: size + 20,
                       child: PageView.builder(
                         controller: _pageController,
                         itemCount: levels.length,
@@ -254,7 +261,9 @@ class _LevelSelectState extends State<LevelSelect> {
                           return Center(
                             child:
                                 i <= DBTools.maxLevelId + 1
-                                    ? Container(
+                                    ? AnimatedContainer(
+                                      duration: Duration(milliseconds: 320),
+                                      curve: Curves.easeInOut,
                                       width: size,
                                       height: size,
                                       padding: EdgeInsets.all(23),
@@ -280,6 +289,7 @@ class _LevelSelectState extends State<LevelSelect> {
                                           // BoxShadow(color: Colors.grey, offset: Offset(5, 5), blurRadius: 10),
                                         ],
                                       ),
+
                                       child: InkWell(
                                         onTap: () => _play(context, i),
                                         child: Hero(
@@ -350,6 +360,7 @@ class _LevelSelectState extends State<LevelSelect> {
                     ),
                     child: Center(
                       child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
                           Text(
                             Levels.levelInfos[_index].name,
@@ -366,10 +377,8 @@ class _LevelSelectState extends State<LevelSelect> {
                               fontWeight: FontWeight.w500,
                             ),
                           ),
-                          SizedBox(height: 28),
                           // 星星
                           StarMax3(leveData?.starCount, size: 72),
-                          const SizedBox(height: 16),
                           // 记录
                           if (leveData != null)
                             Text(
