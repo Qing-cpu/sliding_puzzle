@@ -23,13 +23,6 @@ class _LevelSelectState extends State<LevelSelect> {
 
   LevelData? get leveData => DBTools.getLevelDataByLeveId(levels[_index].id);
 
-  _listener() {
-    final page = _pageController.page?.toInt() ?? 0;
-    if (page != _index) {
-      setState(() => _index = page);
-    }
-  }
-
   int get maxId => DBTools.maxLevelId;
 
   int get canPlayLevelCount {
@@ -55,38 +48,42 @@ class _LevelSelectState extends State<LevelSelect> {
     }
 
     _pageController = PageController(initialPage: _index, viewportFraction: 0.8);
-    _pageController.addListener(_listener);
   }
 
   @override
   void dispose() {
-    _pageController.removeListener(_listener);
     super.dispose();
   }
 
   void _play(BuildContext context, int levelInfoIndex) async {
-    Navigator.push(
+    final i = await Navigator.push(
       context,
       PageRouteBuilder(
         pageBuilder:
-            (context, animation, secondaryAnimation) =>
-                GamePage(levelInfoIndex: levelInfoIndex, pageController: _pageController),
+            (context, animation, secondaryAnimation) => GamePage(levelInfoIndex: levelInfoIndex),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           return FadeTransition(opacity: animation, child: child);
         },
         transitionDuration: Duration(milliseconds: 360),
       ),
-    ).then((_) => setState(() {}));
+    );
+    if (i == null) {
+      setState(() {
+        _index = Levels.levelInfos.indexWhere((i) => i.id == maxId);
+      });
+    } else {
+      setState(() {
+        _index = i;
+        Future(() => _pageController.jumpToPage(i));
+      });
+    }
   }
 
   void _openLevelListPage() => Navigator.of(context).push(
     CupertinoPageRoute(
       builder:
-          (BuildContext context) => LevelListPage(
-            pageController: _pageController,
-            index: _index,
-            itemCount: canPlayLevelCount,
-          ),
+          (BuildContext context) =>
+              LevelListPage(pageController: _pageController, itemCount: canPlayLevelCount),
     ),
   );
 
@@ -147,26 +144,14 @@ class _LevelSelectState extends State<LevelSelect> {
             right: 0,
             child: SafeArea(
               child: Container(
-                // margin: EdgeInsets.only(right: 16, left: 16),
                 height: 44,
                 decoration: BoxDecoration(
-                  // color: Color(0xEEFFFFFF),
-                  // borderRadius: BorderRadius.all(Radius.circular(4)),
-                  // image: DecorationImage(image: AssetImage('assets/images/b.png'), fit: BoxFit.cover),
-                  // color: Colors.white,
                   gradient: LinearGradient(
-                    // 渐变起始点（左上角）
                     begin: Alignment.topCenter,
-                    // 渐变结束点（右下角）
                     end: Alignment.bottomCenter,
-                    // 定义渐变颜色列表
                     colors: [Color(0x00FFFFFF), Color(0xEFFFFFFF)],
                   ),
                   border: Border(bottom: BorderSide(color: Colors.black54, width: 0.2)),
-                  // boxShadow: [
-                  //   BoxShadow(color: Colors.black12, offset: Offset(2, 2)),
-                  //   BoxShadow(color: Colors.grey, offset: Offset(5, 5), blurRadius: 10),
-                  // ],
                 ),
                 child: Row(
                   children: [
@@ -254,6 +239,11 @@ class _LevelSelectState extends State<LevelSelect> {
                       curve: Curves.easeInOut,
                       height: size + 20,
                       child: PageView.builder(
+                        onPageChanged: (p) {
+                          setState(() {
+                            _index = p;
+                          });
+                        },
                         controller: _pageController,
                         itemCount: canPlayLevelCount,
                         itemBuilder: (BuildContext context, int i) {

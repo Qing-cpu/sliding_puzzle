@@ -8,48 +8,41 @@ import 'final_completion_page.dart';
 import 'level_complete_page.dart';
 
 class GamePage extends StatefulWidget {
-  const GamePage({
-    super.key,
-    required this.levelInfoIndex,
-    required this.pageController,
-  });
+  const GamePage({super.key, required this.levelInfoIndex});
 
   final int levelInfoIndex;
-  final PageController pageController;
 
   @override
   State<GamePage> createState() => _GamePageState();
 }
 
-class _GamePageState extends State<GamePage>
-    with SingleTickerProviderStateMixin {
+class _GamePageState extends State<GamePage> with SingleTickerProviderStateMixin {
   final DBTools dbTools = DBTools();
   OverlayEntry? overlayEntry;
 
-  late final TimeProgressController _timeProgressController =
-      TimeProgressController(_onTimeOutFailure, vsync: this);
+  late final TimeProgressController _timeProgressController = TimeProgressController(
+    _onTimeOutFailure,
+    vsync: this,
+  );
   late int _levelInfoIndex = widget.levelInfoIndex;
 
-  late final SlidingPuzzleController _slidingPuzzleController =
-      SlidingPuzzleController(
-        buildSquareWidget: _buildSquareWidget,
-        onStart: _timeProgressController.start,
-        width: _isBig ? 600 : 288,
-        levelIndex: _levelInfoIndex,
-        onCompletedCallback: _onCompletedCallback,
-      );
+  late final SlidingPuzzleController _slidingPuzzleController = SlidingPuzzleController(
+    buildSquareWidget: _buildSquareWidget,
+    onStart: _timeProgressController.start,
+    width: _isBig ? 600 : 288,
+    levelIndex: _levelInfoIndex,
+    onCompletedCallback: _onCompletedCallback,
+  );
 
   LevelData? get _data => DBTools.getLevelDataByLeveId(_levelInfo.id);
 
   LevelInfo get _levelInfo => Levels.levelInfos[_levelInfoIndex];
 
-  Widget _buildSquareWidget(int index) =>
-      Image.asset(_levelInfo.squareImageAssets[index]);
+  Widget _buildSquareWidget(int index) => Image.asset(_levelInfo.squareImageAssets[index]);
 
   @override
   void initState() {
     super.initState();
-    Future(() => widget.pageController.jumpToPage(_levelInfoIndex));
   }
 
   @override
@@ -93,7 +86,7 @@ class _GamePageState extends State<GamePage>
     overlayEntry?.remove();
     overlayEntry = null;
     _slidingPuzzleController.s.value = 0;
-    Navigator.pop(context);
+    Navigator.of(context).pop(_levelInfoIndex);
   }
 
   void _next() {
@@ -108,13 +101,10 @@ class _GamePageState extends State<GamePage>
       _slidingPuzzleController.s.value = 3;
       _timeProgressController.duration = _levelInfo.starCountTimes.first;
       _slidingPuzzleController.next();
-      Future(() => widget.pageController.jumpToPage(_levelInfoIndex));
     } else {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(
-          builder: (BuildContext context) => FinalCompletionPage(),
-        ),
+        MaterialPageRoute(builder: (BuildContext context) => FinalCompletionPage()),
       );
     }
   }
@@ -148,14 +138,15 @@ class _GamePageState extends State<GamePage>
   final box16H = SizedBox(height: 16);
 
   bool get _isBig =>
-      MediaQuery.of(context).size.width > 630 &&
-      MediaQuery.of(context).size.height > 900;
+      MediaQuery.of(context).size.width > 630 && MediaQuery.of(context).size.height > 900;
 
   @override
   Widget build(BuildContext context) {
-    return PopScope(
-      onPopInvokedWithResult: (_, _) {
+    return WillPopScope(
+      onWillPop: () async {
         _slidingPuzzleController.s.value = 0;
+        Navigator.of(context).pop(_levelInfoIndex);
+        return false;
       },
       child: Scaffold(
         appBar: AppBar(
@@ -184,10 +175,7 @@ class _GamePageState extends State<GamePage>
                   child: PhotoFrame(image: Image.asset(_levelInfo.imageAssets)),
                 ),
               ),
-              Expanded(
-                flex: 1,
-                child: Center(child: SizedBox(width: 1, height: 1)),
-              ),
+              Expanded(flex: 1, child: Center(child: SizedBox(width: 1, height: 1))),
               TimeProgress(
                 key: Key(_levelInfo.imageAssets),
                 width: MediaQuery.of(context).size.width > 630 ? 600 : 288,
@@ -207,9 +195,7 @@ class _GamePageState extends State<GamePage>
                     height: size,
                     clipBehavior: Clip.hardEdge,
                     decoration: BoxDecoration(
-                      image: DecorationImage(
-                        image: AssetImage(_levelInfo.imageAssets),
-                      ),
+                      image: DecorationImage(image: AssetImage(_levelInfo.imageAssets)),
                       borderRadius: BorderRadius.circular(16), // 圆角
                       boxShadow: [
                         BoxShadow(
@@ -233,10 +219,7 @@ class _GamePageState extends State<GamePage>
                   );
                 },
               ),
-              Expanded(
-                flex: 3,
-                child: Center(child: SizedBox(width: 1, height: 1)),
-              ),
+              Expanded(flex: 3, child: Center(child: SizedBox(width: 1, height: 1))),
             ],
           ),
         ),

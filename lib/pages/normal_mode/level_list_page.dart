@@ -6,12 +6,10 @@ class LevelListPage extends StatefulWidget {
   const LevelListPage({
     super.key,
     required this.pageController,
-    required this.index,
     required this.itemCount,
   });
 
   final PageController pageController;
-  final int index;
   final int itemCount;
 
   @override
@@ -20,7 +18,6 @@ class LevelListPage extends StatefulWidget {
 
 class _LevelListPageState extends State<LevelListPage> {
   late final ScrollController _collection = ScrollController(
-    initialScrollOffset: widget.index * 128,
   );
 
   @override
