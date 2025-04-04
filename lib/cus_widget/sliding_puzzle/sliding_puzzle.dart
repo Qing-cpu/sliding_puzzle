@@ -8,9 +8,17 @@ export 'models/square_model.dart';
 export 'sliding_square.dart';
 
 class SlidingPuzzle extends StatefulWidget {
-  const SlidingPuzzle({super.key, required this.slidingPuzzleController});
+  const SlidingPuzzle({
+    super.key,
+    required this.slidingPuzzleController,
+    required this.width,
+    required this.height,
+  });
 
   final SlidingPuzzleController slidingPuzzleController;
+
+  final double width;
+  final double height;
 
   @override
   State<SlidingPuzzle> createState() => _SlidingPuzzleState();
@@ -111,9 +119,12 @@ class _SlidingPuzzleState extends State<SlidingPuzzle> {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: slidingPuzzleController.width,
-      height: slidingPuzzleController.width,
+    slidingPuzzleController.width = widget.width;
+    return AnimatedContainer(
+      width: widget.width,
+      height: widget.height,
+      duration: Duration(milliseconds: 320),
+      curve: Curves.easeInOut,
       child: ValueListenableBuilder(
         valueListenable: slidingPuzzleController.reSetTag,
         builder: (_, int value, _) {

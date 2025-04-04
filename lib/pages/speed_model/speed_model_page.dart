@@ -121,28 +121,42 @@ class _SpeedModelPageState extends State<SpeedModelPage>
     overlay.insert(overlayEntry!);
   }
 
-  Widget buildNumWidget(int n) => TweenAnimationBuilder(
-    duration: Duration(seconds: 1),
-    tween: ColorTween(
-      begin: Color(0xffffffff),
-      end: _colors[levelCount % _colors.length],
-    ),
-    builder:
-        (BuildContext context, Color? value, Widget? child) =>
-            Container(color: value, alignment: Alignment.center, child: child),
-    child: Text(
-      '${n + 1}',
-      textAlign: TextAlign.center,
-      style: TextStyle(
-        shadows: [
-          Shadow(color: Colors.black87, offset: Offset(1, 1), blurRadius: 12),
-        ],
-        fontWeight: FontWeight.bold,
-        fontSize: MediaQuery.of(context).size.width > 600 ? 100 : 50,
-        color: Colors.white,
+  Widget buildNumWidget(int n) {
+    return TweenAnimationBuilder(
+      duration: Duration(seconds: 1),
+      tween: ColorTween(
+        begin: Color(0xffffffff),
+        end: _colors[levelCount % _colors.length],
       ),
-    ),
-  );
+      builder:
+          (BuildContext context, Color? value, Widget? child) => Container(
+            color: value,
+            alignment: Alignment.center,
+            child: child,
+          ),
+      child: LayoutBuilder(
+        builder: (context, c) {
+          final fontSize = c.maxWidth / 2;
+          return Text(
+            '${n + 1}',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              shadows: [
+                Shadow(
+                  color: Colors.black87,
+                  offset: Offset(1, 1),
+                  blurRadius: 12,
+                ),
+              ],
+              fontWeight: FontWeight.bold,
+              fontSize: fontSize,
+              color: Colors.white,
+            ),
+          );
+        },
+      ),
+    );
+  }
 
   int get _hour => DateTime.now().hour;
 
@@ -226,83 +240,97 @@ class _SpeedModelPageState extends State<SpeedModelPage>
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Container(
-                height: MediaQuery.of(context).size.width > 600 ? 300 : 200,
-                clipBehavior: Clip.hardEdge,
-                padding: EdgeInsets.only(
-                  top: MediaQuery.paddingOf(context).top,
-                ),
-                decoration: BoxDecoration(
-                  color: _hour < 19 ? Colors.white70 : Colors.black12,
-                ),
-                child: BackdropFilter(
-                  filter: ImageFilter.blur(sigmaX: 30, sigmaY: 30),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        // crossAxisAlignment: CrossAxisAlignment.center,
+              Builder(
+                builder: (context) {
+                  double height = 180;
+                  final dw = MediaQuery.of(context).size.width;
+                  final dh = MediaQuery.of(context).size.height;
+                  if (dw > 600 && dh > 930) {
+                    height = 300;
+                  }
+                  return AnimatedContainer(
+                    height: height,
+                    clipBehavior: Clip.hardEdge,
+                    padding: EdgeInsets.only(
+                      top: MediaQuery.paddingOf(context).top,
+                    ),
+                    decoration: BoxDecoration(
+                      color: _hour < 19 ? Colors.white70 : Colors.black12,
+                    ),
+                    duration: Duration(milliseconds: 320),
+                    curve: Curves.easeInOut,
+                    child: BackdropFilter(
+                      filter: ImageFilter.blur(sigmaX: 30, sigmaY: 30),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
-                          IconButton(
-                            onPressed: () => Navigator.of(context).pop(),
-                            icon: Icon(
-                              Icons.arrow_back,
-                              color: Color(0xFFF8F3F3),
-                              shadows: [
-                                Shadow(
-                                  color: Colors.black54,
-                                  blurRadius: 3,
-                                  offset: Offset(1.5, 1.5),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            // crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              IconButton(
+                                onPressed: () => Navigator.of(context).pop(),
+                                icon: Icon(
+                                  Icons.arrow_back,
+                                  color: Color(0xFFF8F3F3),
+                                  shadows: [
+                                    Shadow(
+                                      color: Colors.black54,
+                                      blurRadius: 3,
+                                      offset: Offset(1.5, 1.5),
+                                    ),
+                                  ],
+                                  size: 32,
                                 ),
-                              ],
-                              size: 32,
-                            ),
-                          ),
-                          Score(
-                            score: score,
-                            textStyle: TextStyle(
-                              fontSize: fontSizeS + levelCount * 2,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.pinkAccent.shade200,
-                              shadows: [
-                                Shadow(
-                                  color: Colors.black54,
-                                  offset: Offset(2, 4),
-                                  blurRadius: 10,
-                                ),
-                              ],
-                            ),
-                          ),
-                          Opacity(
-                            opacity: 0,
-                            child: IconButton(
-                              onPressed: null,
-                              icon: Icon(
-                                Icons.arrow_back,
-                                shadows: [
-                                  Shadow(
-                                    color: Colors.black54,
-                                    blurRadius: 3,
-                                    offset: Offset(1.5, 1.5),
-                                  ),
-                                ],
-                                size: 32,
                               ),
-                            ),
+                              Score(
+                                score: score,
+                                textStyle: TextStyle(
+                                  fontSize: fontSizeS + levelCount * 2,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.pinkAccent.shade200,
+                                  shadows: [
+                                    Shadow(
+                                      color: Colors.black54,
+                                      offset: Offset(2, 4),
+                                      blurRadius: 10,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Opacity(
+                                opacity: 0,
+                                child: IconButton(
+                                  onPressed: null,
+                                  icon: Icon(
+                                    Icons.arrow_back,
+                                    shadows: [
+                                      Shadow(
+                                        color: Colors.black54,
+                                        blurRadius: 3,
+                                        offset: Offset(1.5, 1.5),
+                                      ),
+                                    ],
+                                    size: 32,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          TimeProgress(
+                            key: Key('tp$levelCount'),
+                            width:
+                                MediaQuery.of(context).size.width > 600
+                                    ? 600
+                                    : 288,
+                            times: [Duration(milliseconds: mil)],
+                            timeProgressController: _timeProgressController,
                           ),
                         ],
                       ),
-                      TimeProgress(
-                        key: Key('tp$levelCount'),
-                        width:
-                            MediaQuery.of(context).size.width > 600 ? 600 : 288,
-                        times: [Duration(milliseconds: mil)],
-                        timeProgressController: _timeProgressController,
-                      ),
-                    ],
-                  ),
-                ),
+                    ),
+                  );
+                },
               ),
 
               Expanded(child: SizedBox(height: 1)),
@@ -312,8 +340,20 @@ class _SpeedModelPageState extends State<SpeedModelPage>
                 radius: Radius.circular(16),
                 child: Container(
                   padding: EdgeInsets.all(12), // 内边距
-                  child: SlidingPuzzle(
-                    slidingPuzzleController: _slidingPuzzleController,
+                  child: Builder(
+                    builder: (context) {
+                      final dw = MediaQuery.of(context).size.width;
+                      final dy = MediaQuery.of(context).size.height;
+                      double size = 288;
+                      if (dw > 600 && dy > 900) {
+                        size = 550;
+                      }
+                      return SlidingPuzzle(
+                        width: size,
+                        height: size,
+                        slidingPuzzleController: _slidingPuzzleController,
+                      );
+                    },
                   ),
                 ),
               ),
@@ -324,54 +364,4 @@ class _SpeedModelPageState extends State<SpeedModelPage>
       ),
     ),
   );
-}
-
-class ShadowTextPainter extends CustomPainter {
-  final String text;
-  final TextStyle textStyle;
-
-  ShadowTextPainter({required this.text, required this.textStyle});
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final textPainter = TextPainter(
-      text: TextSpan(
-        text: text,
-        style: textStyle.copyWith(
-          color: Colors.black87, // 阴影颜色
-        ),
-      ),
-      textDirection: TextDirection.ltr,
-    );
-    textPainter.layout();
-
-    // 先绘制阴影
-    canvas.save();
-    canvas.translate(4, 4); // 偏移阴影位置
-    textPainter.paint(canvas, Offset.zero);
-    canvas.restore();
-
-    // 再绘制正常文字
-    textPainter.text = TextSpan(text: text, style: textStyle);
-    textPainter.layout();
-    textPainter.paint(canvas, Offset.zero);
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
-}
-
-class ShadowTextWidget extends StatelessWidget {
-  const ShadowTextWidget({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return CustomPaint(
-      size: Size(200, 50), // 设置绘制区域大小
-      painter: ShadowTextPainter(
-        text: 'Custom Shadow',
-        textStyle: TextStyle(fontSize: 40, fontWeight: FontWeight.bold),
-      ),
-    );
-  }
 }

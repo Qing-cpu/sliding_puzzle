@@ -34,7 +34,7 @@ class _GamePageState extends State<GamePage>
       SlidingPuzzleController(
         buildSquareWidget: _buildSquareWidget,
         onStart: _timeProgressController.start,
-        width: MediaQuery.of(context).size.width > 600 ? 600 : 288,
+        width: _isBig ? 600 : 288,
         levelIndex: _levelInfoIndex,
         onCompletedCallback: _onCompletedCallback,
       );
@@ -147,6 +147,10 @@ class _GamePageState extends State<GamePage>
   final box8H = SizedBox(height: 8);
   final box16H = SizedBox(height: 16);
 
+  bool get _isBig =>
+      MediaQuery.of(context).size.width > 630 &&
+      MediaQuery.of(context).size.height > 900;
+
   @override
   Widget build(BuildContext context) {
     return PopScope(
@@ -186,7 +190,7 @@ class _GamePageState extends State<GamePage>
               ),
               TimeProgress(
                 key: Key(_levelInfo.imageAssets),
-                width: MediaQuery.of(context).size.width > 600 ? 600 : 288,
+                width: MediaQuery.of(context).size.width > 630 ? 600 : 288,
                 times: _levelInfo.starCountTimes,
                 timeProgressController: _timeProgressController,
               ),
@@ -194,10 +198,11 @@ class _GamePageState extends State<GamePage>
               LayoutBuilder(
                 builder: (context, c) {
                   double size = 291;
-                  if(c.maxWidth > 600){
+                  if (_isBig) {
                     size = 603;
+                    _slidingPuzzleController.width = 600;
                   }
-                  return Container(
+                  return AnimatedContainer(
                     width: size,
                     height: size,
                     clipBehavior: Clip.hardEdge,
@@ -214,12 +219,14 @@ class _GamePageState extends State<GamePage>
                         ),
                       ],
                     ),
+                    duration: Duration(milliseconds: 320),
+                    curve: Curves.easeInOut,
                     child: GlassCard(
-                      // colorB1: Color(0x4D000000),
-                      // colorT1: Color(0x00000000),
                       sigma: 30,
                       radius: Radius.circular(16),
                       child: SlidingPuzzle(
+                        width: size - 3,
+                        height: size - 3,
                         slidingPuzzleController: _slidingPuzzleController,
                       ),
                     ),

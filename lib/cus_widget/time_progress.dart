@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 
 class TimeProgress extends StatefulWidget {
-  const TimeProgress({super.key, required this.times, required this.width, required this.timeProgressController});
+  const TimeProgress({
+    super.key,
+    required this.times,
+    required this.width,
+    required this.timeProgressController,
+  });
 
   final List<Duration> times;
   final double width;
@@ -50,7 +55,14 @@ class _TimeProgressState extends State<TimeProgress> {
     return Stack(
       fit: StackFit.passthrough,
       children: [
-        Container(margin: const EdgeInsets.all(8), width: widget.width, height: height, decoration: bDecoration),
+        AnimatedContainer(
+          margin: const EdgeInsets.all(8),
+          width: widget.width,
+          height: height,
+          decoration: bDecoration,
+          curve: Curves.easeInOut,
+          duration: Duration(milliseconds: 320),
+        ),
         Positioned(
           child: AnimatedBuilder(
             animation: widget.timeProgressController,
@@ -58,11 +70,16 @@ class _TimeProgressState extends State<TimeProgress> {
               return Container(
                 margin: const EdgeInsets.all(8),
                 height: height,
-                width: Tween<double>(begin: widget.width, end: 0).evaluate(widget.timeProgressController),
+                width: Tween<double>(
+                  begin: widget.width,
+                  end: 0,
+                ).evaluate(widget.timeProgressController),
                 decoration: BoxDecoration(
-                  color: ColorTween(begin: Color(0xFF72FF77),
+                  color: ColorTween(
+                    begin: Color(0xFF72FF77),
 
-                      end: Color(0xFFFF3C00)).evaluate(widget.timeProgressController),
+                    end: Color(0xFFFF3C00),
+                  ).evaluate(widget.timeProgressController),
                   borderRadius: BorderRadius.circular(3),
                   boxShadow: [],
                 ),
@@ -93,7 +110,10 @@ class _Point extends StatelessWidget {
     return Container(
       width: size / 4,
       height: size,
-      decoration: BoxDecoration(color: color, borderRadius: BorderRadius.all(Radius.circular(size))),
+      decoration: BoxDecoration(
+        color: color,
+        borderRadius: BorderRadius.all(Radius.circular(size)),
+      ),
     );
   }
 }

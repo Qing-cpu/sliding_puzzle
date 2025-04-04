@@ -24,6 +24,17 @@
   "try_again": "Nochmal versuchen",
   "you_ran_out_of_time": "Die Zeit ist abgelaufen!",
   "time_limit": "Zeitlimit",
-  "congratulations_game_completed": "Herzlichen Glückwunsch! Du hast das Spiel abgeschlossen."
+  "congratulations_game_completed": "Herzlichen Glückwunsch! Du hast das Spiel abgeschlossen.",
+  "autumn_scarlet": "Herbstrot",
+  "floating_islands": "Schwebende Inseln",
+  "emoji": "Emoji",
+  "friends_gathering": "Freundestreff",
+  "floral_bloom": "Blütenpracht",
+  "twilight_hues": "Abendrot",
+  "emerald_city": "Smaragdstadt",
+  "cat_scroll": "Katzenrolle",
+  "x_impression": "X-Impression",
+  "m_impression": "M-Impression",
+  "rooster_doodle": "Hahn Gekritzel"
 
 }

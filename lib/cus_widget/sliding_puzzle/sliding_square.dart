@@ -93,9 +93,11 @@ class _SlidingSquareState extends State<SlidingSquare>
         builder:
             (BuildContext context, Widget? child) =>
                 Transform.translate(offset: _animation.value, child: child),
-        child: SizedBox(
+        child: AnimatedContainer(
           height: widget.width,
           width: widget.width,
+          duration: Duration(milliseconds: 320),
+          curve: Curves.easeInOut,
           child: _buildAnimatedChild(),
         ),
       ),
