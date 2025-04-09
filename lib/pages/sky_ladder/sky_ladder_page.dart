@@ -1,4 +1,5 @@
 import 'dart:math' as math;
+import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:sliding_puzzle/cus_widget/cus_widget.dart';
@@ -147,60 +148,62 @@ class _SkyLadderPageState extends State<SkyLadderPage> with SingleTickerProvider
                   right: -x / 2,
                   child: Container(alignment: Alignment.center, child: bgC1(r)),
                 ),
-                Column(
-                  children: [
-                    Container(
-                      alignment: Alignment.center,
-                      width: double.infinity,
-                      height: 100,
-                      color: Colors.black38,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          IconButton(
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-                            icon: Icon(Icons.arrow_back),
-                            color: Colors.white38,
-                          ),
-                          Score(
-                            score: skyLadderCount,
-                            textStyle: TextStyle(
-                              color: Color(0xCBFFFFFF),
-                              fontSize: 60,
-                              shadows: [
-                                Shadow(
-                                  color: Colors.greenAccent,
-                                  blurRadius: 40,
-                                  offset: Offset(1, 1),
-                                ),
-                              ],
-                              fontWeight: FontWeight.bold,
+                SafeArea(
+                  child: Column(
+                    children: [
+                      Container(
+                        alignment: Alignment.center,
+                        width: double.infinity,
+                        height: 100,
+                        color: Colors.black38,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            IconButton(
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                              icon: Icon(Icons.arrow_back),
+                              color: Colors.white38,
                             ),
-                          ),
-                          Opacity(
-                            opacity: 0,
-                            child: IconButton(onPressed: null, icon: Icon(Icons.arrow_back)),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Expanded(
-                      child: PageView.builder(
-                        scrollDirection: Axis.vertical,
-                        reverse: true,
-                        physics: NeverScrollableScrollPhysics(),
-                        controller: _controller,
-                        itemCount: 100,
-                        itemBuilder:
-                            (BuildContext context, int index) => PageViewItemWidget(
-                              size: index ~/ 10 + 3,
-                              onCompletedCallback: _onCompletedCallback,
+                            Score(
+                              score: skyLadderCount,
+                              textStyle: TextStyle(
+                                color: Color(0xCBFFFFFF),
+                                fontSize: 60,
+                                shadows: [
+                                  Shadow(
+                                    color: Colors.greenAccent,
+                                    blurRadius: 40,
+                                    offset: Offset(1, 1),
+                                  ),
+                                ],
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
+                            Opacity(
+                              opacity: 0,
+                              child: IconButton(onPressed: null, icon: Icon(Icons.arrow_back)),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
+                      Expanded(
+                        child: PageView.builder(
+                          scrollDirection: Axis.vertical,
+                          reverse: true,
+                          physics: NeverScrollableScrollPhysics(),
+                          controller: _controller,
+                          itemCount: 100,
+                          itemBuilder:
+                              (BuildContext context, int index) => PageViewItemWidget(
+                                size: index ~/ 10 + 3,
+                                onCompletedCallback: _onCompletedCallback,
+                              ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ],
             );
@@ -229,7 +232,7 @@ class _PageViewItemWidgetState extends State<PageViewItemWidget> {
     onStart: () {},
     width: 300,
     size: widget.size,
-  )..s.value = 0;
+  )..s.value = 3;
 
   @override
   void dispose() {
@@ -239,16 +242,22 @@ class _PageViewItemWidgetState extends State<PageViewItemWidget> {
 
   Widget buildNumWidget({required int num, bool? isOk, bool? hasTweenColor}) {
     return TweenAnimationBuilder(
-      duration: Duration(seconds: 1),
-      tween: ColorTween(begin: Color(0x00ff0000), end: Color(0x3D404040)),
+      duration: Duration(milliseconds: 300),
+      curve: Curves.easeInOut,
+      tween: ColorTween(begin: Color(0x3D030D57), end: Color(0x3D09ACAC)),
       builder:
           (BuildContext context, Color? value, Widget? child) => Container(
             alignment: Alignment.center,
-            margin: EdgeInsets.all(1),
+            margin: EdgeInsets.all(1.5),
             decoration: BoxDecoration(
-              color: value,
+              // color: value,
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [value ??Color(0x3D09ACAC),  Color(0x3D030D57)],
+              ),
               borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: Colors.white12, width: 1.3),
+              border: Border.all(color: Colors.white12, width: 1.5),
             ),
             child: child,
           ),
@@ -278,11 +287,9 @@ class _PageViewItemWidgetState extends State<PageViewItemWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return GlassCard(
+    return GlassCard2(
       sigma: 16,
-      colorB1: Colors.black12,
-      // colorB1: Color(0x00000000),
-      colorT1: Color(0x0fffffff),
+
       radius: Radius.circular(16),
       child: Container(
         padding: EdgeInsets.all(12), // 内边距
@@ -301,6 +308,71 @@ class _PageViewItemWidgetState extends State<PageViewItemWidget> {
             );
           },
         ),
+      ),
+    );
+  }
+}
+
+class GlassCard2 extends StatelessWidget {
+  const GlassCard2({
+    super.key,
+    required this.child,
+    required this.radius,
+    this.lightColor,
+    this.sigma = 30,
+  });
+
+  final Radius radius;
+
+  final double sigma;
+
+  final Widget child;
+  final Color? lightColor;
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Stack(
+        children: [
+          Positioned(
+            top: 0,
+            bottom: 0,
+            left: 0,
+            right: 0,
+            child: Container(
+              height: double.infinity,
+              width: double.infinity,
+              clipBehavior: Clip.hardEdge,
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.black54, width: 1.5),
+                borderRadius: BorderRadius.all(Radius.elliptical(radius.x + 1, radius.y + 1)),
+              ),
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: sigma, sigmaY: sigma),
+                child: Container(),
+              ),
+            ),
+          ),
+          Container(
+            clipBehavior: Clip.hardEdge,
+            margin: EdgeInsets.all(1.3),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.all(radius),
+              gradient: LinearGradient(
+                colors: [Color(0x3C272424), Color(0x3C000000)],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+              // color: Color(0x0fffffff),
+              border: Border.all(color: Colors.white54, width: 0.2),
+              boxShadow: [
+                if (lightColor != null)
+                  BoxShadow(blurRadius: 30, offset: Offset(2, 2), color: lightColor!),
+              ],
+            ),
+            child: child,
+          ),
+        ],
       ),
     );
   }
