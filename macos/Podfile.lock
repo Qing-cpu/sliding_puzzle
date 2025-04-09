@@ -37,7 +37,7 @@ EXTERNAL SOURCES:
     :path: Flutter/ephemeral/.symlinks/plugins/window_size/macos
 
 SPEC CHECKSUMS:
-  flutter_soloud: 31076d165f7403cfde00ba397751b71e11fbd18e
+  flutter_soloud: 6eb07f3defb294e7ad625ffa2b547362c778e989
   FlutterMacOS: 8f6f14fa908a6fb3fba0cd85dbd81ec4b251fb24
   games_services: 8aa980ccea64d485465d20f770031c97b87cc5c1
   path_provider_foundation: 080d55be775b7414fd5a5ef3ac137b97b097e564

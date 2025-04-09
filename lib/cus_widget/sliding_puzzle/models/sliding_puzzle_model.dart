@@ -7,7 +7,7 @@ import 'package:sliding_puzzle/tools/levels/level_info.dart';
 import 'package:sliding_puzzle/tools/levels/levels.dart';
 
 import '../../../tools/sound/sound_tools.dart';
-
+typedef BuildSquareWidgetCallback = Widget Function({required int num, bool? isOk, bool? hasTweenColor});
 class SlidingPuzzleController {
   SlidingPuzzleController({
     this.levelIndex,
@@ -19,17 +19,28 @@ class SlidingPuzzleController {
   });
 
   double width;
-  final Widget Function(int) buildSquareWidget;
+  final BuildSquareWidgetCallback buildSquareWidget;
   final void Function()? onCompletedCallback;
   final VoidCallback onStart;
   int? size;
+
+  static int? _level;
+
+  static int get level {
+    final res = _level ?? 1;
+    _level = null;
+    return res;
+  }
+
+  static set level(int l) {
+    _level = l;
+  }
 
   Timer? _timer;
 
   ValueNotifier<int> s = ValueNotifier(3);
 
-  LevelInfo? get levelInfo =>
-      levelIndex == null ? null : Levels.levelInfos[levelIndex!];
+  LevelInfo? get levelInfo => levelIndex == null ? null : Levels.levelInfos[levelIndex!];
 
   List<String>? get imageAssetsList => levelInfo?.squareImageAssets;
 
@@ -49,10 +60,7 @@ class SlidingPuzzleController {
         _size,
         (i) => List<SquareModel>.generate(
           _size,
-          (j) => SquareModel(
-            squareImageAsset: imageAssetsList?[i * _size + j],
-            id: i * _size + j,
-          ),
+          (j) => SquareModel(squareImageAsset: imageAssetsList?[i * _size + j], id: i * _size + j),
         ),
       );
       // 设置 nullSquareId 末尾是空 Square
@@ -97,38 +105,36 @@ class SlidingPuzzleController {
   /// 成功返回 true, 失败返回 false。
   bool isCompleted() => squaresTwoDList.indexed.every(
     (gridListIndexed) => gridListIndexed.$2.indexed.every(
-      (gridIndexed) =>
-          gridIndexed.$2.id == gridListIndexed.$1 * _size + gridIndexed.$1,
+      (gridIndexed) => gridIndexed.$2.id == gridListIndexed.$1 * _size + gridIndexed.$1,
     ),
   );
 
   void upSquareTranslateOffset() {
-    for (var list in squaresTwoDList) {
-      for (var g in list) {
-        g.translateOffset = null;
-      }
-    }
-    bool isOk(int i) {
-      return i >= 0 && i < _size;
-    }
-
-    Offset getTranslateOffset(int dy, int dx) =>
-        Offset(dx * squareWidth, dy * squareWidth);
-
     final nullSquareIndex = getNullSquareIndex()!;
     final nY = nullSquareIndex.$1;
     final nX = nullSquareIndex.$2;
-    if (isOk(nY + 1)) {
-      squaresTwoDList[nY + 1][nX].translateOffset = getTranslateOffset(-1, 0);
-    }
-    if (isOk(nY - 1)) {
-      squaresTwoDList[nY - 1][nX].translateOffset = getTranslateOffset(1, 0);
-    }
-    if (isOk(nX + 1)) {
-      squaresTwoDList[nY][nX + 1].translateOffset = getTranslateOffset(0, -1);
-    }
-    if (isOk(nX - 1)) {
-      squaresTwoDList[nY][nX - 1].translateOffset = getTranslateOffset(0, 1);
+
+    for (var listIndexed in squaresTwoDList.indexed) {
+      for (var gIndexed in listIndexed.$2.indexed) {
+        final x = gIndexed.$1;
+        final y = listIndexed.$1;
+        if (x == nX) {
+          if (y > nY) {
+            // 在 NQ 下面, 可以上移动
+            gIndexed.$2.translateOffset = Offset(0, -squareWidth);
+          } else {
+            gIndexed.$2.translateOffset = Offset(0, squareWidth);
+          }
+        }
+        if (y == nY) {
+          if (x > nX) {
+            // 在 NQ 右面, 可以左移动
+            gIndexed.$2.translateOffset = Offset(-squareWidth, 0);
+          } else {
+            gIndexed.$2.translateOffset = Offset(squareWidth, 0);
+          }
+        }
+      }
     }
   }
 
@@ -194,7 +200,7 @@ class SlidingPuzzleController {
       return res;
     }
 
-    for (int i = 0; i < _size * _size * 10; i++) {
+    for (int i = 0; i < _size * _size * 10 * level; i++) {
       var newYX = random();
       var gridX = squaresTwoDList[newYX.$1][newYX.$2];
       squaresTwoDList[newYX.$1][newYX.$2] = squaresTwoDList[yx.$1][yx.$2];
@@ -222,7 +228,7 @@ class SlidingPuzzleController {
 
   void reSet() {
     if ((_squaresTwoDList?.length ?? 0) < _size * _size) {
-      _squaresTwoDList == null;
+      _squaresTwoDList = null;
     }
     shuffle();
     upSquareTranslateOffset();
@@ -238,13 +244,43 @@ class SlidingPuzzleController {
     reSet();
   }
 
-  void tapSquare((int, int)? tapSquareIndex) {
-    final nullSquareIndex = getNullSquareIndex();
+  void _switch(int x1, int y1, int x2, int y2) {
+    final list = squaresTwoDList;
+    final x = list[y1][x1];
+    list[y1][x1] = list[y2][x2];
+    list[y2][x2] = x;
+  }
 
-    final nullGrid = squaresTwoDList[nullSquareIndex!.$1][nullSquareIndex.$2];
-    squaresTwoDList[nullSquareIndex.$1][nullSquareIndex.$2] =
-        squaresTwoDList[tapSquareIndex!.$1][tapSquareIndex.$2];
-    squaresTwoDList[tapSquareIndex.$1][tapSquareIndex.$2] = nullGrid;
+  void updateSquare((int, int)? tapSquareIndex) {
+    final x = tapSquareIndex!.$2;
+    final y = tapSquareIndex.$1;
+
+    final nullSquareIndex = getNullSquareIndex();
+    final nx = nullSquareIndex!.$2;
+    final ny = nullSquareIndex.$1;
+
+    int dx = nx - x;
+    int dy = ny - y;
+
+    while (dx != 0) {
+      if (dx > 0) {
+        _switch(x + dx - 1, y, x + dx, y);
+        dx--;
+      } else {
+        _switch(x + dx + 1, y, x + dx, y);
+        dx++;
+      }
+    }
+
+    while (dy != 0) {
+      if (dy > 0) {
+        _switch(x, y + dy - 1, x, y + dy);
+        dy--;
+      } else {
+        _switch(x, y + dy + 1, x, y + dy);
+        dy++;
+      }
+    }
     upSquareTranslateOffset();
     upDataSquareIndexIsProper();
     if (isCompleted()) {
@@ -253,39 +289,86 @@ class SlidingPuzzleController {
     }
   }
 
-  void leftMove() {
-    final yx = getNullSquareIndex()!;
-    final ny = yx.$1;
-    final nx = yx.$2 + 1;
-    if (nx < _size) {
-      tapSquare((ny, nx));
+  //
+  // void leftMove() {
+  //   final yx = getNullSquareIndex()!;
+  //   final ny = yx.$1;
+  //   final nx = yx.$2 + 1;
+  //   if (nx < _size) {
+  //     updateSquare((ny, nx));
+  //   }
+  // }
+  //
+  // void rightMove() {
+  //   final yx = getNullSquareIndex()!;
+  //   final ny = yx.$1;
+  //   final nx = yx.$2 - 1;
+  //   if (nx >= 0) {
+  //     updateSquare((ny, nx));
+  //   }
+  // }
+  //
+  // void topMove() {
+  //   final yx = getNullSquareIndex()!;
+  //   final ny = yx.$1 + 1;
+  //   final nx = yx.$2;
+  //   if (ny < _size) {
+  //     updateSquare((ny, nx));
+  //   }
+  // }
+  //
+  // void bottomMove() {
+  //   final yx = getNullSquareIndex()!;
+  //   final ny = yx.$1 - 1;
+  //   final nx = yx.$2;
+  //   if (ny >= 0) {
+  //     updateSquare((ny, nx));
+  //   }
+  // }
+
+  int? _id;
+
+  void playSquareAni(int id) {
+    _id = id;
+    final si = getSquareIndex(id);
+    var y = si!.$1;
+    var x = si.$2;
+    final ni = getNullSquareIndex();
+    var ny = ni!.$1;
+    var nx = ni.$2;
+    var dx = nx - x;
+    var dy = ny - y;
+    while (dx != 0) {
+      squaresTwoDList[y][nx - dx].needMove = true;
+      if (dx > 0) {
+        dx--;
+      } else {
+        dx++;
+      }
+    }
+
+    while (dy != 0) {
+      squaresTwoDList[ny - dy][x].needMove = true;
+      if (dy > 0) {
+        dy--;
+      } else {
+        dy++;
+      }
     }
   }
 
-  void rightMove() {
-    final yx = getNullSquareIndex()!;
-    final ny = yx.$1;
-    final nx = yx.$2 - 1;
-    if (nx >= 0) {
-      tapSquare((ny, nx));
-    }
-  }
+  bool get needMove => squaresTwoDList.any((list) => list.any((s) => s.needMove == true));
 
-  void topMove() {
-    final yx = getNullSquareIndex()!;
-    final ny = yx.$1 + 1;
-    final nx = yx.$2;
-    if (ny < _size) {
-      tapSquare((ny, nx));
-    }
-  }
-
-  void bottomMove() {
-    final yx = getNullSquareIndex()!;
-    final ny = yx.$1 - 1;
-    final nx = yx.$2;
-    if (ny >= 0) {
-      tapSquare((ny, nx));
+  void endPlay() {
+    if (_id != null) {
+      for (var list in squaresTwoDList) {
+        for (var value in list) {
+          value.translateOffset = null;
+          value.needMove = null;
+        }
+      }
+      updateSquare(getSquareIndex(_id!));
+      _id = null;
     }
   }
 }

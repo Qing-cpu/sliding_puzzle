@@ -20,14 +20,14 @@ class GameOverPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final hour = DateTime.now().hour;
     return Scaffold(
-      backgroundColor: hour <19 ? Colors.white12 : Color(0x00000000),
+      backgroundColor:Color(0x00000000),
       body: Center(
         child: Container(
           padding: EdgeInsets.all(16),
           width: 500,
           child: GlassCard(
             colorT1: Color(0x244A0000),
-            colorB1: hour <19 ?  Colors.white12 : Color(0xB6000000),
+            colorB1:Color(0x52000000),
             radius: Radius.circular(16),
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -38,7 +38,7 @@ class GameOverPage extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 26,
                     fontWeight: FontWeight.bold,
-                    color: hour <19 ?  const Color(0xF4142163) : Colors.white38,
+                    color: Colors.white38,
                     shadows: [
                       Shadow(
                         color: Colors.white12,
@@ -53,7 +53,7 @@ class GameOverPage extends StatelessWidget {
                   '${AppLocalizations.of(context)!.score}：$newScore',
                   style: TextStyle(
                       fontWeight: FontWeight.bold,
-                      fontSize: 25, color: hour <19 ?  const Color(0xFA08A35D) : Colors.red),
+                      fontSize: 25, color:  Colors.red),
                 ),
                 const SizedBox(height: 8),
                 Text(

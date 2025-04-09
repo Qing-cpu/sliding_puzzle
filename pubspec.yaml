@@ -1,7 +1,7 @@
 name: sliding_puzzle
 description: "TapPinPin"
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
-version: 1.0.0+1
+version: 1.0.1
 
 environment:
   sdk: ^3.7.0
@@ -48,6 +48,7 @@ flutter:
     - assets/icon/ic_launcher.png
     - assets/images/tree1.webp
     - assets/images/bb1.webp
+    - assets/images/nb1.png
     - assets/images/bb2.webp
     - assets/images/b/b1.png
     - assets/images/game_name.webp

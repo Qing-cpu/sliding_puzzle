@@ -13,12 +13,10 @@ class LeaderboardWidget extends StatefulWidget {
 class _LeaderboardWidgetState extends State<LeaderboardWidget> {
   void _signIn() async {
     final result = await GameAuth.signIn();
-    print(result);
   }
 
   void _getPlayerScore() async {
     final result = await Player.getPlayerScore();
-    print(result);
   }
 
   void _getPlayerScoreObject() async {
@@ -28,29 +26,24 @@ class _LeaderboardWidgetState extends State<LeaderboardWidget> {
       scope: PlayerScope.global,
       timeScope: TimeScope.allTime,
     );
-    print(result);
   }
 
   void _showAccessPoint() async {
     final result = await Player.showAccessPoint(AccessPointLocation.topLeading);
-    print(result);
   }
 
   void _hideAccessPoint() async {
     final result = await Player.hideAccessPoint();
-    print(result);
   }
 
   void _resetAchievement() async {
     final result = await Achievements.resetAchievements();
-    print(result);
   }
 
   void _incrementAchievement() async {
     final result = await Achievements.increment(
       achievement: Achievement(androidID: 'android_id', steps: 50),
     );
-    print(result);
   }
 
   void _unlockAchievement() async {
@@ -61,12 +54,10 @@ class _LeaderboardWidgetState extends State<LeaderboardWidget> {
         percentComplete: 100,
       ),
     );
-    print(result);
   }
 
   void _loadAchievement() async {
     final result = await Achievements.loadAchievements();
-    print(result);
   }
 
   void _loadLeaderboardScores() async {
@@ -77,7 +68,6 @@ class _LeaderboardWidgetState extends State<LeaderboardWidget> {
       timeScope: TimeScope.allTime,
       maxResults: 10,
     );
-    print(result);
   }
 
   void _submitScore() async {
@@ -88,7 +78,6 @@ class _LeaderboardWidgetState extends State<LeaderboardWidget> {
         value: 125,
       ),
     );
-    print(result);
   }
 
   void _showLeaderboards() async {
@@ -96,23 +85,19 @@ class _LeaderboardWidgetState extends State<LeaderboardWidget> {
       androidLeaderboardID: '',
       iOSLeaderboardID: 'speed_model',
     );
-    print(result);
   }
 
   void _showAchievements() async {
     final result = await Achievements.showAchievements();
-    print(result);
   }
 
   void _getSavedGames() async {
     final result = await SaveGame.getSavedGames();
-    print(result);
   }
 
   void _saveGame() async {
     final data = jsonEncode(GameData(96, "sword").toJson());
     final result = await SaveGame.saveGame(data: data, name: "slot1");
-    print(result);
   }
 
   void _loadGame() async {
@@ -120,8 +105,6 @@ class _LeaderboardWidgetState extends State<LeaderboardWidget> {
     if (result != null) {
       final Map json = jsonDecode(result);
       final gameData = GameData.fromJson(json);
-      print("Player progress ${gameData.progress}");
-      print("Player weapon ${gameData.weapon}");
     }
   }
 

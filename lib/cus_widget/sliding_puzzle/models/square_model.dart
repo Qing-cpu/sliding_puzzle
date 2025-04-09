@@ -6,7 +6,7 @@ import 'package:sliding_puzzle/tools/sound/sound_tools.dart';
 class SquareModel {
   SquareModel({required this.squareImageAsset, required this.id});
 
-  static bool hasMoving = false;
+  bool? needMove;
 
   static int nullSquareId = -1;
 
@@ -18,7 +18,7 @@ class SquareModel {
 
   bool? _squareIndexIsProper;
 
-  // bool get squareIndexIsProper => _squareIndexIsProper ?? false;
+  bool get squareIndexIsProper => _squareIndexIsProper ?? false;
 
   set squareIndexIsProper(bool b) {
     if (_squareIndexIsProper == b) {

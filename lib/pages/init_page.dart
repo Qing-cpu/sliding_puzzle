@@ -23,8 +23,10 @@ class _InitPageState extends State<InitPage> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     Levels.init(context);
-    _initImage();
+    lodeImage;
   }
+
+  late final lodeImage = _initImage();
 
   _initImage() async {
     Future(() => GameAuth.signIn());
@@ -34,8 +36,7 @@ class _InitPageState extends State<InitPage> {
       index = Levels.levelInfos.indexWhere((i) => i.id == maxLevelId);
     }
     final levelInfo = Levels.levelInfos[index];
-    precacheImage(AssetImage('assets/images/bb1.webp'), context);
-    precacheImage(AssetImage('assets/images/bb2.webp'), context);
+    precacheImage(AssetImage('assets/images/nb1.png'), context);
     precacheImage(AssetImage('assets/images/game_name.webp'), context);
     precacheImage(AssetImage('assets/images/bg1.webp'), context);
     precacheImage(AssetImage('assets/images/bg2.webp'), context);
@@ -44,15 +45,12 @@ class _InitPageState extends State<InitPage> {
   }
 
   void _toStartPage() {
-    Navigator.of(
-      context,
-    ).pushReplacement(MaterialPageRoute(builder: (context) => StartPage()));
+    Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => StartPage()));
   }
 
   @override
   Widget build(BuildContext context) {
     return Material(
-      // type: MaterialType.transparency,
       child: Container(
         alignment: Alignment.center,
         width: double.infinity,

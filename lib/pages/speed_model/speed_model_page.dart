@@ -14,18 +14,14 @@ class SpeedModelPage extends StatefulWidget {
   State<SpeedModelPage> createState() => _SpeedModelPageState();
 }
 
-class _SpeedModelPageState extends State<SpeedModelPage>
-    with SingleTickerProviderStateMixin {
+class _SpeedModelPageState extends State<SpeedModelPage> with SingleTickerProviderStateMixin {
   int levelCount = 0;
   int? oldScore;
   int mil = 23000;
   OverlayEntry? overlayEntry;
   int score = 0;
 
-  late final _timeProgressController = TimeProgressController(
-    _onGameOver,
-    vsync: this,
-  );
+  late final _timeProgressController = TimeProgressController(_onGameOver, vsync: this);
   late final _slidingPuzzleController = SlidingPuzzleController(
     onStart: _timeProgressController.start,
     width: MediaQuery.of(context).size.width > 600 ? 600 : 288,
@@ -71,23 +67,14 @@ class _SpeedModelPageState extends State<SpeedModelPage>
     if (_timeProgressController.status == AnimationStatus.completed) {
       return;
     }
-    setState(
-      () =>
-          score +=
-              (1230 * ++levelCount * (1 - _timeProgressController.value))
-                  .toInt(),
-    );
+    setState(() => score += (1230 * ++levelCount * (1 - _timeProgressController.value)).toInt());
     _next();
   }
 
   void _onGameOver() {
     () async {
       await gs.Leaderboards.submitScore(
-        score: gs.Score(
-          androidLeaderboardID: '',
-          iOSLeaderboardID: 'speed_model',
-          value: score,
-        ),
+        score: gs.Score(androidLeaderboardID: '', iOSLeaderboardID: 'speed_model', value: score),
       );
     }();
     if (score > (oldScore ?? 0)) {
@@ -106,9 +93,7 @@ class _SpeedModelPageState extends State<SpeedModelPage>
               overlayEntry = null;
               Navigator.pushReplacement(
                 context,
-                MaterialPageRoute(
-                  builder: (BuildContext context) => SpeedModelPage(),
-                ),
+                MaterialPageRoute(builder: (BuildContext context) => SpeedModelPage()),
               );
             },
             exit: () {
@@ -121,33 +106,21 @@ class _SpeedModelPageState extends State<SpeedModelPage>
     overlay.insert(overlayEntry!);
   }
 
-  Widget buildNumWidget(int n) {
+  Widget buildNumWidget({required int num, bool? isOk, bool? hasTweenColor}) {
     return TweenAnimationBuilder(
       duration: Duration(seconds: 1),
-      tween: ColorTween(
-        begin: Color(0xffffffff),
-        end: _colors[levelCount % _colors.length],
-      ),
+      tween: ColorTween(begin: Color(0xffffffff), end: _colors[levelCount % _colors.length]),
       builder:
-          (BuildContext context, Color? value, Widget? child) => Container(
-            color: value,
-            alignment: Alignment.center,
-            child: child,
-          ),
+          (BuildContext context, Color? value, Widget? child) =>
+              Container(color: value, alignment: Alignment.center, child: child),
       child: LayoutBuilder(
         builder: (context, c) {
           final fontSize = c.maxWidth / 2;
           return Text(
-            '${n + 1}',
+            '$num',
             textAlign: TextAlign.center,
             style: TextStyle(
-              shadows: [
-                Shadow(
-                  color: Colors.black87,
-                  offset: Offset(1, 1),
-                  blurRadius: 12,
-                ),
-              ],
+              shadows: [Shadow(color: Colors.black87, offset: Offset(1, 1), blurRadius: 12)],
               fontWeight: FontWeight.bold,
               fontSize: fontSize,
               color: Colors.white,
@@ -158,60 +131,27 @@ class _SpeedModelPageState extends State<SpeedModelPage>
     );
   }
 
-  int get _hour => DateTime.now().hour;
-
-  // int get _hour => 1;
-
-  int get l {
-    if (_hour > 19) {
-      return 3;
-    } else if (_hour > 11) {
-      return 2;
-    } else {
-      return 1;
-    }
-  }
-
-  List<Color> get _colors =>
-      _hour < 19
-          ? [
-            Color(0x3D12B639),
-            Color(0x3D009513),
-            Color(0x3D008029),
-            Color(0x3D006A51),
-            Color(0x3D005A80),
-            Color(0x3DD69300),
-            Color(0x3DD67200),
-            Color(0x3DEC7513),
-            Color(0x3DFF0365),
-            Color(0x3DFF0365),
-            Color(0x3DBC0000),
-            Color(0x3D470068),
-            Color(0x3D27004C),
-            Color(0x3D6E6E6E),
-            Color(0x3D000000),
-          ]
-          : [
-            Color(0x3DFF0365),
-            Color(0x66672B00),
-            Color(0x1B00FFEE),
-            Color(0x3C00FFEA),
-            Color(0x52FF00C2),
-            Color(0x529900FF),
-            Color(0x3DFF004D),
-            Color(0x520800FF),
-            Color(0x3D005A80),
-            Color(0x3DD69300),
-            Color(0x3DD67200),
-            Color(0x3DEC7513),
-            Color(0x3DFF0365),
-            Color(0x3DFF0365),
-            Color(0x3DBC0000),
-            Color(0x3D470068),
-            Color(0x3D27004C),
-            Color(0x3D6E6E6E),
-            Color(0xFF000000),
-          ];
+  List<Color> get _colors => [
+    Color(0x3DFF0365),
+    Color(0x66672B00),
+    Color(0x1B00FFEE),
+    Color(0x3C00FFEA),
+    Color(0x52FF00C2),
+    Color(0x529900FF),
+    Color(0x3DFF004D),
+    Color(0x520800FF),
+    Color(0x3D005A80),
+    Color(0x3DD69300),
+    Color(0x3DD67200),
+    Color(0x3DEC7513),
+    Color(0x3DFF0365),
+    Color(0x3DFF0365),
+    Color(0x3DBC0000),
+    Color(0x3D470068),
+    Color(0x3D27004C),
+    Color(0x3D6E6E6E),
+    Color(0xFF000000),
+  ];
   late double fontSizeS = MediaQuery.of(context).size.width > 600 ? 84 : 42;
 
   @override
@@ -231,7 +171,7 @@ class _SpeedModelPageState extends State<SpeedModelPage>
               height: MediaQuery.of(context).size.height,
               decoration: BoxDecoration(
                 image: DecorationImage(
-                  image: AssetImage('assets/images/bg$l.webp'),
+                  image: AssetImage('assets/images/bg3.webp'),
                   fit: BoxFit.cover,
                 ),
               ),
@@ -251,12 +191,8 @@ class _SpeedModelPageState extends State<SpeedModelPage>
                   return AnimatedContainer(
                     height: height,
                     clipBehavior: Clip.hardEdge,
-                    padding: EdgeInsets.only(
-                      top: MediaQuery.paddingOf(context).top,
-                    ),
-                    decoration: BoxDecoration(
-                      color: _hour < 19 ? Colors.white70 : Colors.black12,
-                    ),
+                    padding: EdgeInsets.only(top: MediaQuery.paddingOf(context).top),
+                    decoration: BoxDecoration(color: Colors.black12),
                     duration: Duration(milliseconds: 320),
                     curve: Curves.easeInOut,
                     child: BackdropFilter(
@@ -319,10 +255,7 @@ class _SpeedModelPageState extends State<SpeedModelPage>
                           ),
                           TimeProgress(
                             key: Key('tp$levelCount'),
-                            width:
-                                MediaQuery.of(context).size.width > 600
-                                    ? 600
-                                    : 288,
+                            width: MediaQuery.of(context).size.width > 600 ? 600 : 288,
                             times: [Duration(milliseconds: mil)],
                             timeProgressController: _timeProgressController,
                           ),
@@ -335,8 +268,8 @@ class _SpeedModelPageState extends State<SpeedModelPage>
 
               Expanded(child: SizedBox(height: 1)),
               GlassCard(
-                colorB1: _hour < 19 ? Colors.white12 : Color(0x00000000),
-                colorT1: _hour < 19 ? Colors.white12 : Color(0x00000000),
+                colorB1: Color(0x00000000),
+                colorT1: Color(0x00000000),
                 radius: Radius.circular(16),
                 child: Container(
                   padding: EdgeInsets.all(12), // 内边距

@@ -38,11 +38,26 @@ class _GamePageState extends State<GamePage> with SingleTickerProviderStateMixin
 
   LevelInfo get _levelInfo => Levels.levelInfos[_levelInfoIndex];
 
-  Widget _buildSquareWidget(int index) => Image.asset(_levelInfo.squareImageAssets[index]);
+  Widget _buildSquareWidget({required int num, bool? isOk, bool? hasTweenColor}) =>
+      Image.asset(_levelInfo.squareImageAssets[num - 1]);
 
   @override
   void initState() {
     super.initState();
+  }
+
+  late final lodeNextLevelImage = () {
+    if (_levelInfoIndex + 1 < Levels.levelInfos.length) {
+      for (final asset in Levels.levelInfos[_levelInfoIndex + 1].squareImageAssets) {
+        precacheImage(AssetImage(asset), context);
+      }
+    }
+  }();
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    lodeNextLevelImage;
   }
 
   @override

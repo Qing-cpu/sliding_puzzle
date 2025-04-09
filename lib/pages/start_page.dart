@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
@@ -7,8 +6,10 @@ import 'package:sliding_puzzle/cus_widget/cus_widget.dart';
 import 'package:sliding_puzzle/cus_widget/float_widget.dart';
 import 'package:sliding_puzzle/cus_widget/float_widget_can_tap.dart';
 import 'package:sliding_puzzle/pages/copyright_notice_page.dart';
+import 'package:sliding_puzzle/pages/sky_ladder/sky_ladder_page.dart';
 import 'package:sliding_puzzle/pages/speed_model/speed_model_page.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:sliding_puzzle/tools/db_tools/db_tools.dart';
 import 'package:sliding_puzzle/tools/sound/sound_tools.dart';
 
 import '../cus_widget/glass_card.dart';
@@ -25,10 +26,13 @@ class _StartPageState extends State<StartPage> with WidgetsBindingObserver {
   bool is1 = true;
   ImageProvider? backgroundImage;
 
+  int? skyLadderCount;
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    DBTools.getSkyLadderCount().then((count) => skyLadderCount);
   }
 
   @override
@@ -53,23 +57,27 @@ class _StartPageState extends State<StartPage> with WidgetsBindingObserver {
     setState(() => is1 = !is1);
   }
 
-  void _startModel1(BuildContext context) {
-    Navigator.of(
-      context,
-    ).push(MaterialPageRoute(builder: (context) => LevelSelect()));
+  void _startModel1() {
+    Navigator.of(context).push(MaterialPageRoute(builder: (context) => LevelSelect()));
   }
 
-  void _startSpeedModel1(BuildContext context) {
-    Navigator.of(
-      context,
-    ).push(MaterialPageRoute(builder: (context) => SpeedModelPage()));
+  void _startSpeedModel1() {
+    Navigator.of(context).push(MaterialPageRoute(builder: (context) => SpeedModelPage()));
   }
 
-  void _leaderboardWidget(BuildContext context) {
-    Leaderboards.showLeaderboards(
-      androidLeaderboardID: '',
-      iOSLeaderboardID: 'speed_model',
+  void _leaderboardWidget() {
+    Leaderboards.showLeaderboards(androidLeaderboardID: '', iOSLeaderboardID: 'speed_model');
+  }
+
+  void _skyLadder() async {
+    await Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (BuildContext context) {
+          return SkyLadderPage(skyLadderCount: skyLadderCount ?? 0);
+        },
+      ),
     );
+    skyLadderCount = await DBTools.getSkyLadderCount();
   }
 
   void _openCopyrightNoticePage() {
@@ -107,7 +115,7 @@ class _StartPageState extends State<StartPage> with WidgetsBindingObserver {
             height: MediaQuery.of(context).size.height,
             decoration: BoxDecoration(
               image: DecorationImage(
-                image: AssetImage('assets/images/bb${_hour > 19 ? 1 : 2}.webp'),
+                image: AssetImage('assets/images/nb1.png'),
                 fit: BoxFit.cover,
               ),
             ),
@@ -138,7 +146,6 @@ class _StartPageState extends State<StartPage> with WidgetsBindingObserver {
                                   double size = 0;
                                   if (dSize.width > 650) {
                                     if (dSize.height > 860) {
-                                      print(dSize);
                                       size = 600;
                                     } else {
                                       size = 400;
@@ -156,16 +163,8 @@ class _StartPageState extends State<StartPage> with WidgetsBindingObserver {
                                   return TweenAnimationBuilder(
                                     tween: Tween(begin: size, end: size),
                                     duration: Duration(milliseconds: 320),
-                                    builder: (
-                                      BuildContext context,
-                                      double value,
-                                      Widget? child,
-                                    ) {
-                                      return SizedBox(
-                                        width: value,
-                                        height: value,
-                                        child: child,
-                                      );
+                                    builder: (BuildContext context, double value, Widget? child) {
+                                      return SizedBox(width: value, height: value, child: child);
                                     },
                                     child: SizedBox(
                                       width: size,
@@ -183,10 +182,7 @@ class _StartPageState extends State<StartPage> with WidgetsBindingObserver {
                         ),
                         Expanded(child: SizedBox()),
                         LayoutBuilder(
-                          builder: (
-                            BuildContext context,
-                            BoxConstraints constraints,
-                          ) {
+                          builder: (BuildContext context, BoxConstraints constraints) {
                             double fontSize = 62;
                             double width = 300;
                             double height = 100;
@@ -203,7 +199,7 @@ class _StartPageState extends State<StartPage> with WidgetsBindingObserver {
                                 width: width,
                                 child: AButton(
                                   fontColor: Colors.white,
-                                  sColor: Color(0x939CFFAC),
+                                  sColor: Color(0xEFFF3D3D),
                                   onTap: _start,
                                   width: width,
                                   fontSize: fontSize,
@@ -218,10 +214,7 @@ class _StartPageState extends State<StartPage> with WidgetsBindingObserver {
                       ],
                     )
                     : LayoutBuilder(
-                      builder: (
-                        BuildContext context,
-                        BoxConstraints constraints,
-                      ) {
+                      builder: (BuildContext context, BoxConstraints constraints) {
                         var sizedBoxH = animatedContainer(height: 50);
                         double fontSize = 50;
                         double width = 300;
@@ -247,29 +240,23 @@ class _StartPageState extends State<StartPage> with WidgetsBindingObserver {
                           children: [
                             BackdropFilter(
                               filter: ImageFilter.blur(sigmaX: 30, sigmaY: 30),
-                              child: _hour < 19 ? SizedBox() : Container(color: Colors.black38,),
+                              child: SizedBox(),
                             ),
                             ListView(
                               children: [
-                                SizedBox(
-                                  height: MediaQuery.of(context).padding.top,
-                                ),
+                                SizedBox(height: MediaQuery.of(context).padding.top),
                                 sizedBoxH,
                                 animatedContainer(
                                   width: width,
                                   height: height,
                                   child: FloatWidget(
                                     child: AButton(
-                                      onTap: () => _startModel1(context),
+                                      onTap: () => _startModel1(),
                                       width: width,
                                       fontSize: fontSize,
-                                      text:
-                                          AppLocalizations.of(context)!.normal,
+                                      text: AppLocalizations.of(context)!.image,
                                       radius: Radius.circular(32),
-                                      sColor:
-                                          _hour < 19
-                                              ? Colors.pink
-                                              : Color(0xE000FF15),
+                                      sColor: Colors.pink,
                                     ),
                                   ),
                                 ),
@@ -278,11 +265,8 @@ class _StartPageState extends State<StartPage> with WidgetsBindingObserver {
                                   width: width,
                                   height: height,
                                   child: AButton(
-                                    onTap: () => _startSpeedModel1(context),
-                                    sColor:
-                                        _hour < 19
-                                            ? Colors.orange
-                                            : Color(0xFFFFD23E),
+                                    onTap: () => _startSpeedModel1(),
+                                    sColor: Color(0xFAFFD609),
                                     width: width,
                                     fontSize: fontSize,
                                     fontColor: Colors.pinkAccent.shade200,
@@ -290,33 +274,37 @@ class _StartPageState extends State<StartPage> with WidgetsBindingObserver {
                                     radius: Radius.circular(32),
                                   ),
                                 ),
-                                SizedBox(height: fontSize),
+                                sizedBoxH,
                                 animatedContainer(
                                   width: width,
                                   height: height,
                                   child: AButton(
-                                    onTap: () => _leaderboardWidget(context),
-                                    sColor:
-                                        _hour < 19
-                                            ? Colors.orangeAccent
-                                            : Color(0xFFE8FF83),
+                                    onTap: () => _skyLadder(),
+                                    sColor:  Color(0xF50057F1),
                                     width: width,
-                                    fontSize: fontSize > 50 ? fontSize : 40,
-                                    fontColor:
-                                        _hour < 19
-                                            ? Colors.blueAccent.shade700
-                                            : Color(0xF41AFFF5),
-                                    text:
-                                        AppLocalizations.of(
-                                          context,
-                                        )!.leaderboard,
+                                    fontSize: fontSize,
+                                    fontColor: Color(0xFFFFCE08),
+                                    text: AppLocalizations.of(context)!.number,
                                     radius: Radius.circular(32),
                                   ),
                                 ),
                                 sizedBoxH,
-                                SizedBox(
-                                  height: MediaQuery.of(context).padding.bottom,
+                                animatedContainer(
+                                  width: width,
+                                  height: height,
+                                  child: AButton(
+                                    onTap: () => _leaderboardWidget(),
+                                    sColor: Color(0xFFFFFFFF),
+                                    width: width,
+                                    fontSize: fontSize ,
+                                    fontColor:
+                                        Color(0xFC00F462),
+                                    text: AppLocalizations.of(context)!.leaderboard,
+                                    radius: Radius.circular(32),
+                                  ),
                                 ),
+                                sizedBoxH,
+                                SizedBox(height: MediaQuery.of(context).padding.bottom),
                               ],
                             ),
                           ],
@@ -349,11 +337,7 @@ class _StartPageState extends State<StartPage> with WidgetsBindingObserver {
                               size: 41,
                               color: Color(0xE2FFF5B7),
                               shadows: [
-                                Shadow(
-                                  color: Colors.black26,
-                                  blurRadius: 6,
-                                  offset: Offset(1, 3),
-                                ),
+                                Shadow(color: Colors.black26, blurRadius: 6, offset: Offset(1, 3)),
                               ],
                             ),
                           ),
