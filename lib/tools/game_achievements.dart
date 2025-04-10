@@ -57,18 +57,18 @@ class GameAchievements {
 
   static void skyLeaderboardAchievements(int l) {
     Achievements.unlock(
-      achievement: Achievement(androidID: 'sky10', iOSID: 'sky10', percentComplete: l / 10),
+      achievement: Achievement(androidID: 'sky10', iOSID: 'sky10', percentComplete: l / 10 * 100),
     );
 
     Achievements.unlock(
-      achievement: Achievement(androidID: 'sky18', iOSID: 'sky18', percentComplete: l / 18),
+      achievement: Achievement(androidID: 'sky18', iOSID: 'sky18', percentComplete: l / 18 * 100),
     );
 
     Achievements.unlock(
-      achievement: Achievement(androidID: 'sky27', iOSID: 'sky27', percentComplete: l / 27),
+      achievement: Achievement(androidID: 'sky27', iOSID: 'sky27', percentComplete: l / 27 * 100),
     );
     Achievements.unlock(
-      achievement: Achievement(androidID: 'sky36', iOSID: 'sky36', percentComplete: l / 36),
+      achievement: Achievement(androidID: 'sky36', iOSID: 'sky36', percentComplete: l / 36 * 100),
     );
   }
 }
