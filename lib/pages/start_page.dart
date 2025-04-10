@@ -185,6 +185,7 @@ class _StartPageState extends State<StartPage> with WidgetsBindingObserver {
                               child: SizedBox(),
                             ),
                             ListView(
+                              physics: BouncingScrollPhysics(),
                               children: [
                                 SizedBox(height: MediaQuery.of(context).padding.top),
                                 sizedBoxH,
