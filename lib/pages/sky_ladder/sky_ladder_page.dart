@@ -2,10 +2,12 @@ import 'dart:math' as math;
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:games_services/games_services.dart' as gs;
 import 'package:sliding_puzzle/cus_widget/cus_widget.dart';
 import 'package:sliding_puzzle/tools/db_tools/db_tools.dart';
 
 import '../../cus_widget/glass_card.dart';
+import '../../tools/game_achievements.dart';
 
 class SkyLadderPage extends StatefulWidget {
   const SkyLadderPage({super.key, required this.skyLadderCount});
@@ -28,6 +30,16 @@ class _SkyLadderPageState extends State<SkyLadderPage> with SingleTickerProvider
   void _onCompletedCallback() {
     _controller.nextPage(duration: Duration(milliseconds: 500), curve: Curves.easeInOut);
     setState(() {
+      () async {
+        await gs.Leaderboards.submitScore(
+          score: gs.Score(
+            androidLeaderboardID: 'sky_ladder',
+            iOSLeaderboardID: 'sky_ladder',
+            value: skyLadderCount,
+          ),
+        );
+        GameAchievements.skyLeaderboardAchievements(skyLadderCount);
+      }();
       skyLadderCount++;
     });
     DBTools.setSkyLadderCount(skyLadderCount);
@@ -197,7 +209,7 @@ class _SkyLadderPageState extends State<SkyLadderPage> with SingleTickerProvider
                           itemCount: 100,
                           itemBuilder:
                               (BuildContext context, int index) => PageViewItemWidget(
-                                size: index ~/ 10 + 3,
+                                size: math.min(index ~/ 3 + 3, 16),
                                 onCompletedCallback: _onCompletedCallback,
                               ),
                         ),
@@ -254,7 +266,7 @@ class _PageViewItemWidgetState extends State<PageViewItemWidget> {
               gradient: LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
-                colors: [value ??Color(0x3D09ACAC),  Color(0x3D030D57)],
+                colors: [value ?? Color(0x3D09ACAC), Color(0x3D030D57)],
               ),
               borderRadius: BorderRadius.circular(8),
               border: Border.all(color: Colors.white12, width: 1.5),

@@ -7,6 +7,8 @@ import 'package:sliding_puzzle/cus_widget/glass_card.dart';
 import 'package:sliding_puzzle/tools/tools.dart';
 import 'package:sliding_puzzle/pages/speed_model/game_over_page.dart';
 
+import '../../tools/game_achievements.dart';
+
 class SpeedModelPage extends StatefulWidget {
   const SpeedModelPage({super.key});
 
@@ -74,8 +76,13 @@ class _SpeedModelPageState extends State<SpeedModelPage> with SingleTickerProvid
   void _onGameOver() {
     () async {
       await gs.Leaderboards.submitScore(
-        score: gs.Score(androidLeaderboardID: '', iOSLeaderboardID: 'speed_model', value: score),
+        score: gs.Score(
+          androidLeaderboardID: 'speed_model',
+          iOSLeaderboardID: 'speed_model',
+          value: score,
+        ),
       );
+      GameAchievements.speedLeaderboardAchievements(score.toDouble());
     }();
     if (score > (oldScore ?? 0)) {
       DBTools.setSpeedModelScore(score);

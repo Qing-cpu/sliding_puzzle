@@ -1,10 +1,10 @@
 import 'dart:ui';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:games_services/games_services.dart';
+import 'package:games_services/games_services.dart' as gs;
 import 'package:sliding_puzzle/cus_widget/cus_widget.dart';
 import 'package:sliding_puzzle/cus_widget/float_widget.dart';
-import 'package:sliding_puzzle/cus_widget/float_widget_can_tap.dart';
 import 'package:sliding_puzzle/pages/copyright_notice_page.dart';
 import 'package:sliding_puzzle/pages/sky_ladder/sky_ladder_page.dart';
 import 'package:sliding_puzzle/pages/speed_model/speed_model_page.dart';
@@ -66,14 +66,14 @@ class _StartPageState extends State<StartPage> with WidgetsBindingObserver {
   }
 
   void _leaderboardWidget() {
-    Leaderboards.showLeaderboards(androidLeaderboardID: '', iOSLeaderboardID: 'speed_model');
+    gs.Leaderboards.showLeaderboards();
   }
 
   void _skyLadder() async {
     await Navigator.of(context).push(
       MaterialPageRoute(
         builder: (BuildContext context) {
-          return SkyLadderPage(skyLadderCount: skyLadderCount ?? 0);
+          return SkyLadderPage(skyLadderCount: skyLadderCount ?? 1);
         },
       ),
     );
@@ -89,8 +89,6 @@ class _StartPageState extends State<StartPage> with WidgetsBindingObserver {
       ),
     );
   }
-
-  int get _hour => DateTime.now().hour;
 
   Widget animatedContainer({double? width, double? height, Widget? child}) {
     return Center(
@@ -114,10 +112,7 @@ class _StartPageState extends State<StartPage> with WidgetsBindingObserver {
             width: MediaQuery.of(context).size.width,
             height: MediaQuery.of(context).size.height,
             decoration: BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage('assets/images/nb1.png'),
-                fit: BoxFit.cover,
-              ),
+              image: DecorationImage(image: AssetImage('assets/images/nb1.png'), fit: BoxFit.cover),
             ),
           ),
           AnimatedSwitcher(
@@ -129,89 +124,36 @@ class _StartPageState extends State<StartPage> with WidgetsBindingObserver {
             },
             child:
                 is1
-                    ? Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        SizedBox(height: MediaQuery.of(context).padding.top),
-                        SizedBox(height: 16),
-                        FloatWidgetCanTap(
-                          child: Padding(
-                            padding: EdgeInsets.all(16),
-                            child: GlassCard(
-                              radius: Radius.circular(30),
-                              child: LayoutBuilder(
-                                builder: (BuildContext context, _) {
-                                  final dSize = MediaQuery.of(context).size;
-                                  double size = 0;
-                                  if (dSize.width > 650) {
-                                    if (dSize.height > 860) {
-                                      size = 600;
-                                    } else {
-                                      size = 400;
-                                    }
-                                  } else if (dSize.width > 450) {
-                                    size = 400;
-                                  } else if (dSize.width > 320) {
-                                    size = 300;
-                                  } else {
-                                    return Image.asset(
-                                      'assets/images/game_name.webp',
-                                      fit: BoxFit.cover,
-                                    );
-                                  }
-                                  return TweenAnimationBuilder(
-                                    tween: Tween(begin: size, end: size),
-                                    duration: Duration(milliseconds: 320),
-                                    builder: (BuildContext context, double value, Widget? child) {
-                                      return SizedBox(width: value, height: value, child: child);
-                                    },
-                                    child: SizedBox(
-                                      width: size,
-                                      height: size,
-                                      child: Image.asset(
-                                        'assets/images/game_name.webp',
-                                        fit: BoxFit.cover,
-                                      ),
-                                    ),
-                                  );
-                                },
+                    ? Center(
+                      child: LayoutBuilder(
+                        builder: (BuildContext context, BoxConstraints constraints) {
+                          double fontSize = 62;
+                          double width = 300;
+                          double height = 100;
+                          Radius radius = Radius.circular(32);
+                          if (constraints.maxWidth > 600) {
+                            fontSize = 80;
+                            width = 450;
+                            height = 140;
+                            radius = Radius.circular(40);
+                          }
+                          return Center(
+                            child: animatedContainer(
+                              height: height,
+                              width: width,
+                              child: AButton(
+                                fontColor: Colors.white,
+                                sColor: Color(0xEFFF3D3D),
+                                onTap: _start,
+                                width: width,
+                                fontSize: fontSize,
+                                text: AppLocalizations.of(context)!.start,
+                                radius: radius,
                               ),
                             ),
-                          ),
-                        ),
-                        Expanded(child: SizedBox()),
-                        LayoutBuilder(
-                          builder: (BuildContext context, BoxConstraints constraints) {
-                            double fontSize = 62;
-                            double width = 300;
-                            double height = 100;
-                            Radius radius = Radius.circular(32);
-                            if (constraints.maxWidth > 600) {
-                              fontSize = 80;
-                              width = 450;
-                              height = 140;
-                              radius = Radius.circular(40);
-                            }
-                            return Center(
-                              child: animatedContainer(
-                                height: height,
-                                width: width,
-                                child: AButton(
-                                  fontColor: Colors.white,
-                                  sColor: Color(0xEFFF3D3D),
-                                  onTap: _start,
-                                  width: width,
-                                  fontSize: fontSize,
-                                  text: AppLocalizations.of(context)!.start,
-                                  radius: radius,
-                                ),
-                              ),
-                            );
-                          },
-                        ),
-                        Expanded(child: SizedBox()),
-                      ],
+                          );
+                        },
+                      ),
                     )
                     : LayoutBuilder(
                       builder: (BuildContext context, BoxConstraints constraints) {
@@ -280,7 +222,7 @@ class _StartPageState extends State<StartPage> with WidgetsBindingObserver {
                                   height: height,
                                   child: AButton(
                                     onTap: () => _skyLadder(),
-                                    sColor:  Color(0xF50057F1),
+                                    sColor: Color(0xF50057F1),
                                     width: width,
                                     fontSize: fontSize,
                                     fontColor: Color(0xFFFFCE08),
@@ -296,9 +238,8 @@ class _StartPageState extends State<StartPage> with WidgetsBindingObserver {
                                     onTap: () => _leaderboardWidget(),
                                     sColor: Color(0xFFFFFFFF),
                                     width: width,
-                                    fontSize: fontSize ,
-                                    fontColor:
-                                        Color(0xFC00F462),
+                                    fontSize: fontSize,
+                                    fontColor: Color(0xFC00F462),
                                     text: AppLocalizations.of(context)!.leaderboard,
                                     radius: Radius.circular(32),
                                   ),
