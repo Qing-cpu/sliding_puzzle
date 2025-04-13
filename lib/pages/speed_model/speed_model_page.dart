@@ -77,7 +77,7 @@ class _SpeedModelPageState extends State<SpeedModelPage> with SingleTickerProvid
     () async {
       await gs.Leaderboards.submitScore(
         score: gs.Score(
-          androidLeaderboardID: 'speed_model',
+          androidLeaderboardID: 'CgkI6bD4m_odEAIQAA',
           iOSLeaderboardID: 'speed_model',
           value: score,
         ),

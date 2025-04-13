@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:ui';
 
 import 'package:flutter/foundation.dart';
@@ -64,9 +65,17 @@ class _StartPageState extends State<StartPage> with WidgetsBindingObserver {
   void _startSpeedModel1() {
     Navigator.of(context).push(MaterialPageRoute(builder: (context) => SpeedModelPage()));
   }
-
+  Future<bool> isSignedIn() async {
+    return await gs.GamesServices.isSignedIn;
+  }
   void _leaderboardWidget() {
-    gs.Leaderboards.showLeaderboards();
+    if(Platform.isAndroid){
+      // 检查是否已登录
+      isSignedIn().then(print);
+      gs.Leaderboards.showLeaderboards();
+    }else{
+      gs.Leaderboards.showLeaderboards();
+    }
   }
 
   void _skyLadder() async {

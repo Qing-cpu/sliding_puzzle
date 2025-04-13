@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.qingcoo.games.sliding_puzzle.sliding_puzzle"
+    namespace = "com.zhangqing.games.slidingpuzzle"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = "27.0.12077973"
 
@@ -28,13 +28,29 @@ android {
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
+        versionCode = 5
     }
+
+    signingConfigs {
+        create("release") {
+            storeFile = file(findProperty("MYAPP_RELEASE_STORE_FILE") ?: "keystore/zhangqing")
+            storePassword = findProperty("MYAPP_RELEASE_STORE_PASSWORD") ?: ""
+            keyAlias = findProperty("MYAPP_RELEASE_KEY_ALIAS") ?: ""
+            keyPassword = findProperty("MYAPP_RELEASE_KEY_PASSWORD") ?: ""
+
+        }
+    }
+
 
     buildTypes {
         release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig = signingConfigs.getByName("debug")
+            signingConfig = signingConfigs.getByName("release")
+            isMinifyEnabled = true // Enable code shrinking for release builds
+            isShrinkResources = true // Also shrink resources
+            proguardFiles(getDefaultProguardFile("proguard-defaults.txt"), "proguard-rules.pro")
+        }
+        debug {
+            signingConfig = signingConfigs.getByName("release")
         }
     }
 }

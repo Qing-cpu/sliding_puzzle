@@ -33,7 +33,7 @@ class _SkyLadderPageState extends State<SkyLadderPage> with SingleTickerProvider
       () async {
         await gs.Leaderboards.submitScore(
           score: gs.Score(
-            androidLeaderboardID: 'sky_ladder',
+            androidLeaderboardID: 'CgkI6bD4m_odEAIQAQ',
             iOSLeaderboardID: 'sky_ladder',
             value: skyLadderCount,
           ),

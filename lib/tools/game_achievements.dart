@@ -4,7 +4,7 @@ class GameAchievements {
   static void gameCompleted(int cl) {
     Achievements.unlock(
       achievement: Achievement(
-        androidID: 'game_completed',
+        androidID: 'CgkI6bD4m_odEAIQAg',
         iOSID: 'game_completed',
         percentComplete: cl / 11 * 100,
       ),
@@ -14,7 +14,7 @@ class GameAchievements {
   static void allLevels3Starred(int startCount) {
     Achievements.unlock(
       achievement: Achievement(
-        androidID: 'all_levels_3_starred',
+        androidID: 'CgkI6bD4m_odEAIQAw',
         iOSID: 'all_levels_3_starred',
         percentComplete: startCount / 33 * 100,
       ),
@@ -24,7 +24,7 @@ class GameAchievements {
   static void speedLeaderboardAchievements(double score) {
     Achievements.unlock(
       achievement: Achievement(
-        androidID: 'score_10000',
+        androidID: 'CgkI6bD4m_odEAIQBA',
         iOSID: 'score_10000',
         percentComplete: score / 100,
       ),
@@ -32,7 +32,7 @@ class GameAchievements {
 
     Achievements.unlock(
       achievement: Achievement(
-        androidID: 'score_3w',
+        androidID: 'CgkI6bD4m_odEAIQBQ',
         iOSID: 'score_3w',
         percentComplete: score / 300,
       ),
@@ -40,7 +40,7 @@ class GameAchievements {
 
     Achievements.unlock(
       achievement: Achievement(
-        androidID: 'score_6w',
+        androidID: 'CgkI6bD4m_odEAIQBg',
         iOSID: 'score_6w',
         percentComplete: score / 600,
       ),
@@ -48,7 +48,7 @@ class GameAchievements {
 
     Achievements.unlock(
       achievement: Achievement(
-        androidID: 'score_10w',
+        androidID: 'CgkI6bD4m_odEAIQBw',
         iOSID: 'score_10w',
         percentComplete: score / 1000,
       ),
@@ -57,18 +57,18 @@ class GameAchievements {
 
   static void skyLeaderboardAchievements(int l) {
     Achievements.unlock(
-      achievement: Achievement(androidID: 'sky10', iOSID: 'sky10', percentComplete: l / 10 * 100),
+      achievement: Achievement(androidID: 'CgkI6bD4m_odEAIQCA', iOSID: 'sky10', percentComplete: l / 10 * 100),
     );
 
     Achievements.unlock(
-      achievement: Achievement(androidID: 'sky18', iOSID: 'sky18', percentComplete: l / 18 * 100),
+      achievement: Achievement(androidID: 'CgkI6bD4m_odEAIQCQ', iOSID: 'sky18', percentComplete: l / 18 * 100),
     );
 
     Achievements.unlock(
-      achievement: Achievement(androidID: 'sky27', iOSID: 'sky27', percentComplete: l / 27 * 100),
+      achievement: Achievement(androidID: 'CgkI6bD4m_odEAIQCg', iOSID: 'sky27', percentComplete: l / 27 * 100),
     );
     Achievements.unlock(
-      achievement: Achievement(androidID: 'sky36', iOSID: 'sky36', percentComplete: l / 36 * 100),
+      achievement: Achievement(androidID: 'CgkI6bD4m_odEAIQCw', iOSID: 'sky36', percentComplete: l / 36 * 100),
     );
   }
 }

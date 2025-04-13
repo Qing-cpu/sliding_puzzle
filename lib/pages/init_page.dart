@@ -28,8 +28,21 @@ class _InitPageState extends State<InitPage> {
 
   late final lodeImage = _initImage();
 
+  // 尝试登录 (可以在游戏启动时调用)
+  Future<void> signIn() async {
+    try {
+      await GamesServices.signIn();
+      // 登录成功，可以解锁成就、提交分数等
+    } catch (e) {
+      print('Error signing in: $e');
+      // 处理登录失败或用户取消
+    }
+  }
+
+
+
   _initImage() async {
-    Future(() => GameAuth.signIn());
+    signIn();
     final maxLevelId = DBTools.maxLevelId;
     int index = 0;
     if (maxLevelId != -1) {

@@ -1,4 +1,4 @@
-package com.qingcoo.games.sliding_puzzle.sliding_puzzle
+package com.zhangqing.games.slidingpuzzle
 
 import io.flutter.embedding.android.FlutterActivity
 
