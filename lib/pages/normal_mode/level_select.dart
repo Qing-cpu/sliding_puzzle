@@ -7,7 +7,7 @@ import 'package:sliding_puzzle/tools/tools.dart';
 import 'package:sliding_puzzle/cus_widget/cus_widget.dart';
 import 'level_list_page.dart';
 import 'game_page.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import '/l10n/app_localizations.dart';
 
 class LevelSelect extends StatefulWidget {
   const LevelSelect({super.key});

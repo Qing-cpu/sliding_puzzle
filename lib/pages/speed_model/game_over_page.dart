@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sliding_puzzle/cus_widget/glass_card.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import '/l10n/app_localizations.dart';
 
 class GameOverPage extends StatelessWidget {
   const GameOverPage({
@@ -18,7 +18,6 @@ class GameOverPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final hour = DateTime.now().hour;
     return Scaffold(
       backgroundColor:Color(0x00000000),
       body: Center(

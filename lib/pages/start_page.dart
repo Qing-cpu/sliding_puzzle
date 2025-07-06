@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'dart:ui';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:games_services/games_services.dart' as gs;
 import 'package:sliding_puzzle/cus_widget/cus_widget.dart';
@@ -9,7 +8,7 @@ import 'package:sliding_puzzle/cus_widget/float_widget.dart';
 import 'package:sliding_puzzle/pages/copyright_notice_page.dart';
 import 'package:sliding_puzzle/pages/sky_ladder/sky_ladder_page.dart';
 import 'package:sliding_puzzle/pages/speed_model/speed_model_page.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import '/l10n/app_localizations.dart';
 import 'package:sliding_puzzle/tools/db_tools/db_tools.dart';
 import 'package:sliding_puzzle/tools/sound/sound_tools.dart';
 
@@ -33,7 +32,7 @@ class _StartPageState extends State<StartPage> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    DBTools.getSkyLadderCount().then((count) => skyLadderCount);
+    DBTools.getSkyLadderCount().then((count) => skyLadderCount=count);
   }
 
   @override
@@ -201,15 +200,14 @@ class _StartPageState extends State<StartPage> with WidgetsBindingObserver {
                                 animatedContainer(
                                   width: width,
                                   height: height,
-                                  child: FloatWidget(
-                                    child: AButton(
-                                      onTap: () => _startModel1(),
-                                      width: width,
-                                      fontSize: fontSize,
-                                      text: AppLocalizations.of(context)!.image,
-                                      radius: Radius.circular(32),
-                                      sColor: Colors.pink,
-                                    ),
+                                  child: AButton(
+                                    onTap: () => _skyLadder(),
+                                    sColor: Color(0xF50057F1),
+                                    width: width,
+                                    fontSize: fontSize,
+                                    fontColor: Color(0xFFFFCE08),
+                                    text: AppLocalizations.of(context)!.number,
+                                    radius: Radius.circular(32),
                                   ),
                                 ),
                                 sizedBoxH,
@@ -230,14 +228,15 @@ class _StartPageState extends State<StartPage> with WidgetsBindingObserver {
                                 animatedContainer(
                                   width: width,
                                   height: height,
-                                  child: AButton(
-                                    onTap: () => _skyLadder(),
-                                    sColor: Color(0xF50057F1),
-                                    width: width,
-                                    fontSize: fontSize,
-                                    fontColor: Color(0xFFFFCE08),
-                                    text: AppLocalizations.of(context)!.number,
-                                    radius: Radius.circular(32),
+                                  child: FloatWidget(
+                                    child: AButton(
+                                      onTap: () => _startModel1(),
+                                      width: width,
+                                      fontSize: fontSize,
+                                      text: AppLocalizations.of(context)!.image,
+                                      radius: Radius.circular(32),
+                                      sColor: Colors.pink,
+                                    ),
                                   ),
                                 ),
                                 sizedBoxH,

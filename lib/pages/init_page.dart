@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:games_services/games_services.dart';
 import 'package:sliding_puzzle/cus_widget/glass_card.dart';
@@ -34,7 +35,9 @@ class _InitPageState extends State<InitPage> {
       await GamesServices.signIn();
       // 登录成功，可以解锁成就、提交分数等
     } catch (e) {
-      print('Error signing in: $e');
+      if (kDebugMode) {
+        print('Error signing in: $e');
+      }
       // 处理登录失败或用户取消
     }
   }

@@ -6,7 +6,6 @@ import 'package:games_services/games_services.dart' as gs;
 import 'package:sliding_puzzle/cus_widget/cus_widget.dart';
 import 'package:sliding_puzzle/tools/db_tools/db_tools.dart';
 
-import '../../cus_widget/glass_card.dart';
 import '../../tools/game_achievements.dart';
 
 class SkyLadderPage extends StatefulWidget {
@@ -209,7 +208,7 @@ class _SkyLadderPageState extends State<SkyLadderPage> with SingleTickerProvider
                           itemCount: 100,
                           itemBuilder:
                               (BuildContext context, int index) => PageViewItemWidget(
-                                size: math.min(index ~/ 3 + 3, 16),
+                                size: math.min(index + 3, 16),
                                 onCompletedCallback: _onCompletedCallback,
                               ),
                         ),

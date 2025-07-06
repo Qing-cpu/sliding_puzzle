@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'level_info.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import '/l10n/app_localizations.dart';
 
 const d1 = [Duration(minutes: 3), Duration(minutes: 2), Duration(minutes: 1)];
 const d2 = [Duration(minutes: 2), Duration(minutes: 1), Duration(seconds: 50)];

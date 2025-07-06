@@ -2,9 +2,10 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:sliding_puzzle/pages/init_page.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import '/l10n/app_localizations.dart';
 import 'package:sliding_puzzle/tools/tools.dart';
 import 'package:window_size/window_size.dart';
+
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
