@@ -7,7 +7,9 @@ import 'package:sliding_puzzle/tools/levels/level_info.dart';
 import 'package:sliding_puzzle/tools/levels/levels.dart';
 
 import '../../../tools/sound/sound_tools.dart';
+
 typedef BuildSquareWidgetCallback = Widget Function({required int num, bool? isOk, bool? hasTweenColor});
+
 class SlidingPuzzleController {
   SlidingPuzzleController({
     this.levelIndex,
@@ -25,6 +27,8 @@ class SlidingPuzzleController {
   int? size;
 
   static int? _level;
+
+  ValueNotifier<bool> needFind = ValueNotifier(false);
 
   static int get level {
     final res = _level ?? 1;
@@ -58,10 +62,7 @@ class SlidingPuzzleController {
     if (_squaresTwoDList == null) {
       _squaresTwoDList = List<List<SquareModel>>.generate(
         _size,
-        (i) => List<SquareModel>.generate(
-          _size,
-          (j) => SquareModel(squareImageAsset: imageAssetsList?[i * _size + j], id: i * _size + j),
-        ),
+        (i) => List<SquareModel>.generate(_size, (j) => SquareModel(squareImageAsset: imageAssetsList?[i * _size + j], id: i * _size + j)),
       );
       // 设置 nullSquareId 末尾是空 Square
       SquareModel.nullSquareId = squaresTwoDList.last.last.id;
@@ -104,9 +105,8 @@ class SlidingPuzzleController {
   /// 有不正确id 直接判定失败。
   /// 成功返回 true, 失败返回 false。
   bool isCompleted() => squaresTwoDList.indexed.every(
-    (gridListIndexed) => gridListIndexed.$2.indexed.every(
-      (gridIndexed) => gridIndexed.$2.id == gridListIndexed.$1 * _size + gridIndexed.$1,
-    ),
+    (gridListIndexed) =>
+        gridListIndexed.$2.indexed.every((gridIndexed) => gridIndexed.$2.id == gridListIndexed.$1 * _size + gridIndexed.$1),
   );
 
   void upSquareTranslateOffset() {
@@ -211,11 +211,11 @@ class SlidingPuzzleController {
     upDataSquareIndexIsProper();
   }
 
-  /// 检查所有 Square 位置是否正确，并保存结果
+  /// 更新 Square 位置ID
   void upDataSquareIndexIsProper() {
     for (var list in squaresTwoDList.indexed) {
       for (var qI in list.$2.indexed) {
-        qI.$2.squareIndexIsProper = qI.$2.id == list.$1 * _size + qI.$1;
+        qI.$2.locationID = list.$1 * _size + qI.$1;
       }
     }
   }
@@ -327,6 +327,20 @@ class SlidingPuzzleController {
   // }
 
   int? _id;
+
+  SquareModel getFind(int id) {
+    var si = getSquareIndex(id);
+    var y = si!.$1;
+    var x = si.$2;
+    final needShowID = squaresTwoDList[y][x].locationID;
+
+    si = getSquareIndex(needShowID);
+    y = si!.$1;
+    x = si.$2;
+
+    // 要找的方块
+    return squaresTwoDList[y][x];
+  }
 
   void playSquareAni(int id) {
     _id = id;

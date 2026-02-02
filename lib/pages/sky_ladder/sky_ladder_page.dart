@@ -21,21 +21,16 @@ class _SkyLadderPageState extends State<SkyLadderPage> with SingleTickerProvider
   late int skyLadderCount = widget.skyLadderCount;
   late final PageController _controller = PageController(initialPage: skyLadderCount - 1);
 
-  late final AnimationController _animationController = AnimationController(
-    vsync: this,
-    duration: Duration(seconds: 50),
-  );
+  SlidingPuzzleController? _slidingPuzzleController;
+
+  late final AnimationController _animationController = AnimationController(vsync: this, duration: Duration(seconds: 50));
 
   void _onCompletedCallback() {
     _controller.nextPage(duration: Duration(milliseconds: 500), curve: Curves.easeInOut);
     setState(() {
       () async {
         await gs.Leaderboards.submitScore(
-          score: gs.Score(
-            androidLeaderboardID: 'CgkI6bD4m_odEAIQAQ',
-            iOSLeaderboardID: 'sky_ladder',
-            value: skyLadderCount,
-          ),
+          score: gs.Score(androidLeaderboardID: 'CgkI6bD4m_odEAIQAQ', iOSLeaderboardID: 'sky_ladder', value: skyLadderCount),
         );
         GameAchievements.skyLeaderboardAchievements(skyLadderCount);
       }();
@@ -102,135 +97,124 @@ class _SkyLadderPageState extends State<SkyLadderPage> with SingleTickerProvider
   );
 
   Widget bgC2(double r) => AnimatedBuilder(
-    builder: (BuildContext context, Widget? child) {
-      return AnimatedContainer(
-        width: r,
-        height: r,
-        curve: Curves.easeIn,
-        duration: Duration(milliseconds: 2000),
-        decoration: BoxDecoration(
-          gradient: RadialGradient(
-            colors: [
-              _colors2[animate.value.toInt() % _colors.length],
-              _colors2[(animate.value.toInt() + 1) % _colors.length],
-              _colors2[(animate.value.toInt() + 2) % _colors.length],
-              _colors2[(animate.value.toInt() + 3) % _colors.length],
-              Color(0x00000000),
-            ],
+    builder:
+        (BuildContext context, Widget? child) => AnimatedContainer(
+          width: r,
+          height: r,
+          curve: Curves.easeIn,
+          duration: Duration(milliseconds: 2000),
+          decoration: BoxDecoration(
+            gradient: RadialGradient(
+              colors: [
+                _colors2[animate.value.toInt() % _colors.length],
+                _colors2[(animate.value.toInt() + 1) % _colors.length],
+                _colors2[(animate.value.toInt() + 2) % _colors.length],
+                _colors2[(animate.value.toInt() + 3) % _colors.length],
+                Color(0x00000000),
+              ],
+            ),
           ),
+          child: child,
         ),
-        child: child,
-      );
-    },
     animation: _animationController,
   );
 
-  double diagonal(double width, double height) {
-    return math.sqrt(width * width + height * height);
-  }
+  double diagonal(double width, double height) => math.sqrt(width * width + height * height);
 
   @override
-  Widget build(BuildContext context) {
-    return Material(
-      type: MaterialType.transparency,
-      child: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [Color(0xe80d003a), Color(0xff000000), Color(0xFF240039)],
-          ),
-        ),
-        child: Builder(
-          builder: (context) {
-            final size = MediaQuery.of(context).size;
-            final x = size.width;
-            final y = size.height;
-            final double r = diagonal(x, y);
-            return Stack(
-              children: [
-                Positioned(
-                  top: -y / 4,
-                  left: -x / 4,
-                  child: Container(alignment: Alignment.center, child: bgC2(r * 0.5)),
-                ),
-                Positioned(
-                  bottom: -y / 2,
-                  right: -x / 2,
-                  child: Container(alignment: Alignment.center, child: bgC1(r)),
-                ),
-                SafeArea(
-                  child: Column(
-                    children: [
-                      Container(
-                        alignment: Alignment.center,
-                        width: double.infinity,
-                        height: 100,
-                        color: Colors.black38,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
-                            IconButton(
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                              },
-                              icon: Icon(Icons.arrow_back),
-                              color: Colors.white38,
-                            ),
-                            Score(
-                              score: skyLadderCount,
-                              textStyle: TextStyle(
-                                color: Color(0xCBFFFFFF),
-                                fontSize: 60,
-                                shadows: [
-                                  Shadow(
-                                    color: Colors.greenAccent,
-                                    blurRadius: 40,
-                                    offset: Offset(1, 1),
-                                  ),
-                                ],
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            Opacity(
-                              opacity: 0,
-                              child: IconButton(onPressed: null, icon: Icon(Icons.arrow_back)),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Expanded(
-                        child: PageView.builder(
-                          scrollDirection: Axis.vertical,
-                          reverse: true,
-                          physics: NeverScrollableScrollPhysics(),
-                          controller: _controller,
-                          itemCount: 100,
-                          itemBuilder:
-                              (BuildContext context, int index) => PageViewItemWidget(
-                                size: math.min(index + 3, 16),
-                                onCompletedCallback: _onCompletedCallback,
-                              ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            );
-          },
+  Widget build(BuildContext context) => Material(
+    type: MaterialType.transparency,
+    child: Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [Color(0xe80d003a), Color(0xff000000), Color(0xFF240039)],
         ),
       ),
-    );
-  }
+      child: Builder(
+        builder: (context) {
+          final size = MediaQuery.of(context).size;
+          final x = size.width;
+          final y = size.height;
+          final double r = diagonal(x, y);
+          return Stack(
+            children: [
+              Positioned(top: -y / 4, left: -x / 4, child: Container(alignment: Alignment.center, child: bgC2(r * 0.5))),
+              Positioned(bottom: -y / 2, right: -x / 2, child: Container(alignment: Alignment.center, child: bgC1(r))),
+              SafeArea(
+                child: Column(
+                  children: [
+                    Container(
+                      alignment: Alignment.center,
+                      width: double.infinity,
+                      height: 100,
+                      color: Colors.black38,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          IconButton(onPressed: () => Navigator.of(context).pop(), icon: Icon(Icons.arrow_back), color: Colors.white38),
+                          Score(
+                            score: skyLadderCount,
+                            textStyle: TextStyle(
+                              color: Color(0xCBFFFFFF),
+                              fontSize: 60,
+                              shadows: [Shadow(color: Colors.greenAccent, blurRadius: 40, offset: Offset(1, 1))],
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+
+                          AnimatedSwitcher(
+                            duration: const Duration(milliseconds: 500),
+                            child:
+                                _slidingPuzzleController == null
+                                    ? Opacity(opacity: 0, child: IconButton(onPressed: null, icon: Icon(Icons.eighteen_mp)))
+                                    : ValueListenableBuilder(
+                                      valueListenable: _slidingPuzzleController!.needFind,
+                                      builder:
+                                          (_, bool value, _) => IconButton(
+                                            onPressed:
+                                                () => _slidingPuzzleController!.needFind.value = !_slidingPuzzleController!.needFind.value,
+                                            icon: Icon(Icons.remove_red_eye_sharp, color: value ? Colors.amber : Colors.white),
+                                          ),
+                                    ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Expanded(
+                      child: PageView.builder(
+                        scrollDirection: Axis.vertical,
+                        reverse: true,
+                        physics: NeverScrollableScrollPhysics(),
+                        controller: _controller,
+                        itemCount: 100,
+                        itemBuilder:
+                            (BuildContext context, int index) => PageViewItemWidget(
+                              size: math.min(index + 3, 16),
+                              onCompletedCallback: _onCompletedCallback,
+                              setSlidingController: (controller) => setState(() => _slidingPuzzleController = controller),
+                            ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          );
+        },
+      ),
+    ),
+  );
 }
 
 class PageViewItemWidget extends StatefulWidget {
-  const PageViewItemWidget({super.key, required this.size, required this.onCompletedCallback});
+  const PageViewItemWidget({super.key, required this.size, required this.onCompletedCallback, required this.setSlidingController});
 
   final int size;
 
   final VoidCallback onCompletedCallback;
+  final void Function(SlidingPuzzleController controller) setSlidingController;
 
   @override
   State<PageViewItemWidget> createState() => _PageViewItemWidgetState();
@@ -246,6 +230,14 @@ class _PageViewItemWidgetState extends State<PageViewItemWidget> {
   )..s.value = 3;
 
   @override
+  void initState() {
+    super.initState();
+    Future.delayed(const Duration(seconds: 1)).then((_) {
+      widget.setSlidingController(_slidingPuzzleController);
+    });
+  }
+
+  @override
   void dispose() {
     _slidingPuzzleController.dispose();
     super.dispose(); //
@@ -255,7 +247,7 @@ class _PageViewItemWidgetState extends State<PageViewItemWidget> {
     return TweenAnimationBuilder(
       duration: Duration(milliseconds: 300),
       curve: Curves.easeInOut,
-      tween: ColorTween(begin: Color(0x3D030D57), end: Color(0x3D09ACAC)),
+      tween: ColorTween(begin: Color(0xFD5FB9ED), end: Color(0x3D09ACAC)),
       builder:
           (BuildContext context, Color? value, Widget? child) => Container(
             alignment: Alignment.center,
@@ -279,13 +271,7 @@ class _PageViewItemWidgetState extends State<PageViewItemWidget> {
             '$num',
             textAlign: TextAlign.center,
             style: TextStyle(
-              shadows: [
-                Shadow(
-                  color: isOk ?? false ? Color(0xF5FF4470) : Colors.black87,
-                  offset: Offset(1, 1),
-                  blurRadius: 16,
-                ),
-              ],
+              shadows: [Shadow(color: isOk ?? false ? Color(0xF5FF4470) : Colors.black87, offset: Offset(1, 1), blurRadius: 16)],
               fontWeight: FontWeight.bold,
               fontSize: fontSize,
               color: Colors.white,
@@ -312,11 +298,7 @@ class _PageViewItemWidgetState extends State<PageViewItemWidget> {
             if (dw > 600 && dy > 900) {
               size = 550;
             }
-            return SlidingPuzzle(
-              width: size,
-              height: size,
-              slidingPuzzleController: _slidingPuzzleController,
-            );
+            return SlidingPuzzle(width: size, height: size, slidingPuzzleController: _slidingPuzzleController);
           },
         ),
       ),
@@ -325,13 +307,7 @@ class _PageViewItemWidgetState extends State<PageViewItemWidget> {
 }
 
 class GlassCard2 extends StatelessWidget {
-  const GlassCard2({
-    super.key,
-    required this.child,
-    required this.radius,
-    this.lightColor,
-    this.sigma = 30,
-  });
+  const GlassCard2({super.key, required this.child, required this.radius, this.lightColor, this.sigma = 30});
 
   final Radius radius;
 
@@ -358,10 +334,7 @@ class GlassCard2 extends StatelessWidget {
                 border: Border.all(color: Colors.black54, width: 1.5),
                 borderRadius: BorderRadius.all(Radius.elliptical(radius.x + 1, radius.y + 1)),
               ),
-              child: BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: sigma, sigmaY: sigma),
-                child: Container(),
-              ),
+              child: BackdropFilter(filter: ImageFilter.blur(sigmaX: sigma, sigmaY: sigma), child: Container()),
             ),
           ),
           Container(
@@ -376,10 +349,7 @@ class GlassCard2 extends StatelessWidget {
               ),
               // color: Color(0x0fffffff),
               border: Border.all(color: Colors.white54, width: 0.2),
-              boxShadow: [
-                if (lightColor != null)
-                  BoxShadow(blurRadius: 30, offset: Offset(2, 2), color: lightColor!),
-              ],
+              boxShadow: [if (lightColor != null) BoxShadow(blurRadius: 30, offset: Offset(2, 2), color: lightColor!)],
             ),
             child: child,
           ),

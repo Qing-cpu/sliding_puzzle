@@ -14,13 +14,14 @@ dependencies:
   json_serializable: ^6.9.4
   json_annotation: ^4.9.0
   build_runner: ^2.4.15
-  flutter_soloud: ^3.1.1
+  flutter_soloud: ^3.4.9
   flutter_localizations:
     sdk: flutter
   intl: any
-  games_services: ^4.1.0
+  games_services: ^5.0.0
   flutter_launcher_icons: ^0.14.3
   window_size: ^0.1.0
+  path_provider: any
 
 flutter_launcher_icons:
   android: true

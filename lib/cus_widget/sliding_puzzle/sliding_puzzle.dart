@@ -7,12 +7,7 @@ export 'models/sliding_puzzle_model.dart';
 export 'models/square_model.dart';
 
 class SlidingPuzzle extends StatefulWidget {
-  const SlidingPuzzle({
-    super.key,
-    required this.slidingPuzzleController,
-    required this.width,
-    required this.height,
-  });
+  const SlidingPuzzle({super.key, required this.slidingPuzzleController, required this.width, required this.height});
 
   final SlidingPuzzleController slidingPuzzleController;
 
@@ -28,10 +23,7 @@ class _SlidingPuzzleState extends State<SlidingPuzzle> with SingleTickerProvider
   OverlayEntry? _overlayEntry;
   double fontSize = 50;
 
-  late final AnimationController _animationController = AnimationController(
-    vsync: this,
-    duration: const Duration(milliseconds: 80),
-  );
+  late final AnimationController _animationController = AnimationController(vsync: this, duration: const Duration(milliseconds: 80));
 
   @override
   void initState() {
@@ -120,6 +112,19 @@ class _SlidingPuzzleState extends State<SlidingPuzzle> with SingleTickerProvider
   }
 
   void _onTapSquare(SquareModel square) {
+    if (slidingPuzzleController.needFind.value) {
+      final targetSquares = widget.slidingPuzzleController.getFind(square.id);
+      setState(() {
+        targetSquares.needShow = ValueKey(targetSquares.id);
+        Future.delayed(const Duration(milliseconds: 100)).then((_) {
+          setState(() {
+            targetSquares.needShow = null;
+          });
+        });
+      });
+      slidingPuzzleController.needFind.value = false;
+      return;
+    }
     if (_animationController.isAnimating || square.translateOffset == null) {
       SoundTools.playDeep();
       return;
@@ -132,9 +137,7 @@ class _SlidingPuzzleState extends State<SlidingPuzzle> with SingleTickerProvider
 
   void _onEnd() {
     widget.slidingPuzzleController.endPlay();
-    setState(() {
-      _animationController.value = 0;
-    });
+    setState(() => _animationController.value = 0);
   }
 
   Duration duration = const Duration(milliseconds: 0);
@@ -145,6 +148,25 @@ class _SlidingPuzzleState extends State<SlidingPuzzle> with SingleTickerProvider
       end: square.needMove == true ? square.translateOffset : Offset.zero,
     ).chain(CurveTween(curve: Curves.fastOutSlowIn)).evaluate(_animationController);
   }
+
+  Widget buildPuzzleWidget(SquareModel square) => GestureDetector(
+    key: square.needShow,
+    onTapDown: (_) => _onTapSquare(square),
+    child:
+        square.isNullSquare
+            ? SizedBox(width: slidingPuzzleController.squareWidth, height: slidingPuzzleController.squareWidth)
+            : AnimatedBuilder(
+              animation: _animationController,
+              builder: (BuildContext context, Widget? child) => Transform.translate(offset: getOffset(square), child: child),
+              child: AnimatedContainer(
+                height: slidingPuzzleController.squareWidth,
+                width: slidingPuzzleController.squareWidth,
+                duration: const Duration(milliseconds: 320),
+                curve: Curves.easeInOut,
+                child: slidingPuzzleController.buildSquareWidget(num: square.id + 1, isOk: square.squareIndexIsProper),
+              ),
+            ),
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -166,10 +188,7 @@ class _SlidingPuzzleState extends State<SlidingPuzzle> with SingleTickerProvider
                   if (s > 0)
                     Positioned(
                       child: Container(
-                        decoration: BoxDecoration(
-                          color: Colors.black12,
-                          borderRadius: BorderRadius.circular(8),
-                        ),
+                        decoration: BoxDecoration(color: Colors.black12, borderRadius: BorderRadius.circular(8)),
                         child: Container(
                           color: Colors.black26,
                           alignment: Alignment.center,
@@ -183,46 +202,12 @@ class _SlidingPuzzleState extends State<SlidingPuzzle> with SingleTickerProvider
             },
             child: Container(
               clipBehavior: Clip.hardEdge,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(12),
-              ),
+              decoration: BoxDecoration(borderRadius: BorderRadius.circular(12)),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   ...slidingPuzzleController.squaresTwoDList.map(
-                    (dList) => Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        ...dList.map((square) {
-                          if (square.isNullSquare) {
-                            return SizedBox(
-                              width: slidingPuzzleController.squareWidth,
-                              height: slidingPuzzleController.squareWidth,
-                            );
-                          }
-                          return GestureDetector(
-                            onTapDown: (_) => _onTapSquare(square),
-                            child: AnimatedBuilder(
-                              animation: _animationController,
-                              builder: (BuildContext context, Widget? child) {
-                                return Transform.translate(offset: getOffset(square), child: child);
-                              },
-                              child: AnimatedContainer(
-                                height: slidingPuzzleController.squareWidth,
-                                width: slidingPuzzleController.squareWidth,
-                                duration: Duration(milliseconds: 320),
-                                curve: Curves.easeInOut,
-                                child: slidingPuzzleController.buildSquareWidget(
-                                  num: square.id + 1,
-                                  isOk: square.squareIndexIsProper,
-                                  // hasTweenColor: _hasTweenColor(square),
-                                ),
-                              ),
-                            ),
-                          );
-                        }),
-                      ],
-                    ),
+                    (dList) => Row(mainAxisAlignment: MainAxisAlignment.center, children: [...dList.map(buildPuzzleWidget)]),
                   ),
                 ],
               ),
