@@ -216,6 +216,7 @@ class SlidingPuzzleController {
     for (var list in squaresTwoDList.indexed) {
       for (var qI in list.$2.indexed) {
         qI.$2.locationID = list.$1 * _size + qI.$1;
+        qI.$2.squareIndexIsProper = qI.$2.id == list.$1 * _size + qI.$1;
       }
     }
   }
